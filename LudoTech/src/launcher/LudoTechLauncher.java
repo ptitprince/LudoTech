@@ -1,3 +1,4 @@
+package launcher;
 import gui.LudoTechApplication;
 
 public class LudoTechLauncher {
