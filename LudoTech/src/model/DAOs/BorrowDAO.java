@@ -17,6 +17,7 @@ public class BorrowDAO extends DAO {
 	 * @return false Exception, peut-être un problème qui est survenu.
 	 */
 
+	/* TODO : Error must be fixed !
 	public boolean add (Borrow borrow)	{
 		try {
 			super.connect();
@@ -50,4 +51,5 @@ public class BorrowDAO extends DAO {
 			return false;
 		}
 	}
+	*/
 }

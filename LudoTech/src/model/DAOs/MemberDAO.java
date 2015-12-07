@@ -41,7 +41,7 @@ public class MemberDAO extends DAO {
 			psInsert.setString(1, member.getFirstName());
 			psInsert.setString(2, member.getLastName());
 			psInsert.setString(3, member.getPseudo());
-			psInsert.setDate(4, member.getBirthDate());
+			psInsert.setDate(4, new java.sql.Date(member.getBirthDate().getTime()));
 			psInsert.setInt(5, member.getPhoneNumber());
 			psInsert.setString(6, member.getEmail());
 			psInsert.setInt(7, memberContextID);
@@ -54,7 +54,9 @@ public class MemberDAO extends DAO {
 			// automatiquement par Derby
 			ResultSet idRS = psInsert.getGeneratedKeys();
 			if (idRS != null && idRS.next()) {
-				member.setId(idRS.getInt(1));
+				/*	TODO : Error must be fixed !
+					member.setId(idRS.getInt(1));
+				*/
 			} else {
 				throw new SQLException();
 			}
@@ -96,7 +98,7 @@ public class MemberDAO extends DAO {
 			psEdit.setString(1, member.getFirstName());
 			psEdit.setString(2, member.getLastName());
 			psEdit.setString(3, member.getPseudo());
-			psEdit.setDate(4, member.getBirthDate());
+			psEdit.setDate(4, new java.sql.Date(member.getBirthDate().getTime()));
 			psEdit.setInt(5, member.getPhoneNumber());
 			psEdit.setString(6, member.getEmail());
 			psEdit.setInt(7, memberContextID);
@@ -163,9 +165,11 @@ public class MemberDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 			Member member = null;
 			if (resultSet.next()) { // Positionnement sur le premier résultat
-				member = new Member(id, resultSet.getString("firstName"), resultSet.getString("lastName"),
+				/* TODO : Error must be fixed !
+				   member = new Member(id, resultSet.getString("firstName"), resultSet.getString("lastName"),
 						resultSet.getString("pseudo"), resultSet.getDate("birthDate"), resultSet.getInt("phoneNumber"),
 						resultSet.getString("email"), "", "", "");
+				*/
 			}
 			super.disconnect();
 			return member;
