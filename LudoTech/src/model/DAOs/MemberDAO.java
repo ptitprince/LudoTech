@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.POJOs.Member;
+
 /**
  * Classe manipulant des objets de type Member dans la base de données
  */
@@ -39,7 +41,7 @@ public class MemberDAO extends DAO {
 			psInsert.setString(1, member.getFirstName());
 			psInsert.setString(2, member.getLastName());
 			psInsert.setString(3, member.getPseudo());
-			psInsert.setDate(4, member.BirthDate());
+			psInsert.setDate(4, member.getBirthDate());
 			psInsert.setInt(5, member.getPhoneNumber());
 			psInsert.setString(6, member.getEmail());
 			psInsert.setInt(7, memberContextID);
@@ -94,7 +96,7 @@ public class MemberDAO extends DAO {
 			psEdit.setString(1, member.getFirstName());
 			psEdit.setString(2, member.getLastName());
 			psEdit.setString(3, member.getPseudo());
-			psEdit.setDate(4, member.BirthDate());
+			psEdit.setDate(4, member.getBirthDate());
 			psEdit.setInt(5, member.getPhoneNumber());
 			psEdit.setString(6, member.getEmail());
 			psEdit.setInt(7, memberContextID);
