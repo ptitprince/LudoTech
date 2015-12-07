@@ -1,2 +1,6 @@
 /bin/
 /derby.log
+/.project
+/.classpath
+/db/
+/.settings/
