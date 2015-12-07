@@ -1,0 +1,16 @@
+eclipse.preferences.version=1
+encoding//src/model/DAOs=UTF-8
+encoding//src/model/DAOs/DAO.java=UTF-8
+encoding//src/model/DAOs/GameCategoryDAO.java=UTF-8
+encoding//src/model/DAOs/GameDAO.java=UTF-8
+encoding//src/model/DAOs/GameEditorDAO.java=UTF-8
+encoding//src/model/DAOs/MemberContextDAO.java=UTF-8
+encoding//src/model/DAOs/PostalAddressDAO.java=UTF-8
+encoding//src/model/POJOs/Game.java=UTF-8
+encoding//src/model/POJOs/MemberContext.java=UTF-8
+encoding//src/model/POJOs/PostalAddress.java=UTF-8
+encoding//src/model/services/GameServices.java=UTF-8
+encoding//src/model/tests/GameTests.java=UTF-8
+encoding//src/model/tests/Tests.java=UTF-8
+encoding/<project>=UTF-8
+encoding/src=UTF-8
