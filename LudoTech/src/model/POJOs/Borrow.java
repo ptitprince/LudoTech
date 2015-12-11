@@ -15,9 +15,9 @@ public class Borrow {
 	private int borrowId;
 	
 	/**
-	 * Le jeu qui a été emprunté.
+	 * L'exemplaire qui a été emprunté.
 	 */
-	private Game game;
+	//private Item item ; ref exemplaire , à faire.
 	
 	/**
 	 * L'utilisateur qui a fait l'emprunt (Member pas encore fait au 27/11).
@@ -42,7 +42,7 @@ public class Borrow {
 	/**
 	 * Savoir si le jeu est disponible, avec un booléen.
 	 */
-	private boolean borrowDisponible;
+	private boolean borrowAvailable;
 	
 	public int getBorrowId() {
 		return borrowId;
@@ -52,13 +52,13 @@ public class Borrow {
 		this.borrowId = borrowId;
 	}
 
-	public Game getGame() {
-		return game;
-	}
+	/* public Game getItem() {
+		return copy;
+	} */
 
-	public void setGame(Game game) {
-		this.game = game;
-	}
+	/* public void setItem(Item item) {
+		this.item = item;
+	} */
 
 	public Member getMember() {
 		return member;
@@ -92,12 +92,12 @@ public class Borrow {
 		this.borrowEtat = borrowEtat;
 	}
 
-	public boolean isBorrowDisponible() {
-		return borrowDisponible;
+	public boolean isBorrowAvailable() {
+		return borrowAvailable;
 	}
 
-	public void setBorrowDisponible(boolean borrowDisponible) {
-		this.borrowDisponible = borrowDisponible;
+	public void setBorrowAvailable(boolean borrowAvailable) {
+		this.borrowAvailable = borrowAvailable;
 	}
 
 }

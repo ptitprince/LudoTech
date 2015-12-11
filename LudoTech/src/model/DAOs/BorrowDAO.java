@@ -23,13 +23,14 @@ public class BorrowDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
-					+ "Borrow(borrowId, game, member, dateDebut, dateFin, borrowEtat, borrowDisponible) "
+					+ "Borrow(borrowId, item(voir si besoin ajout ID), member, dateDebut, dateFin, borrowEtat, borrowDisponible) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?)", new String[] { "ID" });
 			psInsert.setInt(1, borrow.getBorrowId());
-			psInsert.setString(2, borrow.getGame());
-			psInsert.setString(3, borrow.getMember()); //erreur dûe ) l'absence de Member
-			psInsert.setDate(4, borrow.getDateDebut()); //arguments pour les setDate ?
-			psInsert.setDate(5, borrow.getDateFin()()));
+			psInsert.setString(2, borrow.getItem());
+			//TODO : get/set Extension
+			psInsert.setString(3, borrow.getMember()); //erreur dûe a l'absence de Member
+			psInsert.setString(4, borrow.getDateDebut());
+			psInsert.setString(5, borrow.getDateFin()));
 			psInsert.setString(6, borrow.getBorrowEtat());;
 			//psInsert.setString(7,borrow.get) ici, doit plus être une condition, à voir plus tard. 
 
