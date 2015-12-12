@@ -31,7 +31,10 @@ public class GameListView extends JPanel {
 
 		this.table = new JTable(model);
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
-
+	}
+	
+	public JTable getTable() {
+		return this.table;
 	}
 	
 }

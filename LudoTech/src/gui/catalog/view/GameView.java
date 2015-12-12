@@ -1,36 +1,37 @@
 package gui.catalog.view;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import gui.LudoTechApplication;
+
 @SuppressWarnings("serial")
-public class GameView extends JPanel {
+public class GameView extends JDialog {
 
 	private static final String TITLE = "Fiche d'un jeu";
 	private static final String INFOS_BOX_TITLE = "Informations";
 	private static final String EXTENSIONS_BOX_TITLE = "Extensions";
 	private static final String ITEMS_BOX_TITLE = "Exemplaires";
-
+	private static final double WINDOW_RATIO = 1.25;
+	
 	public GameView() {
+		this.setTitle(TITLE);
+		this.setSize((int) (LudoTechApplication.WINDOW_WIDTH / WINDOW_RATIO), (int) (LudoTechApplication.WINDOW_HEIGHT / WINDOW_RATIO));
+		this.setModalityType(ModalityType.APPLICATION_MODAL);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setLayout(new BorderLayout());
+		
 		this.makeGUI();
 	}
 
 	private void makeGUI() {
-		JLabel title = new JLabel(TITLE);
-		Font police = new Font("Arial", Font.BOLD, 16);
-		title.setFont(police);
-		title.setHorizontalAlignment(JLabel.CENTER);
-		this.add(title, BorderLayout.NORTH);
-
 		JPanel boxesPanel = new JPanel();
 		GridBagLayout boxesLayout = new GridBagLayout();
 		boxesPanel.setLayout(boxesLayout);
@@ -69,7 +70,10 @@ public class GameView extends JPanel {
 		boxesPanel.add(itemsPanel, boxesConstraints);
 
 		this.add(boxesPanel, BorderLayout.CENTER);
-
+	}
+	
+	public void showPopup() {
+		this.setVisible(true);
 	}
 
 }
