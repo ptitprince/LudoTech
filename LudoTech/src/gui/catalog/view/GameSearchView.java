@@ -45,6 +45,7 @@ public class GameSearchView extends JPanel {
 
 		JPanel searchPropertiesPanel = new JPanel(new SpringLayout());
 
+		// Nom
 		JLabel nameLabel = new JLabel(NAME_LABEL);
 		searchPropertiesPanel.add(nameLabel);
 		JTextField nameField = new JTextField();
@@ -52,6 +53,7 @@ public class GameSearchView extends JPanel {
 		nameLabel.setLabelFor(nameField);
 		searchPropertiesPanel.add(nameField);
 		
+		// Catégorie
 		JLabel categoryLabel = new JLabel(CATEGORY_LABEL);
 		searchPropertiesPanel.add(categoryLabel);
 		JComboBox categoryComboBox = new JComboBox();
@@ -59,6 +61,7 @@ public class GameSearchView extends JPanel {
 		categoryLabel.setLabelFor(categoryComboBox);
 		searchPropertiesPanel.add(categoryComboBox);
 		
+		// Editeur
 		JLabel editorLabel = new JLabel(EDITOR_LABEL);
 		searchPropertiesPanel.add(editorLabel);
 		JComboBox editorComboBox = new JComboBox();
@@ -66,6 +69,7 @@ public class GameSearchView extends JPanel {
 		editorLabel.setLabelFor(editorComboBox);
 		searchPropertiesPanel.add(editorComboBox);
 		
+		// Année d'édition
 		JLabel publishingYearRangeLabel = new JLabel(PUBLISHING_YEAR_RANGE_LABEL);
 		searchPropertiesPanel.add(publishingYearRangeLabel);
 		JPanel publishingYearRangePanel = new JPanel(new FlowLayout());
@@ -81,6 +85,7 @@ public class GameSearchView extends JPanel {
 		publishingYearRangeLabel.setLabelFor(publishingYearRangePanel);
 		searchPropertiesPanel.add(publishingYearRangePanel);
 		
+		// Nombre de joueurs
 		JLabel nbPlayersRangeLabel = new JLabel(PLAYERS_RANGE_LABEL);
 		searchPropertiesPanel.add(nbPlayersRangeLabel);
 		JPanel nbPlayersRangePanel = new JPanel(new FlowLayout());
@@ -96,6 +101,7 @@ public class GameSearchView extends JPanel {
 		nbPlayersRangeLabel.setLabelFor(nbPlayersRangePanel);
 		searchPropertiesPanel.add(nbPlayersRangePanel);
 		
+		// Age minimum recommandé
 		JLabel minAgeLabel = new JLabel(MINIMUM_AGE_LABEL);
 		searchPropertiesPanel.add(minAgeLabel);
 		JPanel minAgePanel = new JPanel(new FlowLayout());
@@ -108,6 +114,7 @@ public class GameSearchView extends JPanel {
 		minAgeLabel.setLabelFor(minAgePanel);
 		searchPropertiesPanel.add(minAgePanel);
 		
+		// Disponibilité
 		JLabel availableLabel = new JLabel(AVAILABLE_LABEL);
 		searchPropertiesPanel.add(availableLabel);
 		JCheckBox availableCheckBox = new JCheckBox();

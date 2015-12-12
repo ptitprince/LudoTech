@@ -42,6 +42,14 @@ public class GameView extends JDialog {
 		boxesConstraints.weightx = 2;
 		boxesConstraints.weighty = 2;
 		
+		makeInfosPanel(boxesPanel, boxesConstraints);
+		makeExtensionsPanel(boxesPanel, boxesConstraints);
+		makeItemsPanel(boxesPanel, boxesConstraints);
+
+		this.add(boxesPanel, BorderLayout.CENTER);
+	}
+	
+	public void makeInfosPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 		JPanel infosPanel = new JPanel();
 		TitledBorder infosBorder = BorderFactory.createTitledBorder(INFOS_BOX_TITLE);
 		infosBorder.setTitleJustification(TitledBorder.LEFT);
@@ -50,7 +58,9 @@ public class GameView extends JDialog {
 		boxesConstraints.gridy = 0;
 		boxesConstraints.gridwidth = 2;
 		boxesPanel.add(infosPanel, boxesConstraints);
-		
+	}
+	
+	public void makeExtensionsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 		JPanel extensionsPanel = new JPanel();
 		TitledBorder extensionsBorder = BorderFactory.createTitledBorder(EXTENSIONS_BOX_TITLE);
 		extensionsBorder.setTitleJustification(TitledBorder.LEFT);
@@ -59,7 +69,9 @@ public class GameView extends JDialog {
 		boxesConstraints.gridy = 1;
 		boxesConstraints.gridwidth = 1;
 		boxesPanel.add(extensionsPanel, boxesConstraints);
-
+	}
+	
+	public void makeItemsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 		JPanel itemsPanel = new JPanel();
 		TitledBorder itemsBorder = BorderFactory.createTitledBorder(ITEMS_BOX_TITLE);
 		itemsBorder.setTitleJustification(TitledBorder.LEFT);
@@ -68,8 +80,6 @@ public class GameView extends JDialog {
 		boxesConstraints.gridy = 1;
 		boxesConstraints.gridwidth = 1;
 		boxesPanel.add(itemsPanel, boxesConstraints);
-
-		this.add(boxesPanel, BorderLayout.CENTER);
 	}
 	
 	public void showPopup() {
