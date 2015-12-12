@@ -11,18 +11,15 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import gui.LudoTechApplication;
+import gui.utils.TextView;
 
 @SuppressWarnings("serial")
 public class GameView extends JDialog {
 
-	private static final String TITLE = "Fiche d'un jeu";
-	private static final String INFOS_BOX_TITLE = "Informations";
-	private static final String EXTENSIONS_BOX_TITLE = "Extensions";
-	private static final String ITEMS_BOX_TITLE = "Exemplaires";
 	private static final double WINDOW_RATIO = 1.25;
 	
 	public GameView() {
-		this.setTitle(TITLE);
+		this.setTitle(TextView.get("catalogGamePopupTitle"));
 		this.setSize((int) (LudoTechApplication.WINDOW_WIDTH / WINDOW_RATIO), (int) (LudoTechApplication.WINDOW_HEIGHT / WINDOW_RATIO));
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -51,7 +48,7 @@ public class GameView extends JDialog {
 	
 	public void makeInfosPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 		JPanel infosPanel = new JPanel();
-		TitledBorder infosBorder = BorderFactory.createTitledBorder(INFOS_BOX_TITLE);
+		TitledBorder infosBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameInfosTitle"));
 		infosBorder.setTitleJustification(TitledBorder.LEFT);
 		infosPanel.setBorder(infosBorder);
 		boxesConstraints.gridx = 0;
@@ -62,7 +59,7 @@ public class GameView extends JDialog {
 	
 	public void makeExtensionsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 		JPanel extensionsPanel = new JPanel();
-		TitledBorder extensionsBorder = BorderFactory.createTitledBorder(EXTENSIONS_BOX_TITLE);
+		TitledBorder extensionsBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameExtensionsTitle"));
 		extensionsBorder.setTitleJustification(TitledBorder.LEFT);
 		extensionsPanel.setBorder(extensionsBorder);
 		boxesConstraints.gridx = 0;
@@ -73,7 +70,7 @@ public class GameView extends JDialog {
 	
 	public void makeItemsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 		JPanel itemsPanel = new JPanel();
-		TitledBorder itemsBorder = BorderFactory.createTitledBorder(ITEMS_BOX_TITLE);
+		TitledBorder itemsBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameItemsTitle"));
 		itemsBorder.setTitleJustification(TitledBorder.LEFT);
 		itemsPanel.setBorder(itemsBorder);
 		boxesConstraints.gridx = 1;

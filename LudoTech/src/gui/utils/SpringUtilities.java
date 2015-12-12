@@ -37,6 +37,8 @@ import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 /**
+ * Provient du framework Spring ! (gestion de l'affichage des tableaux de données)
+ * 
  * A 1.4 file that provides utility methods for
  * creating form- or grid-style layouts with SpringLayout.
  * These utilities are used by several programs, such as

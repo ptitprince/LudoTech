@@ -9,11 +9,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import gui.catalog.model.GameListModel;
+import gui.utils.TextView;
 
 @SuppressWarnings("serial")
 public class GameListView extends JPanel {
-
-	private static final String TITLE = "Liste des jeux";
 
 	private JTable table;
 
@@ -23,7 +22,7 @@ public class GameListView extends JPanel {
 	}
 
 	private void makeGUI(GameListModel model) {
-		JLabel title = new JLabel(TITLE);
+		JLabel title = new JLabel(TextView.get("catalogListTitle"));
 		Font police = new Font("Arial", Font.BOLD, 16);
 		title.setFont(police);
 		title.setHorizontalAlignment(JLabel.CENTER);

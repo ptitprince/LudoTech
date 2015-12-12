@@ -4,10 +4,11 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
+import gui.utils.TextView;
+
 @SuppressWarnings("serial")
 public class LudoTechApplication extends JFrame {
 
-	public static final String APP_NAME = "LudoTech";
 	public static final int WINDOW_WIDTH = 800;
 	public static final int WINDOW_HEIGHT = 500;
 
@@ -18,7 +19,7 @@ public class LudoTechApplication extends JFrame {
 	}
 	
 	public void run() {
-		this.setTitle(APP_NAME);
+		this.setTitle(TextView.get("applicationTitle"));
 		this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);

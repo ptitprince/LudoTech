@@ -5,14 +5,15 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import gui.utils.TextView;
 import model.POJOs.Game;
 import model.services.GameServices;
 
 @SuppressWarnings("serial")
 public class GameListModel extends AbstractTableModel {
 
-	private final String[] HEADERS = { "Nom", "Type de jeu", "Editeur", "Année d'édition", "Joueurs", "Age minimum",
-			"Disponible" };
+	private final String[] HEADERS = { TextView.get("gameName"), TextView.get("gameCategory"), TextView.get("gameEditor"), TextView.get("gamePublishingYear"), TextView.get("gamePlayers"), TextView.get("gameMinAge"),
+			TextView.get("gameAvailable") };
 
 	private GameServices gameServices;
 	private List<Game> gameList;

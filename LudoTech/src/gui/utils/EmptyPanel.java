@@ -11,6 +11,6 @@ public class EmptyPanel extends JPanel {
 	}
 	
 	public void makeGUI() {
-		this.add(new JLabel("Just an empty panel view !"));
+		this.add(new JLabel(TextView.get("emptyPanelText")));
 	}
 }
