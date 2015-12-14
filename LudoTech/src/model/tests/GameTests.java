@@ -1,5 +1,8 @@
 package model.tests;
 
+import java.util.List;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +32,7 @@ public class GameTests extends Tests {
 		Game addedGame1 = gameServices.addGame("TestAddGame1", "Salut, je suis une description", 2015, 12, 2, 4,
 				"Cartes", "Marco");
 		Game addedGame2 = gameServices.addGame("TestAddGame2", "Coucou, moi j'en suis une autre", 2011, 4, 1, 2,
-				"Plateau", "Marco");
+				"Plateau", "Machin");
 		Assert.assertNotNull(addedGame1);
 		Assert.assertNotNull(addedGame2);
 
@@ -77,6 +80,41 @@ public class GameTests extends Tests {
 
 		// Obtention du jeu
 		Assert.assertNotNull(gameServices.getGame(getTableGame.getGameID()));
+	}
+	
+	@Test
+	public void testListGames() {
+		// Ajout des deux jeu à lister
+		Game getTableGame1 = gameServices.addGame("TestListGame1", "Description", 2015, 8, 2, 6, "Dés", "Machin");
+		Game getTableGame2 = gameServices.addGame("TestListGame2", "Description", 2015, 8, 2, 6, "Dés", "Machin");
+		Assert.assertNotNull(getTableGame1);
+		Assert.assertNotNull(getTableGame2);
+
+		// Obtention de la liste des jeux
+		Assert.assertEquals(2, gameServices.getGameList().size());
+	}
+	
+	@Test
+	public void testListGameCategories() {
+		// Vérification que la liste des catégories de jeu est bien retounée (peut-être vide)
+		Assert.assertNotNull(gameServices.getCategoryList());
+	}
+	
+	@Test
+	public void testListGameEditors() {
+		// Vérification que la liste des éditeurs de jeu est bien retounée (peut-être vide)
+		Assert.assertNotNull(gameServices.getEditorList());
+	}
+	
+	@After
+	public void cleanTable() {
+		// Récupération des jeux ajoutés dans la table pendant les tests
+		List<Game> games = gameServices.getGameList();
+		
+		// Suppression de tous les jeux dans la table GAME
+		for (Game game : games) {
+			gameServices.remove(game.getGameID());
+		}
 	}
 
 }
