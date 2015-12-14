@@ -29,6 +29,7 @@ public class GameListView extends JPanel {
 		this.add(title, BorderLayout.NORTH);
 
 		this.table = new JTable(model);
+		this.table.removeColumn(table.getColumnModel().getColumn(0)); // Cacher la colonne des identifiants
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
 	}
 	

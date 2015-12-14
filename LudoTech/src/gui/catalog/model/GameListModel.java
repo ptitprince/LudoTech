@@ -12,14 +12,15 @@ import model.services.GameServices;
 @SuppressWarnings("serial")
 public class GameListModel extends AbstractTableModel {
 
-	private final String[] HEADERS = { TextView.get("gameName"), TextView.get("gameCategory"), TextView.get("gameEditor"), TextView.get("gamePublishingYear"), TextView.get("gamePlayers"), TextView.get("gameMinAge"),
+	private final String[] HEADERS = { TextView.get("gameID"), TextView.get("gameName"), TextView.get("gameCategory"), TextView.get("gameEditor"), TextView.get("gamePublishingYear"), TextView.get("gamePlayers"), TextView.get("gameMinAge"),
 			TextView.get("gameAvailable") };
 
 	private GameServices gameServices;
+	
 	private List<Game> gameList;
 
-	public GameListModel() {
-		this.gameServices = new GameServices();
+	public GameListModel(GameServices gameServices) {
+		this.gameServices = gameServices;
 		this.gameList = new ArrayList<Game>();
 	}
 
@@ -43,19 +44,21 @@ public class GameListModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		switch (columnIndex) {
 		case 0:
-			return this.gameList.get(rowIndex).getName();
+			return this.gameList.get(rowIndex).getGameID();
 		case 1:
-			return this.gameList.get(rowIndex).getCategory();
+			return this.gameList.get(rowIndex).getName();
 		case 2:
-			return this.gameList.get(rowIndex).getEditor();
+			return this.gameList.get(rowIndex).getCategory();
 		case 3:
-			return this.gameList.get(rowIndex).getPublishingYear();
+			return this.gameList.get(rowIndex).getEditor();
 		case 4:
+			return this.gameList.get(rowIndex).getPublishingYear();
+		case 5:
 			return this.gameList.get(rowIndex).getMinimumPlayers() + " - "
 					+ this.gameList.get(rowIndex).getMaximumPlayers();
-		case 5:
-			return this.gameList.get(rowIndex).getMinimumAge();
 		case 6:
+			return this.gameList.get(rowIndex).getMinimumAge();
+		case 7:
 			return true;
 		default:
 			throw new IllegalArgumentException();
@@ -65,15 +68,16 @@ public class GameListModel extends AbstractTableModel {
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
-		case 0:
 		case 1:
 		case 2:
-		case 4:
-			return String.class;
 		case 3:
 		case 5:
-			return Integer.class;
+			return String.class;
+		case 0:
+		case 4:
 		case 6:
+			return Integer.class;
+		case 7:
 			return Boolean.class;
 		default:
 			return Object.class;

@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
 import gui.LudoTechApplication;
@@ -13,19 +14,22 @@ import gui.catalog.model.GameListModel;
 import gui.catalog.view.GameListView;
 import gui.catalog.view.GameSearchView;
 import gui.catalog.view.GameView;
+import model.POJOs.Game;
+import model.services.GameServices;
 
 @SuppressWarnings("serial")
 public class CatalogController extends JPanel {
 
+	private GameServices gameServices;
+	
 	private GameSearchView searchPane;
-
 	private GameListView gameListView;
 	private GameListModel gameListModel;
-
 	private GameView gameView;
 
 	public CatalogController() {
-		this.gameListModel = new GameListModel();
+		this.gameServices = new GameServices();
+		this.gameListModel = new GameListModel(this.gameServices);
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 		this.makeListeners();
@@ -48,6 +52,10 @@ public class CatalogController extends JPanel {
 		this.gameListView.getTable().addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
+					JTable table = CatalogController.this.gameListView.getTable();
+					int gameID = (Integer) table.getModel().getValueAt(table.getSelectedRow(), 0);
+					Game game = CatalogController.this.gameServices.getGame(gameID);
+					CatalogController.this.gameView.load(game.getName());
 					CatalogController.this.gameView.showPopup();
 				}
 			}
