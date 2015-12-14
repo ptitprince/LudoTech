@@ -146,6 +146,18 @@ public class Member {
 		this.postalAddress = postalAddress;
 	}
 
+	public Member(int memberID, String lastName, String firstName, String pseudo, Date birthDate, int phoneNumber,
+			String email) {
+		super();
+		this.memberID = memberID;
+		this.lastName = lastName;
+		this.firstName = firstName;
+		this.pseudo = pseudo;
+		this.birthDate = birthDate;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+	}
+
 	/**
 	 * Le nom du membre
 	 */
@@ -194,5 +206,9 @@ public class Member {
 	 * L'identifiant de la table PostalAddress
 	 */
 	private int postalAddressID;
+
+	public void setId(int ID) {
+		this.memberID = ID;
+	}
 
 }

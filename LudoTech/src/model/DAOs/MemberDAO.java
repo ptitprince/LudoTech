@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import model.POJOs.Member;
@@ -54,9 +55,8 @@ public class MemberDAO extends DAO {
 			// automatiquement par Derby
 			ResultSet idRS = psInsert.getGeneratedKeys();
 			if (idRS != null && idRS.next()) {
-				/*	TODO : Error must be fixed !
-					member.setId(idRS.getInt(1));
-				*/
+				member.setId(idRS.getInt(1));
+
 			} else {
 				throw new SQLException();
 			}
@@ -165,11 +165,11 @@ public class MemberDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 			Member member = null;
 			if (resultSet.next()) { // Positionnement sur le premier résultat
-				/* TODO : Error must be fixed !
-				   member = new Member(id, resultSet.getString("firstName"), resultSet.getString("lastName"),
-						resultSet.getString("pseudo"), resultSet.getDate("birthDate"), resultSet.getInt("phoneNumber"),
-						resultSet.getString("email"), "", "", "");
-				*/
+				Date date = resultSet.getDate("birthDate");
+				member = new Member(id, resultSet.getString("firstName"), resultSet.getString("lastName"),
+						resultSet.getString("pseudo"), date, resultSet.getInt("phoneNumber"),
+						resultSet.getString("email"));
+
 			}
 			super.disconnect();
 			return member;
