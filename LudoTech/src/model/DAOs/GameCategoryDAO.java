@@ -3,6 +3,8 @@ package model.DAOs;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe manipulant des objets de type GameCategory dans la base de données
@@ -76,5 +78,26 @@ public class GameCategoryDAO extends DAO {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public List<String> list() {
+		List<String> categories = new ArrayList<String>();
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM GAME_CATEGORY");
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			while (resultSet.next()) { // Positionnement sur le premier résultat
+				categories.add(resultSet.getString("category"));
+			}
+			
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return categories;
 	}
 }

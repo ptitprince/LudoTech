@@ -3,7 +3,6 @@ package gui.catalog.controller;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -21,7 +20,7 @@ import model.services.GameServices;
 public class CatalogController extends JPanel {
 
 	private GameServices gameServices;
-	
+
 	private GameSearchView searchPane;
 	private GameListView gameListView;
 	private GameListModel gameListModel;
@@ -33,6 +32,7 @@ public class CatalogController extends JPanel {
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 		this.makeListeners();
+		this.loadLists();
 	}
 
 	public void makeGUI() {
@@ -52,12 +52,24 @@ public class CatalogController extends JPanel {
 		this.gameListView.getTable().addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					JTable table = CatalogController.this.gameListView.getTable();
+					JTable table = gameListView.getTable();
 					int gameID = (Integer) table.getModel().getValueAt(table.getSelectedRow(), 0);
-					Game game = CatalogController.this.gameServices.getGame(gameID);
-					CatalogController.this.gameView.load(game.getName());
-					CatalogController.this.gameView.showPopup();
+					Game game = gameServices.getGame(gameID);
+					gameView.load(game.getName(), gameID, game.getCategory(), game.getEditor(),
+							game.getPublishingYear(), game.getMinimumPlayers(), game.getMaximumPlayers(),
+							game.getMinimumAge(), game.getDescription());
+					gameView.showPopup();
 				}
+			}
+		});
+
+	}
+
+	private void loadLists() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				gameView.loadCategories(gameServices.getCategoryList());
+				gameView.loadEditors(gameServices.getEditorList());
 			}
 		});
 

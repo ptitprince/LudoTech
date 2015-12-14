@@ -112,5 +112,13 @@ public class GameServices {
 		}
 		return gameList;
 	}
+	
+	public List<String> getCategoryList() {
+		return this.gameCategoryDAO.list();
+	}
+	
+	public List<String> getEditorList() {
+		return this.gameEditorDAO.list();
+	}
 
 }

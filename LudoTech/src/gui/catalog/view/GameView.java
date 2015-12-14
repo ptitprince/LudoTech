@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -13,12 +14,14 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 
 import gui.LudoTechApplication;
+import gui.utils.PostLoadableComboBoxModel;
 import gui.utils.SpringUtilities;
 import gui.utils.TextView;
 
@@ -26,8 +29,16 @@ import gui.utils.TextView;
 public class GameView extends JDialog {
 
 	private static final double WINDOW_RATIO = 1.25;
-	
+
 	private JTextField nameField;
+	private JTextField idField;
+	private JComboBox<String> categoryComboBox;
+	private JComboBox<String> editorComboBox;
+	private JTextField publishingYearStartRangeField;
+	private JTextField nbPlayersStartRangeField;
+	private JTextField nbPlayersEndRangeField;
+	private JTextField minAgeField;
+	private JTextArea descriptionBox;
 
 	public GameView() {
 		this.setTitle(TextView.get("catalogGamePopupTitle"));
@@ -47,11 +58,12 @@ public class GameView extends JDialog {
 
 		GridBagConstraints boxesConstraints = new GridBagConstraints();
 		boxesConstraints.fill = GridBagConstraints.BOTH;
-		boxesConstraints.insets = new Insets(0, 3, 0, 3);
+		boxesConstraints.insets = new Insets(5, 5, 5, 5);
 		boxesConstraints.weightx = 2;
-		boxesConstraints.weighty = 2;
+		boxesConstraints.weighty = 3;
 
 		makeInfosPanel(boxesPanel, boxesConstraints);
+		makeDescriptionPanel(boxesPanel, boxesConstraints);
 		makeExtensionsPanel(boxesPanel, boxesConstraints);
 		makeItemsPanel(boxesPanel, boxesConstraints);
 
@@ -59,7 +71,7 @@ public class GameView extends JDialog {
 	}
 
 	public void makeInfosPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
-		
+
 		JPanel infosPanel = new JPanel();
 		TitledBorder infosBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameInfosTitle"));
 		infosBorder.setTitleJustification(TitledBorder.LEFT);
@@ -70,7 +82,7 @@ public class GameView extends JDialog {
 
 		// Informations principales
 		JPanel mainInfosPanel = new JPanel(new SpringLayout());
-		
+
 		// 1ère ligne
 
 		// Nom (1ère et 2ème colonnes)
@@ -84,11 +96,11 @@ public class GameView extends JDialog {
 		// ID (3ème et 4ème colonnes)
 		JLabel idLabel = new JLabel(TextView.get("gameID"));
 		mainInfosPanel.add(idLabel);
-		JTextField idField = new JTextField();
-		idField.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
-		idField.setEnabled(false);
-		idLabel.setLabelFor(idField);
-		mainInfosPanel.add(idField);
+		this.idField = new JTextField();
+		this.idField.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+		this.idField.setEnabled(false);
+		idLabel.setLabelFor(this.idField);
+		mainInfosPanel.add(this.idField);
 
 		// Disponibilité (5ème et 6ème colonnes)
 		JLabel availableLabel = new JLabel(TextView.get("gameAvailable"));
@@ -103,25 +115,27 @@ public class GameView extends JDialog {
 		// Catégorie (1ère et 2ème colonnes)
 		JLabel categoryLabel = new JLabel(TextView.get("gameCategory"));
 		mainInfosPanel.add(categoryLabel);
-		JComboBox categoryComboBox = new JComboBox();
-		categoryComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-		categoryLabel.setLabelFor(categoryComboBox);
-		mainInfosPanel.add(categoryComboBox);
+		this.categoryComboBox = new JComboBox<String>();
+		this.categoryComboBox.setModel(new PostLoadableComboBoxModel());
+		this.categoryComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
+		categoryLabel.setLabelFor(this.categoryComboBox);
+		mainInfosPanel.add(this.categoryComboBox);
 
 		// Editeur (3ème et 4ème colonnes)
 		JLabel editorLabel = new JLabel(TextView.get("gameEditor"));
 		mainInfosPanel.add(editorLabel);
-		JComboBox editorComboBox = new JComboBox();
-		editorComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-		editorLabel.setLabelFor(editorComboBox);
-		mainInfosPanel.add(editorComboBox);
+		this.editorComboBox = new JComboBox<String>();
+		this.editorComboBox.setModel(new PostLoadableComboBoxModel());
+		this.editorComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
+		editorLabel.setLabelFor(this.editorComboBox);
+		mainInfosPanel.add(this.editorComboBox);
 
 		// Année d'édition (5ème et 6ème colonnes)
 		JLabel publishingYearRangeLabel = new JLabel(TextView.get("gamePublishingYear"));
 		mainInfosPanel.add(publishingYearRangeLabel);
-		JTextField publishingYearStartRangeField = new JTextField();
-		publishingYearStartRangeField.setMaximumSize(new Dimension(150, 20));
-		mainInfosPanel.add(publishingYearStartRangeField);
+		this.publishingYearStartRangeField = new JTextField();
+		this.publishingYearStartRangeField.setMaximumSize(new Dimension(150, 20));
+		mainInfosPanel.add(this.publishingYearStartRangeField);
 
 		// 3ème ligne
 
@@ -137,19 +151,16 @@ public class GameView extends JDialog {
 		JLabel nbPlayersFromRangeLabel = new JLabel(TextView.get("rangeFrom"));
 		nbPlayersRangePanel.add(nbPlayersFromRangeLabel);
 		// Nombre de joueur minimum
-		JTextField nbPlayersStartRangeField = new JTextField();
-		nbPlayersStartRangeField.setPreferredSize(new Dimension(35, 20));
-		nbPlayersRangePanel.add(nbPlayersStartRangeField);
+		this.nbPlayersStartRangeField = new JTextField();
+		this.nbPlayersStartRangeField.setPreferredSize(new Dimension(35, 20));
+		nbPlayersRangePanel.add(this.nbPlayersStartRangeField);
 		// "à"
 		JLabel nbPlayersToRangeLabel = new JLabel(TextView.get("rangeTo"));
 		nbPlayersRangePanel.add(nbPlayersToRangeLabel);
 		// Nombre de joueur maximum
-		JTextField nbPlayersEndRangeField = new JTextField();
-		nbPlayersEndRangeField.setPreferredSize(new Dimension(35, 20));
-		nbPlayersRangePanel.add(nbPlayersEndRangeField);
-		// "joueurs"
-		JLabel nbPlayersLabel = new JLabel(TextView.get("players"));
-		nbPlayersRangePanel.add(nbPlayersLabel);
+		this.nbPlayersEndRangeField = new JTextField();
+		this.nbPlayersEndRangeField.setPreferredSize(new Dimension(35, 20));
+		nbPlayersRangePanel.add(this.nbPlayersEndRangeField);
 		mainInfosPanel.add(nbPlayersRangePanel);
 
 		// Age recommandé (3ème et 4ème colonnes)
@@ -159,9 +170,9 @@ public class GameView extends JDialog {
 		// 4ème colonne
 		JPanel minAgePanel = new JPanel(new FlowLayout());
 		minAgePanel.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-		JTextField minAgeField = new JTextField();
-		minAgeField.setPreferredSize(new Dimension(35, 20));
-		minAgePanel.add(minAgeField);
+		this.minAgeField = new JTextField();
+		this.minAgeField.setPreferredSize(new Dimension(35, 20));
+		minAgePanel.add(this.minAgeField);
 		JLabel minAgePostLabel = new JLabel(TextView.get("years"));
 		minAgePanel.add(minAgePostLabel);
 		minAgeLabel.setLabelFor(minAgePanel);
@@ -170,23 +181,30 @@ public class GameView extends JDialog {
 		// 5ème et 6ème colonnes (vides)
 		mainInfosPanel.add(new JLabel());
 		mainInfosPanel.add(new JLabel());
-		
+
 		// 3 lignes et 6 colonnes.
 		// Un champ (libellé + zone de saisie) s'étend sur 2 colonnes.
 		SpringUtilities.makeCompactGrid(mainInfosPanel, 3, 6, 6, 6, 20, 5);
 		infosPanel.add(mainInfosPanel);
-		
-		// Description
-		JPanel descriptionPanel = new JPanel();
-		JLabel descriptionLabel = new JLabel(TextView.get("gameDescription"));
-		descriptionPanel.add(descriptionLabel);
-		JTextArea descriptionBox = new JTextArea();
-		descriptionBox.setPreferredSize(new Dimension((int) (LudoTechApplication.WINDOW_WIDTH / 1.5), 50));
-		descriptionLabel.setLabelFor(descriptionBox);
-		descriptionPanel.add(descriptionBox);
-		infosPanel.add(descriptionPanel);
-		
+
 		boxesPanel.add(infosPanel, boxesConstraints);
+	}
+	
+	public void makeDescriptionPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
+		JPanel descriptionPanel = new JPanel(new BorderLayout());
+		TitledBorder extensionsBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameDescriptionTitle"));
+		extensionsBorder.setTitleJustification(TitledBorder.LEFT);
+		descriptionPanel.setBorder(extensionsBorder);
+		boxesConstraints.gridx = 0;
+		boxesConstraints.gridy = 1;
+		boxesConstraints.gridwidth = 2;
+		
+		this.descriptionBox = new JTextArea();
+		this.descriptionBox.setMaximumSize(new Dimension((int) (LudoTechApplication.WINDOW_WIDTH), 50));
+		JScrollPane scrollPane = new JScrollPane(this.descriptionBox);
+		descriptionPanel.add(scrollPane, BorderLayout.CENTER);
+		
+		boxesPanel.add(descriptionPanel, boxesConstraints);
 	}
 
 	public void makeExtensionsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
@@ -195,7 +213,7 @@ public class GameView extends JDialog {
 		extensionsBorder.setTitleJustification(TitledBorder.LEFT);
 		extensionsPanel.setBorder(extensionsBorder);
 		boxesConstraints.gridx = 0;
-		boxesConstraints.gridy = 1;
+		boxesConstraints.gridy = 2;
 		boxesConstraints.gridwidth = 1;
 		boxesPanel.add(extensionsPanel, boxesConstraints);
 	}
@@ -206,13 +224,29 @@ public class GameView extends JDialog {
 		itemsBorder.setTitleJustification(TitledBorder.LEFT);
 		itemsPanel.setBorder(itemsBorder);
 		boxesConstraints.gridx = 1;
-		boxesConstraints.gridy = 1;
+		boxesConstraints.gridy = 2;
 		boxesConstraints.gridwidth = 1;
 		boxesPanel.add(itemsPanel, boxesConstraints);
 	}
-	
-	public void load(String name) {
+
+	public void load(String name, int gameID, String category, String editor, int publishingYear, int minPlayers, int maxPlayers, int minAge, String description) {
 		this.nameField.setText(name);
+		this.idField.setText("" + gameID);
+		this.categoryComboBox.setSelectedItem(category);
+		this.editorComboBox.setSelectedItem(editor);
+		this.publishingYearStartRangeField.setText("" + publishingYear);
+		this.nbPlayersStartRangeField.setText("" + minPlayers);
+		this.nbPlayersEndRangeField.setText("" + maxPlayers);
+		this.minAgeField.setText("" + minAge);
+		this.descriptionBox.setText(description);
+	}
+	
+	public void loadCategories(List<String> items) {
+		((PostLoadableComboBoxModel) this.categoryComboBox.getModel()).loadData(items);
+	}
+	
+	public void loadEditors(List<String> items) {
+		((PostLoadableComboBoxModel) this.editorComboBox.getModel()).loadData(items);
 	}
 
 	public void showPopup() {
