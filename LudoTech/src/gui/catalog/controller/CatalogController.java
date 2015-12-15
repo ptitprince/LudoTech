@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Calendar;
+
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -67,12 +69,28 @@ public class CatalogController extends JPanel {
 			}
 		});
 
+		// Clic sur le bouton "ajouter un jeu" de la pop-up
+		this.gameListView.getAddGameButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				gameView.load("", -1, "", "", Calendar.getInstance().get(Calendar.YEAR), 1, 2, 3, "");
+				gameView.setVisible(true);
+			}
+		});
+
 		// Clic sur le bouton "valider" de la pop-up
 		this.gameView.getValidateButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
-						gameView.getPublishingYearStartRange(), gameView.getMinAge(), gameView.getNbPlayersStartRange(),
-						gameView.getNbPlayersEndRange(), gameView.getCategory(), gameView.getEditor());
+				if (gameView.isCreatingGame()) {
+					gameServices.addGame(gameView.getName(), gameView.getDescription(),
+							gameView.getPublishingYearStartRange(), gameView.getMinAge(),
+							gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(), gameView.getCategory(),
+							gameView.getEditor());
+				} else {
+					gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
+							gameView.getPublishingYearStartRange(), gameView.getMinAge(),
+							gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(), gameView.getCategory(),
+							gameView.getEditor());
+				}
 				gameView.setVisible(false);
 				refreshGameList();
 			}

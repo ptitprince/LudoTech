@@ -40,11 +40,15 @@ public class GameView extends JDialog {
 	private JTextField nbPlayersEndRangeField;
 	private JTextField minAgeField;
 	private JTextArea descriptionBox;
-	
+
 	private JButton validateButton;
 	private JButton cancelButton;
 
+	private boolean creatingGame;
+
 	public GameView() {
+		this.creatingGame = false;
+
 		this.setTitle(TextView.get("catalogGamePopupTitle"));
 		this.setSize((int) (LudoTechApplication.WINDOW_WIDTH / WINDOW_RATIO),
 				(int) (LudoTechApplication.WINDOW_HEIGHT / WINDOW_RATIO));
@@ -72,7 +76,7 @@ public class GameView extends JDialog {
 		makeItemsPanel(boxesPanel, boxesConstraints);
 
 		this.add(boxesPanel, BorderLayout.CENTER);
-		
+
 		JPanel actionsPanel = new JPanel();
 		this.validateButton = new JButton(TextView.get("validate"));
 		actionsPanel.add(this.validateButton);
@@ -200,7 +204,7 @@ public class GameView extends JDialog {
 
 		boxesPanel.add(infosPanel, boxesConstraints);
 	}
-	
+
 	public void makeDescriptionPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 		JPanel descriptionPanel = new JPanel(new BorderLayout());
 		TitledBorder extensionsBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameDescriptionTitle"));
@@ -209,12 +213,12 @@ public class GameView extends JDialog {
 		boxesConstraints.gridx = 0;
 		boxesConstraints.gridy = 1;
 		boxesConstraints.gridwidth = 2;
-		
+
 		this.descriptionBox = new JTextArea();
 		this.descriptionBox.setMaximumSize(new Dimension((int) (LudoTechApplication.WINDOW_WIDTH), 50));
 		JScrollPane scrollPane = new JScrollPane(this.descriptionBox);
 		descriptionPanel.add(scrollPane, BorderLayout.CENTER);
-		
+
 		boxesPanel.add(descriptionPanel, boxesConstraints);
 	}
 
@@ -240,9 +244,11 @@ public class GameView extends JDialog {
 		boxesPanel.add(itemsPanel, boxesConstraints);
 	}
 
-	public void load(String name, int gameID, String category, String editor, int publishingYear, int minPlayers, int maxPlayers, int minAge, String description) {
+	public void load(String name, int gameID, String category, String editor, int publishingYear, int minPlayers,
+			int maxPlayers, int minAge, String description) {
 		this.nameField.setText(name);
-		this.idField.setText("" + gameID);
+		this.creatingGame = (gameID == -1);
+		this.idField.setText((gameID == -1) ? "" : "" + gameID);
 		this.categoryComboBox.setSelectedItem(category);
 		this.editorComboBox.setSelectedItem(editor);
 		this.publishingYearStartRangeField.setText("" + publishingYear);
@@ -251,11 +257,11 @@ public class GameView extends JDialog {
 		this.minAgeField.setText("" + minAge);
 		this.descriptionBox.setText(description);
 	}
-	
+
 	public void loadCategories(List<String> items) {
 		((PostLoadableComboBoxModel) this.categoryComboBox.getModel()).loadData(items);
 	}
-	
+
 	public void loadEditors(List<String> items) {
 		((PostLoadableComboBoxModel) this.editorComboBox.getModel()).loadData(items);
 	}
@@ -302,6 +308,10 @@ public class GameView extends JDialog {
 
 	public JButton getCancelButton() {
 		return this.cancelButton;
+	}
+
+	public boolean isCreatingGame() {
+		return this.creatingGame;
 	}
 
 }
