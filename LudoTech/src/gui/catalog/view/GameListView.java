@@ -18,6 +18,7 @@ public class GameListView extends JPanel {
 	private JTable table;
 	
 	private JButton addGameButton;
+	private JButton deleteGameButton;
 
 	public GameListView(GameListModel model) {
 		this.setLayout(new BorderLayout());
@@ -38,6 +39,8 @@ public class GameListView extends JPanel {
 		JPanel actionsPanel = new JPanel();
 		this.addGameButton = new JButton(TextView.get("catalogAddGame"));
 		actionsPanel.add(this.addGameButton);
+		this.deleteGameButton = new JButton(TextView.get("catalogDeleteGame"));
+		actionsPanel.add(this.deleteGameButton);
 		this.add(actionsPanel, BorderLayout.SOUTH);
 	}
 	
@@ -49,4 +52,7 @@ public class GameListView extends JPanel {
 		return this.addGameButton;
 	}
 	
+	public JButton getDeleteGameButton() {
+		return this.deleteGameButton;
+	}
 }

@@ -69,11 +69,21 @@ public class CatalogController extends JPanel {
 			}
 		});
 
-		// Clic sur le bouton "ajouter un jeu" de la pop-up
+		// Clic sur le bouton "ajouter un jeu" de la liste des jeux
 		this.gameListView.getAddGameButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				gameView.load("", -1, "", "", Calendar.getInstance().get(Calendar.YEAR), 1, 2, 3, "");
 				gameView.setVisible(true);
+			}
+		});
+
+		// Clic sur le bouton "suprimmer un jeu" de la liste des jeux
+		this.gameListView.getDeleteGameButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTable table = gameListView.getTable();
+				int gameID = (Integer) table.getModel().getValueAt(table.getSelectedRow(), 0);
+				gameServices.remove(gameID);
+				refreshGameList();
 			}
 		});
 
