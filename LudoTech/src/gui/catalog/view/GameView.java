@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -39,6 +40,9 @@ public class GameView extends JDialog {
 	private JTextField nbPlayersEndRangeField;
 	private JTextField minAgeField;
 	private JTextArea descriptionBox;
+	
+	private JButton validateButton;
+	private JButton cancelButton;
 
 	public GameView() {
 		this.setTitle(TextView.get("catalogGamePopupTitle"));
@@ -68,6 +72,13 @@ public class GameView extends JDialog {
 		makeItemsPanel(boxesPanel, boxesConstraints);
 
 		this.add(boxesPanel, BorderLayout.CENTER);
+		
+		JPanel actionsPanel = new JPanel();
+		this.validateButton = new JButton(TextView.get("validate"));
+		actionsPanel.add(this.validateButton);
+		this.cancelButton = new JButton(TextView.get("cancel"));
+		actionsPanel.add(this.cancelButton);
+		this.add(actionsPanel, BorderLayout.SOUTH);
 	}
 
 	public void makeInfosPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
@@ -249,8 +260,48 @@ public class GameView extends JDialog {
 		((PostLoadableComboBoxModel) this.editorComboBox.getModel()).loadData(items);
 	}
 
-	public void showPopup() {
-		this.setVisible(true);
+	public String getName() {
+		return this.nameField.getText();
+	}
+
+	public int getId() {
+		return Integer.parseInt(this.idField.getText());
+	}
+
+	public String getCategory() {
+		return this.categoryComboBox.getItemAt(this.categoryComboBox.getSelectedIndex());
+	}
+
+	public String getEditor() {
+		return this.editorComboBox.getItemAt(this.editorComboBox.getSelectedIndex());
+	}
+
+	public int getPublishingYearStartRange() {
+		return Integer.parseInt(this.publishingYearStartRangeField.getText());
+	}
+
+	public int getNbPlayersStartRange() {
+		return Integer.parseInt(this.nbPlayersStartRangeField.getText());
+	}
+
+	public int getNbPlayersEndRange() {
+		return Integer.parseInt(this.nbPlayersEndRangeField.getText());
+	}
+
+	public int getMinAge() {
+		return Integer.parseInt(this.minAgeField.getText());
+	}
+
+	public String getDescription() {
+		return this.descriptionBox.getText();
+	}
+
+	public JButton getValidateButton() {
+		return this.validateButton;
+	}
+
+	public JButton getCancelButton() {
+		return this.cancelButton;
 	}
 
 }

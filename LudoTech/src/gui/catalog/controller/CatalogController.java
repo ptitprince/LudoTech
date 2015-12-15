@@ -1,6 +1,8 @@
 package gui.catalog.controller;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
@@ -21,9 +23,10 @@ public class CatalogController extends JPanel {
 
 	private GameServices gameServices;
 
+	private GameListModel gameListModel;
+
 	private GameSearchView searchPane;
 	private GameListView gameListView;
-	private GameListModel gameListModel;
 	private GameView gameView;
 
 	public CatalogController() {
@@ -48,7 +51,8 @@ public class CatalogController extends JPanel {
 
 	private void makeListeners() {
 
-		// Row double-clicked -> show game infos pop-up
+		// Double clic sur une ligne -> Affichage et chargement des informations
+		// du jeu sélectionné dans la pop-up
 		this.gameListView.getTable().addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
@@ -58,8 +62,26 @@ public class CatalogController extends JPanel {
 					gameView.load(game.getName(), gameID, game.getCategory(), game.getEditor(),
 							game.getPublishingYear(), game.getMinimumPlayers(), game.getMaximumPlayers(),
 							game.getMinimumAge(), game.getDescription());
-					gameView.showPopup();
+					gameView.setVisible(true);
 				}
+			}
+		});
+
+		// Clic sur le bouton "valider" de la pop-up
+		this.gameView.getValidateButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
+						gameView.getPublishingYearStartRange(), gameView.getMinAge(), gameView.getNbPlayersStartRange(),
+						gameView.getNbPlayersEndRange(), gameView.getCategory(), gameView.getEditor());
+				gameView.setVisible(false);
+				refreshGameList();
+			}
+		});
+
+		// Clic sur le bouton "annuler" de la pop-up
+		this.gameView.getCancelButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				gameView.setVisible(false);
 			}
 		});
 
