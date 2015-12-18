@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -17,6 +18,8 @@ import gui.catalog.model.GameListModel;
 import gui.catalog.view.GameListView;
 import gui.catalog.view.GameSearchView;
 import gui.catalog.view.GameView;
+import gui.exceptions.NotValidNumberFieldException;
+import gui.utils.TextView;
 import model.POJOs.Game;
 import model.services.GameServices;
 
@@ -43,7 +46,8 @@ public class CatalogController extends JPanel {
 	public void makeGUI() {
 		this.searchPane = new GameSearchView();
 		this.gameListView = new GameListView(this.gameListModel);
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, this.searchPane, this.gameListView);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				true, this.searchPane, this.gameListView);
 		splitPane.setDividerLocation(LudoTechApplication.WINDOW_WIDTH / 4);
 		this.add(splitPane, BorderLayout.CENTER);
 
@@ -59,10 +63,12 @@ public class CatalogController extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					JTable table = gameListView.getTable();
-					int gameID = (Integer) table.getModel().getValueAt(table.getSelectedRow(), 0);
+					int gameID = (Integer) table.getModel().getValueAt(
+							table.getSelectedRow(), 0);
 					Game game = gameServices.getGame(gameID);
-					gameView.load(game.getName(), gameID, game.getCategory(), game.getEditor(),
-							game.getPublishingYear(), game.getMinimumPlayers(), game.getMaximumPlayers(),
+					gameView.load(game.getName(), gameID, game.getCategory(),
+							game.getEditor(), game.getPublishingYear(),
+							game.getMinimumPlayers(), game.getMaximumPlayers(),
 							game.getMinimumAge(), game.getDescription());
 					gameView.setVisible(true);
 				}
@@ -70,41 +76,67 @@ public class CatalogController extends JPanel {
 		});
 
 		// Clic sur le bouton "ajouter un jeu" de la liste des jeux
-		this.gameListView.getAddGameButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				gameView.load("", -1, "", "", Calendar.getInstance().get(Calendar.YEAR), 1, 2, 3, "");
-				gameView.setVisible(true);
-			}
-		});
+		this.gameListView.getAddGameButton().addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						gameView.load("", -1, "", "", Calendar.getInstance()
+								.get(Calendar.YEAR), 1, 2, 3, "");
+						gameView.setVisible(true);
+					}
+				});
 
 		// Clic sur le bouton "suprimmer un jeu" de la liste des jeux
-		this.gameListView.getDeleteGameButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTable table = gameListView.getTable();
-				int gameID = (Integer) table.getModel().getValueAt(table.getSelectedRow(), 0);
-				gameServices.remove(gameID);
-				refreshGameList();
-			}
-		});
+		this.gameListView.getDeleteGameButton().addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						JTable table = gameListView.getTable();
+						int gameID = (Integer) table.getModel().getValueAt(
+								table.getSelectedRow(), 0);
+						gameServices.remove(gameID);
+						refreshGameList();
+					}
+				});
 
 		// Clic sur le bouton "valider" de la pop-up
-		this.gameView.getValidateButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (gameView.isCreatingGame()) {
-					gameServices.addGame(gameView.getName(), gameView.getDescription(),
-							gameView.getPublishingYearStartRange(), gameView.getMinAge(),
-							gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(), gameView.getCategory(),
-							gameView.getEditor());
-				} else {
-					gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
-							gameView.getPublishingYearStartRange(), gameView.getMinAge(),
-							gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(), gameView.getCategory(),
-							gameView.getEditor());
-				}
-				gameView.setVisible(false);
-				refreshGameList();
-			}
-		});
+		this.gameView.getValidateButton().addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						try {
+							if (gameView.isCreatingGame()) {
+								gameServices.addGame(gameView.getName(),
+										gameView.getDescription(),
+										gameView.getPublishingYearStartRange(),
+										gameView.getMinAge(),
+										gameView.getNbPlayersStartRange(),
+										gameView.getNbPlayersEndRange(),
+										gameView.getCategory(),
+										gameView.getEditor());
+							} else {
+
+								gameServices.editGame(gameView.getId(),
+										gameView.getName(),
+										gameView.getDescription(),
+										gameView.getPublishingYearStartRange(),
+										gameView.getMinAge(),
+										gameView.getNbPlayersStartRange(),
+										gameView.getNbPlayersEndRange(),
+										gameView.getCategory(),
+										gameView.getEditor());
+
+							}
+							gameView.setVisible(false);
+							refreshGameList();
+						} catch (NotValidNumberFieldException exception) {
+							String text = TextView.get("invalidField") + "\""
+									+ exception.getFieldName() + "\"" + ".\n"
+									+ TextView.get("valueInInvalidField")
+									+ ((exception.getFieldValue().equals("")) ? TextView.get("emptyValue") : "\"" + exception.getFieldValue() + "\" ")
+									+ TextView.get("typeOfValidValue")
+									+ ((exception.getFieldValue().equals("")) ? TextView.get("notEmptyValue") : exception.getFieldType()) + ".";
+							JOptionPane.showMessageDialog(null, text);
+						}
+					}
+				});
 
 		// Clic sur le bouton "annuler" de la pop-up
 		this.gameView.getCancelButton().addActionListener(new ActionListener() {
