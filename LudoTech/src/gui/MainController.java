@@ -5,6 +5,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import gui.catalog.controller.CatalogController;
+import gui.parameters.controller.ParametersController;
 import gui.utils.EmptyPanel;
 import gui.utils.TextView;
 
@@ -12,9 +13,11 @@ import gui.utils.TextView;
 public class MainController extends JTabbedPane {
 	
 	private CatalogController catalogController;
+	private ParametersController parametersController;
 
 	public MainController() {
 		this.catalogController = new CatalogController();
+		this.parametersController = new ParametersController();
 		this.makeGUI();
 		this.makeListeners();
 	}
@@ -26,7 +29,7 @@ public class MainController extends JTabbedPane {
 		this.addTab(TextView.get("tabBook"), new EmptyPanel());
 		this.addTab(TextView.get("tabProfile"), new EmptyPanel());
 		this.addTab(TextView.get("tabMembers"), new EmptyPanel());
-		this.addTab(TextView.get("tabParameters"), new EmptyPanel());
+		this.addTab(TextView.get("tabParameters"), this.parametersController);
 	}
 	
 	private void makeListeners() {
