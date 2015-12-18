@@ -10,7 +10,6 @@ public class Member {
 	private int memberID;
 	private MemberContext memberContext;
 	private MemberCredentials memberCredentials;
-	private PostalAddress postalAddress;
 
 	public MemberContext getMemberContext() {
 		return memberContext;
@@ -28,9 +27,6 @@ public class Member {
 		this.memberCredentials = memberCredentials;
 	}
 
-	public PostalAddress getPostalAddress() {
-		return postalAddress;
-	}
 
 	public int getMemberID() {
 		return memberID;
@@ -87,7 +83,31 @@ public class Member {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
+	public String streetAddress() {
+		return streetAddress;
+	}
+	
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
+	}
+	
+	public String postalCode() {
+		return postalCode;
+	}
+	
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
+	}
+	
+	public String city() {
+		return city;
+	}
+	
+	public void setCity(String city) {
+		this.city = city;
+	}
+	
 	public int getMemberContextID() {
 		return memberContextID;
 	}
@@ -104,21 +124,8 @@ public class Member {
 		this.memberCredentials.setMemberCredentialsID(id);
 	}
 
-	public int getPostalAddressID() {
-		return postalAddress.getId();
-	}
-
-	public void setPostalAddress(PostalAddress postalAddress) {
-		this.postalAddress = postalAddress;
-	}
-
-	public void setPostalAddressID(int id) {
-		this.postalAddress.setId(id);
-	}
-
-	public Member(String lastName, String firstName, String pseudo, Date birthDate, int phoneNumber, String email,
-			MemberContext memberContext, MemberCredentials memberCredentials, PostalAddress postalAddress) {
-		super();
+	public Member(String lastName, String firstName, String pseudo, Date birthDate, int phoneNumber, String email, String streetAddress, String postalCode, String city,
+			MemberContext memberContext, MemberCredentials memberCredentials) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.pseudo = pseudo;
@@ -127,13 +134,13 @@ public class Member {
 		this.email = email;
 		this.memberContext = memberContext;
 		this.memberCredentials = memberCredentials;
-		this.postalAddress = postalAddress;
+		this.streetAddress = streetAddress;
+		this.postalCode = postalCode;
+		this.city = city;
 	}
 
 	public Member(int memberID, String lastName, String firstName, String pseudo, Date birthDate, int phoneNumber,
-			String email, MemberContext memberContext, MemberCredentials memberCredentials,
-			PostalAddress postalAddress) {
-		super();
+			String email, String streetAddress, String postalCode, String city, MemberContext memberContext, MemberCredentials memberCredentials) {
 		this.memberID = memberID;
 		this.lastName = lastName;
 		this.firstName = firstName;
@@ -143,12 +150,13 @@ public class Member {
 		this.email = email;
 		this.memberContext = memberContext;
 		this.memberCredentials = memberCredentials;
-		this.postalAddress = postalAddress;
+		this.streetAddress = streetAddress;
+		this.postalCode = postalCode;
+		this.city = city;
 	}
 
 	public Member(int memberID, String lastName, String firstName, String pseudo, Date birthDate, int phoneNumber,
-			String email) {
-		super();
+			String email, String streetAddress, String postalCode, String city) {
 		this.memberID = memberID;
 		this.lastName = lastName;
 		this.firstName = firstName;
@@ -156,6 +164,9 @@ public class Member {
 		this.birthDate = birthDate;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
+		this.streetAddress = streetAddress;
+		this.postalCode = postalCode;
+		this.city = city;
 	}
 
 	/**
@@ -192,6 +203,23 @@ public class Member {
 
 	private String email;
 
+	
+	/**
+	 * L'adresse en elle même, le nom de la rue, le bâtiment, le numéro de la rue, etc...
+	 */
+	private String streetAddress;
+	
+	/**
+	 * Code postal de l'adresse.
+	 */
+	private String postalCode;
+	
+	/**
+	 * La ville de l'adresse.
+	 */
+	private String city;
+	
+	
 	/**
 	 * L'identifiant de la table MemberContext
 	 */
@@ -202,10 +230,7 @@ public class Member {
 	 */
 	private int memberCredentialsID;
 
-	/**
-	 * L'identifiant de la table PostalAddress
-	 */
-	private int postalAddressID;
+
 
 	public void setId(int ID) {
 		this.memberID = ID;
