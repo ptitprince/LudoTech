@@ -84,7 +84,7 @@ public class Member {
 		this.email = email;
 	}
 	
-	public String streetAddress() {
+	public String getStreetAddress() {
 		return streetAddress;
 	}
 	
@@ -92,7 +92,7 @@ public class Member {
 		this.streetAddress = streetAddress;
 	}
 	
-	public String postalCode() {
+	public String getPostalCode() {
 		return postalCode;
 	}
 	
@@ -100,7 +100,7 @@ public class Member {
 		this.postalCode = postalCode;
 	}
 	
-	public String city() {
+	public String getCity() {
 		return city;
 	}
 	

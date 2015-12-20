@@ -32,22 +32,25 @@ public class MemberDAO extends DAO {
 	 * @return false Une exception est survenue, l'ajout s'est peut-être mal
 	 *         passé
 	 */
-	public boolean add(Member member, int memberContextID, int memberCredentialsID, int postalAdressID) {
+	public boolean add(Member member, int memberContextID, int memberCredentialsID) {
 		try {
 			super.connect();
 
 			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
-					+ "MEMBER(firstName, lastName, pseudo, birthDate, phoneNumber, email, memberContextID, memberCredentialsID, postalAddressID) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", new String[] { "ID" });
+					+ "MEMBER(firstName, lastName, pseudo, birthDate, phoneNumber, email, streetAddress, postalCode, city, memberContextID, memberCredentialsID) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", new String[] { "ID" });
 			psInsert.setString(1, member.getFirstName());
 			psInsert.setString(2, member.getLastName());
 			psInsert.setString(3, member.getPseudo());
 			psInsert.setDate(4, new java.sql.Date(member.getBirthDate().getTime()));
 			psInsert.setInt(5, member.getPhoneNumber());
 			psInsert.setString(6, member.getEmail());
-			psInsert.setInt(7, memberContextID);
-			psInsert.setInt(8, memberCredentialsID);
-			psInsert.setInt(9, postalAdressID);
+			psInsert.setString(7, member.getStreetAddress());
+			psInsert.setString(8, member.getPostalCode());
+			psInsert.setString(9, member.getCity());
+			psInsert.setInt(10, memberContextID);
+			psInsert.setInt(11, memberCredentialsID);
+
 
 			psInsert.executeUpdate();
 
@@ -88,12 +91,12 @@ public class MemberDAO extends DAO {
 	 *         passé
 	 */
 
-	public boolean edit(Member member, int memberContextID, int memberCredentialsID, int postalAddressID) {
+	public boolean edit(Member member, int memberContextID, int memberCredentialsID) {
 		try {
 			super.connect();
 
 			PreparedStatement psEdit = connection.prepareStatement("UPDATE MEMBER "
-					+ "SET firtName = ?, lastName = ?, pseudo = ?, birthDate = ?, phoneNumber = ?, email = ?, memberContextID = ?, memberCredentialsID = ?, postalAddress = ? "
+					+ "SET firtName = ?, lastName = ?, pseudo = ?, birthDate = ?, phoneNumber = ?, email = ?, streetAddress = ?, postalCode = ?, city = ?, memberContextID = ?, memberCredentialsID = ? "
 					+ "WHERE id = ?");
 			psEdit.setString(1, member.getFirstName());
 			psEdit.setString(2, member.getLastName());
@@ -101,9 +104,11 @@ public class MemberDAO extends DAO {
 			psEdit.setDate(4, new java.sql.Date(member.getBirthDate().getTime()));
 			psEdit.setInt(5, member.getPhoneNumber());
 			psEdit.setString(6, member.getEmail());
-			psEdit.setInt(7, memberContextID);
-			psEdit.setInt(8, memberCredentialsID);
-			psEdit.setInt(9, postalAddressID);
+			psEdit.setString(7, member.getStreetAddress());
+			psEdit.setString(8, member.getPostalCode());
+			psEdit.setString(9, member.getCity());
+			psEdit.setInt(10, memberContextID);
+			psEdit.setInt(11, memberCredentialsID);
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();
@@ -168,7 +173,8 @@ public class MemberDAO extends DAO {
 				Date date = resultSet.getDate("birthDate");
 				member = new Member(id, resultSet.getString("firstName"), resultSet.getString("lastName"),
 						resultSet.getString("pseudo"), date, resultSet.getInt("phoneNumber"),
-						resultSet.getString("email"));
+						resultSet.getString("email"), resultSet.getString("streetAddress"), 
+						resultSet.getString("postalCode"), resultSet.getString("city"));
 
 			}
 			super.disconnect();
@@ -242,36 +248,7 @@ public class MemberDAO extends DAO {
 		return memberCredentialsID;
 	}
 
-	/**
-	 * Trouve l'identifiant de l'adresse postale d'un membre postalAddress) dans
-	 * la base de données
-	 * 
-	 * @param id
-	 *            L'identifiant du membre à utiliser
-	 * @return L'identifiant de l'adresse postale dont l'identifiant est passé
-	 *         en paramètres ou -1 si le membre ne possède pas de statut
-	 */
-	public int getPostalAddressID(int memberID) {
-		int postalAddressID = -1;
-		try {
-			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT postalAddressID FROM MEMBER WHERE id = ?");
-			psSelect.setInt(1, memberID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				postalAddressID = resultSet.getInt("postalAddressID");
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return postalAddressID;
-	}
 
 	/**
 	 * Liste les identifiants de tous les membres de la base de données
