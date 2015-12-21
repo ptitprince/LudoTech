@@ -9,7 +9,6 @@ public class Member {
 	 */
 	private int memberID;
 	private MemberContext memberContext;
-	private MemberCredentials memberCredentials;
 
 	public MemberContext getMemberContext() {
 		return memberContext;
@@ -18,15 +17,6 @@ public class Member {
 	public void setMemberContext(MemberContext memberContext) {
 		this.memberContext = memberContext;
 	}
-
-	public MemberCredentials getMemberCredentials() {
-		return memberCredentials;
-	}
-
-	public void setMemberCredentials(MemberCredentials memberCredentials) {
-		this.memberCredentials = memberCredentials;
-	}
-
 
 	public int getMemberID() {
 		return memberID;
@@ -60,6 +50,22 @@ public class Member {
 		this.pseudo = pseudo;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public boolean getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+	
 	public Date getBirthDate() {
 		return birthDate;
 	}
@@ -116,51 +122,50 @@ public class Member {
 		this.memberContext.setId(id);
 	}
 
-	public int getMemberCredentialsID() {
-		return memberCredentialsID;
-	}
 
-	public void setMemberCredentialsID(int id) {
-		this.memberCredentials.setMemberCredentialsID(id);
-	}
-
-	public Member(String lastName, String firstName, String pseudo, Date birthDate, int phoneNumber, String email, String streetAddress, String postalCode, String city,
-			MemberContext memberContext, MemberCredentials memberCredentials) {
+	public Member(String lastName, String firstName, String pseudo, String password, boolean isAdmin, Date birthDate, int phoneNumber, String email, String streetAddress, String postalCode, String city,
+			MemberContext memberContext) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.pseudo = pseudo;
+		this.password = password;
+		this.isAdmin = isAdmin;
 		this.birthDate = birthDate;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
-		this.memberContext = memberContext;
-		this.memberCredentials = memberCredentials;
 		this.streetAddress = streetAddress;
 		this.postalCode = postalCode;
 		this.city = city;
+		this.memberContext = memberContext;
+
+
 	}
 
-	public Member(int memberID, String lastName, String firstName, String pseudo, Date birthDate, int phoneNumber,
-			String email, String streetAddress, String postalCode, String city, MemberContext memberContext, MemberCredentials memberCredentials) {
+	public Member(int memberID, String lastName, String firstName, String pseudo, String password, boolean isAdmin, Date birthDate, int phoneNumber,
+			String email, String streetAddress, String postalCode, String city, MemberContext memberContext) {
 		this.memberID = memberID;
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.pseudo = pseudo;
+		this.password = password;
+		this.isAdmin = isAdmin;
 		this.birthDate = birthDate;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
-		this.memberContext = memberContext;
-		this.memberCredentials = memberCredentials;
 		this.streetAddress = streetAddress;
 		this.postalCode = postalCode;
 		this.city = city;
+		this.memberContext = memberContext;
 	}
 
-	public Member(int memberID, String lastName, String firstName, String pseudo, Date birthDate, int phoneNumber,
+	public Member(int memberID, String lastName, String firstName, String pseudo, String password, boolean isAdmin, Date birthDate, int phoneNumber,
 			String email, String streetAddress, String postalCode, String city) {
 		this.memberID = memberID;
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.pseudo = pseudo;
+		this.password = password;
+		this.isAdmin = isAdmin;
 		this.birthDate = birthDate;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
@@ -186,7 +191,18 @@ public class Member {
 	private String pseudo;
 
 	/**
-	 * Le prénom du membre
+	 * Le mot de passe du membre
+	 */
+	private String password;
+	
+	/**
+	 * Le membre est admin ou pas ?
+	 */
+	private boolean isAdmin; 
+	
+	
+	/**
+	 * La date d'anniversaire du membre
 	 **/
 
 	private Date birthDate;
@@ -225,15 +241,14 @@ public class Member {
 	 */
 	private int memberContextID;
 
-	/**
-	 * L'identifiant de la table MemberCredentials
-	 */
-	private int memberCredentialsID;
-
 
 
 	public void setId(int ID) {
 		this.memberID = ID;
 	}
+
+
+
+
 
 }
