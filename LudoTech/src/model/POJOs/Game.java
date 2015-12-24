@@ -49,7 +49,7 @@ public class Game {
 	 * L'éditeur du jeu
 	 */
 	private String editor;
-
+	
 	/**
 	 * Construit et retourne un nouveau jeu avec un identifiant connu
 	 * @param gameID L'identifiant du jeu
@@ -185,5 +185,4 @@ public class Game {
 	public void setEditor(String editor) {
 		this.editor = editor;
 	}
-	
 }
