@@ -38,7 +38,8 @@ public class GameCategoryDAO extends DAO {
 				psInsert.setString(1, gameCategory.toLowerCase());
 				psInsert.executeUpdate();
 
-				// Récupération de l'identifiant généré automatiquement par Derby
+				// Récupération de l'identifiant généré automatiquement par
+				// Derby
 				idRS = psInsert.getGeneratedKeys();
 				if (idRS != null && idRS.next()) {
 					idFound = idRS.getInt(1);
@@ -52,13 +53,16 @@ public class GameCategoryDAO extends DAO {
 		}
 		return idFound;
 	}
-	
+
 	/**
 	 * Trouve le nom d'une categorie de jeu dans la base de données
-	 * @param categoryID L'identifiant de la catégorie à trouver
-	 * @return Le nom de la catégorie identifié par "id" ou null si aucune ne correspond en base de données
+	 * 
+	 * @param categoryID
+	 *            L'identifiant de la catégorie à trouver
+	 * @return Le nom de la catégorie identifié par "id" ou null si aucune ne
+	 *         correspond en base de données
 	 */
-	public String getName(int categoryID){
+	public String getName(int categoryID) {
 		try {
 			super.connect();
 
@@ -79,13 +83,14 @@ public class GameCategoryDAO extends DAO {
 			return null;
 		}
 	}
-	
-	public List<String> list() {
+
+	public List<String> list(boolean sorted) {
 		List<String> categories = new ArrayList<String>();
 		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM GAME_CATEGORY");
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT * FROM GAME_CATEGORY " + ((sorted) ? "ORDER BY category ASC" : ""));
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
@@ -93,7 +98,7 @@ public class GameCategoryDAO extends DAO {
 			while (resultSet.next()) { // Positionnement sur le premier résultat
 				categories.add(resultSet.getString("category"));
 			}
-			
+
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -12,7 +12,7 @@ import model.services.GameServices;
 @SuppressWarnings("serial")
 public class GameListModel extends AbstractTableModel {
 
-	private final String[] HEADERS = { TextView.get("gameID"), TextView.get("gameName"), TextView.get("gameCategory"), TextView.get("gameEditor"), TextView.get("gamePublishingYear"), TextView.get("gamePlayers"), TextView.get("gameMinAge"),
+	private final String[] HEADERS = { TextView.get("gameID"), TextView.get("gameName"), TextView.get("gameCategory"), TextView.get("gameEditor"), TextView.get("gamePublishingYear"), TextView.get("gameMinAge"), TextView.get("gamePlayers"),
 			TextView.get("gameAvailable") };
 
 	private GameServices gameServices;
@@ -48,16 +48,17 @@ public class GameListModel extends AbstractTableModel {
 		case 1:
 			return this.gameList.get(rowIndex).getName();
 		case 2:
-			return this.gameList.get(rowIndex).getCategory();
+			return TextView.makeFirstLetterUpper(this.gameList.get(rowIndex).getCategory());
 		case 3:
-			return this.gameList.get(rowIndex).getEditor();
+			return TextView.makeFirstLetterUpper(this.gameList.get(rowIndex).getEditor());
 		case 4:
-			return this.gameList.get(rowIndex).getPublishingYear();
+			int publishingYear = this.gameList.get(rowIndex).getPublishingYear();
+			return (publishingYear != 0) ? publishingYear : "";
 		case 5:
-			return this.gameList.get(rowIndex).getMinimumPlayers() + " - "
-					+ this.gameList.get(rowIndex).getMaximumPlayers();
-		case 6:
 			return this.gameList.get(rowIndex).getMinimumAge();
+		case 6:
+			return this.gameList.get(rowIndex).getMinimumPlayers() + " - "
+			+ this.gameList.get(rowIndex).getMaximumPlayers();
 		case 7:
 			return true;
 		default:
@@ -71,10 +72,10 @@ public class GameListModel extends AbstractTableModel {
 		case 1:
 		case 2:
 		case 3:
-		case 5:
 			return String.class;
 		case 0:
 		case 4:
+		case 5:
 		case 6:
 			return Integer.class;
 		case 7:

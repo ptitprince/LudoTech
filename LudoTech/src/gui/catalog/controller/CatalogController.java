@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -37,7 +38,7 @@ public class CatalogController extends JPanel {
 	private GameListModel gameListModel;
 	private ExtensionListModel extensionListModel;
 
-	private GameSearchView searchPane;
+	private GameSearchView gameSearchView;
 	private GameListView gameListView;
 	private GameView gameView;
 
@@ -54,9 +55,9 @@ public class CatalogController extends JPanel {
 	}
 
 	public void makeGUI() {
-		this.searchPane = new GameSearchView();
+		this.gameSearchView = new GameSearchView();
 		this.gameListView = new GameListView(this.gameListModel);
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, this.searchPane, this.gameListView);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, this.gameSearchView, this.gameListView);
 		splitPane.setDividerLocation(LudoTechApplication.WINDOW_WIDTH / 4);
 		this.add(splitPane, BorderLayout.CENTER);
 
@@ -192,8 +193,18 @@ public class CatalogController extends JPanel {
 	private void loadLists() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				gameView.loadCategories(gameServices.getCategoryList());
-				gameView.loadEditors(gameServices.getEditorList());
+				List<String> categories = gameServices.getCategoryList(true);
+				List<String> editors = gameServices.getEditorList(true);
+				for (int i = 0; i < categories.size(); i++) {
+					categories.set(i, TextView.makeFirstLetterUpper(categories.get(i)));
+				}
+				for (int i = 0; i < editors.size(); i++) {
+					editors.set(i, TextView.makeFirstLetterUpper(editors.get(i)));
+				}
+				gameSearchView.loadCategories(categories);
+				gameSearchView.loadEditors(editors);
+				gameView.loadCategories(categories);
+				gameView.loadEditors(editors);
 			}
 		});
 

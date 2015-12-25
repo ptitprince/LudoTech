@@ -113,12 +113,12 @@ public class GameServices {
 		return gameList;
 	}
 	
-	public List<String> getCategoryList() {
-		return this.gameCategoryDAO.list();
+	public List<String> getCategoryList(boolean sorted) {
+		return this.gameCategoryDAO.list(sorted);
 	}
 	
-	public List<String> getEditorList() {
-		return this.gameEditorDAO.list();
+	public List<String> getEditorList(boolean sorted) {
+		return this.gameEditorDAO.list(sorted);
 	}
 
 }

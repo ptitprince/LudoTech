@@ -84,7 +84,7 @@ public class GameTests extends Tests {
 	
 	@Test
 	public void testListGames() {
-		// Ajout des deux jeu à lister
+		// Ajout des deux jeux à lister
 		Game getTableGame1 = gameServices.addGame("TestListGame1", "Description", 2015, 8, 2, 6, "Dés", "Machin");
 		Game getTableGame2 = gameServices.addGame("TestListGame2", "Description", 2015, 8, 2, 6, "Dés", "Machin");
 		Assert.assertNotNull(getTableGame1);
@@ -97,13 +97,13 @@ public class GameTests extends Tests {
 	@Test
 	public void testListGameCategories() {
 		// Vérification que la liste des catégories de jeu est bien retounée (peut-être vide)
-		Assert.assertNotNull(gameServices.getCategoryList());
+		Assert.assertNotNull(gameServices.getCategoryList(false));
 	}
 	
 	@Test
 	public void testListGameEditors() {
 		// Vérification que la liste des éditeurs de jeu est bien retounée (peut-être vide)
-		Assert.assertNotNull(gameServices.getEditorList());
+		Assert.assertNotNull(gameServices.getEditorList(false));
 	}
 	
 	@After
