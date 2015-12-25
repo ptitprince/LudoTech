@@ -37,9 +37,9 @@ public class GameListView extends JPanel {
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
 		
 		JPanel actionsPanel = new JPanel();
-		this.addGameButton = new JButton(TextView.get("catalogAddGame"));
+		this.addGameButton = new JButton(TextView.get("add"));
 		actionsPanel.add(this.addGameButton);
-		this.deleteGameButton = new JButton(TextView.get("catalogDeleteGame"));
+		this.deleteGameButton = new JButton(TextView.get("delete"));
 		actionsPanel.add(this.deleteGameButton);
 		this.add(actionsPanel, BorderLayout.SOUTH);
 	}

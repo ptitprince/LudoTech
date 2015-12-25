@@ -14,16 +14,19 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 
 import gui.LudoTechApplication;
+import gui.catalog.model.ExtensionListModel;
 import gui.utils.exceptions.NotValidNumberFieldException;
 import gui.utils.PostLoadableComboBoxModel;
 import gui.utils.SpringUtilities;
@@ -32,7 +35,7 @@ import gui.utils.TextView;
 @SuppressWarnings("serial")
 public class GameView extends JDialog {
 
-	private static final double WINDOW_RATIO = 1.25;
+	private static final double WINDOW_RATIO = 1.10;
 
 	private JTextField nameField;
 	private JTextField idField;
@@ -43,6 +46,10 @@ public class GameView extends JDialog {
 	private JTextField nbPlayersEndRangeField;
 	private JTextField minAgeField;
 	private JTextArea descriptionBox;
+	
+	private JList extensionsList;
+	private JButton addExtensionButton;
+	private JButton deleteExtensionButton;
 
 	private JSpinner nbItemsSpinner;
 
@@ -51,7 +58,7 @@ public class GameView extends JDialog {
 
 	private boolean creatingGame;
 
-	public GameView() {
+	public GameView(ExtensionListModel extensionListModel) {
 		this.creatingGame = false;
 
 		this.setTitle(TextView.get("catalogGamePopupTitle"));
@@ -61,10 +68,10 @@ public class GameView extends JDialog {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 
-		this.makeGUI();
+		this.makeGUI(extensionListModel);
 	}
 
-	private void makeGUI() {
+	private void makeGUI(ExtensionListModel extensionListModel) {
 		JPanel boxesPanel = new JPanel();
 		GridBagLayout boxesLayout = new GridBagLayout();
 		boxesPanel.setLayout(boxesLayout);
@@ -77,7 +84,7 @@ public class GameView extends JDialog {
 
 		makeInfosPanel(boxesPanel, boxesConstraints);
 		makeDescriptionPanel(boxesPanel, boxesConstraints);
-		makeExtensionsPanel(boxesPanel, boxesConstraints);
+		makeExtensionsPanel(boxesPanel, boxesConstraints, extensionListModel);
 		makeItemsPanel(boxesPanel, boxesConstraints);
 
 		this.add(boxesPanel, BorderLayout.CENTER);
@@ -227,14 +234,31 @@ public class GameView extends JDialog {
 		boxesPanel.add(descriptionPanel, boxesConstraints);
 	}
 
-	public void makeExtensionsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
-		JPanel extensionsPanel = new JPanel();
+	public void makeExtensionsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints, ExtensionListModel extensionListModel) {
+		JPanel extensionsPanel = new JPanel(new BorderLayout());
 		TitledBorder extensionsBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameExtensionsTitle"));
 		extensionsBorder.setTitleJustification(TitledBorder.LEFT);
 		extensionsPanel.setBorder(extensionsBorder);
 		boxesConstraints.gridx = 0;
 		boxesConstraints.gridy = 2;
 		boxesConstraints.gridwidth = 1;
+		
+		this.extensionsList = new JList();
+		this.extensionsList.setModel(extensionListModel);
+		this.extensionsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		this.extensionsList.setLayoutOrientation(JList.VERTICAL);
+
+		JScrollPane listScroller = new JScrollPane(this.extensionsList);
+		listScroller.setMaximumSize(new Dimension(listScroller.getWidth(), 50));
+		extensionsPanel.add(listScroller, BorderLayout.CENTER);
+		
+		JPanel extensionsActionsPanel = new JPanel(new FlowLayout());
+		this.addExtensionButton = new JButton(TextView.get("add"));
+		extensionsActionsPanel.add(this.addExtensionButton);
+		this.deleteExtensionButton = new JButton(TextView.get("delete"));
+		extensionsActionsPanel.add(this.deleteExtensionButton);
+		extensionsPanel.add(extensionsActionsPanel, BorderLayout.SOUTH);
+		
 		boxesPanel.add(extensionsPanel, boxesConstraints);
 	}
 
@@ -340,6 +364,18 @@ public class GameView extends JDialog {
 
 	public String getDescription() {
 		return this.descriptionBox.getText();
+	}
+	
+	public JList getExtensionList() {
+		return this.extensionsList;
+	}
+	
+	public JButton getAddExtensionButton() {
+		return this.addExtensionButton;
+	}
+
+	public JButton getDeleteExtensionButton() {
+		return this.deleteExtensionButton;
 	}
 	
 	public int getNbItems() {

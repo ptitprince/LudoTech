@@ -25,7 +25,7 @@ public class ItemTests extends Tests {
 		this.gameServices = new GameServices();
 		this.itemServices = new ItemServices();
 		super.before();
-		this.game = gameServices.addGame("TestAddGameForItems1", "Salut, je suis une description", 2015, 12, 2, 4,
+		this.game = gameServices.addGame("TestAddGameForItems", "Salut, je suis une description", 2015, 12, 2, 4,
 				"Cartes", "Marco");
 		Assert.assertNotNull(this.game);
 	}
