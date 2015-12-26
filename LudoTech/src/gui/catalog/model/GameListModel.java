@@ -26,12 +26,7 @@ public class GameListModel extends AbstractTableModel {
 		this.gameList = new ArrayList<Game>();
 	}
 
-	public void refresh() {
-		this.gameList = this.gameServices.getGameList();
-		this.fireTableDataChanged();
-	}
-
-	public void filter(HashMap<String, String> filter) {
+	public void refresh(HashMap<String, String> filter) {
 		this.gameList = this.gameServices.getGameListAccordingToFilter(filter);
 		this.fireTableDataChanged();
 	}

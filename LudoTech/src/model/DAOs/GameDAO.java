@@ -274,7 +274,7 @@ public class GameDAO extends DAO {
 							+ " AND maximum_players >= " + property.getValue();
 					atLeastOneCondition = true;
 				} else if (property.getKey().equals("minimum_age") && !property.getValue().equals("")) {
-					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " >= "
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " <= "
 							+ property.getValue();
 					atLeastOneCondition = true;
 				}

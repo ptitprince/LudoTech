@@ -123,7 +123,7 @@ public class CatalogController extends JPanel {
 		// Clic sur le bouton "chercher" sur la liste des jeux
 		this.gameSearchView.getSearchButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				filterGameList();
+				refreshGameList();
 			}
 		});
 
@@ -147,14 +147,7 @@ public class CatalogController extends JPanel {
 					gameView.setVisible(false);
 					refreshGameList();
 				} catch (NotValidNumberFieldException exception) {
-					String text = TextView.get("invalidField") + "\"" + exception.getFieldName() + "\"" + ".\n"
-							+ TextView.get("valueInInvalidField")
-							+ ((exception.getFieldValue().equals("")) ? TextView.get("emptyValue")
-									: "\"" + exception.getFieldValue() + "\" ")
-							+ TextView.get("typeOfValidValue") + ((exception.getFieldValue().equals(""))
-									? TextView.get("notEmptyValue") : exception.getFieldType())
-							+ ".";
-					JOptionPane.showMessageDialog(null, text);
+					showInvalidFieldsException(exception);
 				}
 			}
 		});
@@ -222,22 +215,18 @@ public class CatalogController extends JPanel {
 	public void refreshGameList() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				gameListModel.refresh();
-			}
-		});
-	}
-
-	public void filterGameList() {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				HashMap<String, String> filter = new HashMap<String, String>();
-				filter.put("name", gameSearchView.getNameValue().trim());
-				filter.put("category", gameSearchView.getCategoryValue().trim());
-				filter.put("editor", gameSearchView.getEditorValue().trim());
-				filter.put("publishing_year", gameSearchView.getPublishingYearValue().trim());
-				filter.put("nb_players", gameSearchView.getNbPlayersValue().trim());
-				filter.put("minimum_age", gameSearchView.getMinAgeValue().trim());
-				gameListModel.filter(filter);
+				try {
+					HashMap<String, String> filter = new HashMap<String, String>();
+					filter.put("name", gameSearchView.getNameValue().trim());
+					filter.put("category", gameSearchView.getCategoryValue().trim());
+					filter.put("editor", gameSearchView.getEditorValue().trim());
+					filter.put("publishing_year", gameSearchView.getPublishingYearValue().trim());
+					filter.put("nb_players", gameSearchView.getNbPlayersValue().trim());
+					filter.put("minimum_age", gameSearchView.getMinAgeValue().trim());
+					gameListModel.refresh(filter);
+				} catch (NotValidNumberFieldException exception) {
+					showInvalidFieldsException(exception);
+				}
 			}
 		});
 	}
@@ -248,5 +237,16 @@ public class CatalogController extends JPanel {
 				extensionListModel.refresh(gameID);
 			}
 		});
+	}
+	
+	public void showInvalidFieldsException(NotValidNumberFieldException exception) {
+		String text = TextView.get("invalidField") + "\"" + exception.getFieldName() + "\"" + ".\n"
+				+ TextView.get("valueInInvalidField")
+				+ ((exception.getFieldValue().equals("")) ? TextView.get("emptyValue")
+						: "\"" + exception.getFieldValue() + "\" ")
+				+ TextView.get("typeOfValidValue") + ((exception.getFieldValue().equals(""))
+						? TextView.get("notEmptyValue") : exception.getFieldType())
+				+ ".";
+		JOptionPane.showMessageDialog(null, text);
 	}
 }

@@ -18,6 +18,7 @@ import gui.LudoTechApplication;
 import gui.utils.PostLoadableComboBoxModel;
 import gui.utils.SpringUtilities;
 import gui.utils.TextView;
+import gui.utils.exceptions.NotValidNumberFieldException;
 
 @SuppressWarnings("serial")
 public class GameSearchView extends JPanel {
@@ -72,7 +73,7 @@ public class GameSearchView extends JPanel {
 		editorLabel.setLabelFor(this.editorComboBox);
 		searchPropertiesPanel.add(this.editorComboBox);
 
-		// Année d'édition		
+		// Année d'édition
 		JLabel publishingYearRangeLabel = new JLabel(TextView.get("gamePublishingYear"));
 		searchPropertiesPanel.add(publishingYearRangeLabel);
 		this.publishingYearField = new JTextField();
@@ -136,15 +137,39 @@ public class GameSearchView extends JPanel {
 		return (String) this.editorComboBox.getSelectedItem();
 	}
 
-	public String getPublishingYearValue() {
+	public String getPublishingYearValue() throws NotValidNumberFieldException {
+		try {
+			if (!this.publishingYearField.getText().equals("")) {
+				Integer.parseInt(this.publishingYearField.getText());
+			}
+		} catch (NumberFormatException exception) {
+			throw new NotValidNumberFieldException(TextView.get("gamePublishingYear"),
+					this.publishingYearField.getText(), TextView.get("integerType"));
+		}
 		return this.publishingYearField.getText();
 	}
 
-	public String getNbPlayersValue() {
+	public String getNbPlayersValue() throws NotValidNumberFieldException {
+		try {
+			if (!this.nbPlayersField.getText().equals("")) {
+				Integer.parseInt(this.nbPlayersField.getText());
+			}
+		} catch (NumberFormatException exception) {
+			throw new NotValidNumberFieldException(TextView.get("gamePlayers"), this.nbPlayersField.getText(),
+					TextView.get("integerType"));
+		}
 		return this.nbPlayersField.getText();
 	}
-	
-	public String getMinAgeValue() {
+
+	public String getMinAgeValue() throws NotValidNumberFieldException {
+		try {
+			if (!this.minAgeField.getText().equals("")) {
+				Integer.parseInt(this.minAgeField.getText());
+			}
+		} catch (NumberFormatException exception) {
+			throw new NotValidNumberFieldException(TextView.get("gameMinAge"), this.minAgeField.getText(),
+					TextView.get("integerType"));
+		}
 		return this.minAgeField.getText();
 	}
 
@@ -154,5 +179,15 @@ public class GameSearchView extends JPanel {
 
 	public JButton getSearchButton() {
 		return this.searchButton;
+	}
+	
+	public void resetFields() {
+		this.nameField.setText("");
+		this.categoryComboBox.setSelectedIndex(-1);
+		this.editorComboBox.setSelectedIndex(-1);
+		this.publishingYearField.setText("");
+		this.nbPlayersField.setText("");
+		this.minAgeField.setText("");
+		this.availableCheckBox.setSelected(false);
 	}
 }

@@ -151,8 +151,8 @@ public class GameTests extends Tests {
 		filter.put("nb_players", "2");
 		result = gameServices.getGameListAccordingToFilter(filter);
 		Assert.assertEquals(1, result.size());
-		// Recherche sur l'age minimum (valeur égale ou inférieure à celle du jeu)
-		filter.put("minimum_age", "5");
+		// Recherche sur l'age minimum (valeur supérieur ou égale à celle du jeu)
+		filter.put("minimum_age", "7");
 		result = gameServices.getGameListAccordingToFilter(filter);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(6, result.get(0).getMinimumAge());
@@ -164,8 +164,8 @@ public class GameTests extends Tests {
 		filter.put("nb_players", "1");
 		result = gameServices.getGameListAccordingToFilter(filter);
 		Assert.assertEquals(0, result.size());
-		// Recherche sur l'age minimum (valeur supérieure à celle du jeu)
-		filter.put("minimum_age", "7");
+		// Recherche sur l'age minimum (valeur inférieure à celle du jeu)
+		filter.put("minimum_age", "5");
 		result = gameServices.getGameListAccordingToFilter(filter);
 		Assert.assertEquals(0, result.size());
 		

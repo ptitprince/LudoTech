@@ -41,7 +41,7 @@ public class GameView extends JDialog {
 	private JTextField idField;
 	private JComboBox<String> categoryComboBox;
 	private JComboBox<String> editorComboBox;
-	private JTextField publishingYearStartRangeField;
+	private JTextField publishingYearField;
 	private JTextField nbPlayersStartRangeField;
 	private JTextField nbPlayersEndRangeField;
 	private JTextField minAgeField;
@@ -160,9 +160,9 @@ public class GameView extends JDialog {
 		// Année d'édition (5ème et 6ème colonnes)
 		JLabel publishingYearRangeLabel = new JLabel(TextView.get("gamePublishingYear"));
 		mainInfosPanel.add(publishingYearRangeLabel);
-		this.publishingYearStartRangeField = new JTextField();
-		this.publishingYearStartRangeField.setMaximumSize(new Dimension(150, 20));
-		mainInfosPanel.add(this.publishingYearStartRangeField);
+		this.publishingYearField = new JTextField();
+		this.publishingYearField.setMaximumSize(new Dimension(150, 20));
+		mainInfosPanel.add(this.publishingYearField);
 
 		// 3ème ligne
 
@@ -286,7 +286,7 @@ public class GameView extends JDialog {
 		this.idField.setText((gameID == -1) ? "" : "" + gameID);
 		this.categoryComboBox.setSelectedItem(category);
 		this.editorComboBox.setSelectedItem(editor);
-		this.publishingYearStartRangeField.setText("" + publishingYear);
+		this.publishingYearField.setText("" + publishingYear);
 		this.nbPlayersStartRangeField.setText("" + minPlayers);
 		this.nbPlayersEndRangeField.setText("" + maxPlayers);
 		this.minAgeField.setText("" + minAge);
@@ -321,10 +321,10 @@ public class GameView extends JDialog {
 	public int getPublishingYearStartRange() throws NotValidNumberFieldException {
 		int publishingYear = -1;
 		try {
-			publishingYear = Integer.parseInt(this.publishingYearStartRangeField.getText());
+			publishingYear = Integer.parseInt(this.publishingYearField.getText());
 		} catch (NumberFormatException exception) {
 			throw new NotValidNumberFieldException(TextView.get("gamePublishingYear"),
-					this.publishingYearStartRangeField.getText(), TextView.get("integerType"));
+					this.publishingYearField.getText(), TextView.get("integerType"));
 		}
 		return publishingYear;
 	}
