@@ -1,6 +1,7 @@
 package gui.catalog.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -12,11 +13,12 @@ import model.services.GameServices;
 @SuppressWarnings("serial")
 public class GameListModel extends AbstractTableModel {
 
-	private final String[] HEADERS = { TextView.get("gameID"), TextView.get("gameName"), TextView.get("gameCategory"), TextView.get("gameEditor"), TextView.get("gamePublishingYear"), TextView.get("gameMinAge"), TextView.get("gamePlayers"),
-			TextView.get("gameAvailable") };
+	private final String[] HEADERS = { TextView.get("gameID"), TextView.get("gameName"), TextView.get("gameCategory"),
+			TextView.get("gameEditor"), TextView.get("gamePublishingYear"), TextView.get("gameMinAge"),
+			TextView.get("gamePlayers"), TextView.get("gameAvailable") };
 
 	private GameServices gameServices;
-	
+
 	private List<Game> gameList;
 
 	public GameListModel(GameServices gameServices) {
@@ -26,6 +28,11 @@ public class GameListModel extends AbstractTableModel {
 
 	public void refresh() {
 		this.gameList = this.gameServices.getGameList();
+		this.fireTableDataChanged();
+	}
+
+	public void filter(HashMap<String, String> filter) {
+		this.gameList = this.gameServices.getGameListAccordingToFilter(filter);
 		this.fireTableDataChanged();
 	}
 
@@ -58,7 +65,7 @@ public class GameListModel extends AbstractTableModel {
 			return this.gameList.get(rowIndex).getMinimumAge();
 		case 6:
 			return this.gameList.get(rowIndex).getMinimumPlayers() + " - "
-			+ this.gameList.get(rowIndex).getMaximumPlayers();
+					+ this.gameList.get(rowIndex).getMaximumPlayers();
 		case 7:
 			return true;
 		default:

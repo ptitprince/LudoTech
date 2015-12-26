@@ -1,6 +1,7 @@
 package model.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import model.DAOs.GameCategoryDAO;
@@ -109,6 +110,25 @@ public class GameServices {
 		List<Integer> gameIDs = this.gameDAO.getIDs();
 		for (Integer id : gameIDs) {
 			gameList.add(this.getGame(id));
+		}
+		return gameList;
+	}
+	
+	public List<Game> getGameListAccordingToFilter(HashMap<String, String> filter) {
+		List<Game> gameList = new ArrayList<Game>();
+		List<Integer> gameIDs = this.gameDAO.getIDsAccordingToFilter(filter);
+		for (Integer id : gameIDs) {
+			Game game = this.getGame(id);
+			boolean conditionsRepected = true;
+			if (!filter.get("category").equals("") && !filter.get("category").toLowerCase().equals(game.getCategory().toLowerCase())) {
+				conditionsRepected = false;
+			}
+			if (!filter.get("editor").equals("") && !filter.get("editor").toLowerCase().equals(game.getEditor().toLowerCase())) {
+				conditionsRepected = false;
+			}
+			if (conditionsRepected) {
+				gameList.add(game);
+			}
 		}
 		return gameList;
 	}

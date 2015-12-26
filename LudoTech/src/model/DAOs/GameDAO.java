@@ -4,7 +4,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import model.POJOs.Game;
 
@@ -34,7 +36,7 @@ public class GameDAO extends DAO {
 
 			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
 					+ "GAME(name, description, publishing_year, minimum_age, minimum_players, maximum_players, category_id, editor_id) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", new String[] { "ID" }); 
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", new String[] { "ID" });
 			// Auto-incrémentation sur la clé primaire ID
 			psInsert.setString(1, game.getName());
 			psInsert.setString(2, game.getDescription());
@@ -242,7 +244,54 @@ public class GameDAO extends DAO {
 			while (resultSet.next()) { // Positionnement sur le premier résultat
 				ids.add(resultSet.getInt("id"));
 			}
-			
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ids;
+	}
+
+	public List<Integer> getIDsAccordingToFilter(HashMap<String, String> filter) {
+		List<Integer> ids = new ArrayList<Integer>();
+		try {
+			super.connect();
+
+			String request = "SELECT * FROM GAME";
+			String whereClause = "";
+			boolean atLeastOneCondition = false;
+			for (Entry<String, String> property : filter.entrySet()) {
+				if (property.getKey().equals("name") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(" + property.getKey() + ")" + " LIKE LOWER('%"
+							+ property.getValue() + "%')";
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("publishing_year") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " = "
+							+ property.getValue();
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("nb_players") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "minimum_players <= " + property.getValue()
+							+ " AND maximum_players >= " + property.getValue();
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("minimum_age") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " >= "
+							+ property.getValue();
+					atLeastOneCondition = true;
+				}
+			}
+			if (atLeastOneCondition) {
+				request += " WHERE" + whereClause;
+			}
+			System.out.println(request);
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			while (resultSet.next()) { // Positionnement sur le premier résultat
+				ids.add(resultSet.getInt("id"));
+			}
+
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();

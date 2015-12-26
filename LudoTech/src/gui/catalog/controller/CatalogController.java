@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JList;
@@ -57,7 +58,8 @@ public class CatalogController extends JPanel {
 	public void makeGUI() {
 		this.gameSearchView = new GameSearchView();
 		this.gameListView = new GameListView(this.gameListModel);
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, this.gameSearchView, this.gameListView);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, this.gameSearchView,
+				this.gameListView);
 		splitPane.setDividerLocation(LudoTechApplication.WINDOW_WIDTH / 4);
 		this.add(splitPane, BorderLayout.CENTER);
 
@@ -115,6 +117,13 @@ public class CatalogController extends JPanel {
 						refreshGameList();
 					}
 				}
+			}
+		});
+
+		// Clic sur le bouton "chercher" sur la liste des jeux
+		this.gameSearchView.getSearchButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				filterGameList();
 			}
 		});
 
@@ -214,6 +223,21 @@ public class CatalogController extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				gameListModel.refresh();
+			}
+		});
+	}
+
+	public void filterGameList() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				HashMap<String, String> filter = new HashMap<String, String>();
+				filter.put("name", gameSearchView.getNameValue().trim());
+				filter.put("category", gameSearchView.getCategoryValue().trim());
+				filter.put("editor", gameSearchView.getEditorValue().trim());
+				filter.put("publishing_year", gameSearchView.getPublishingYearValue().trim());
+				filter.put("nb_players", gameSearchView.getNbPlayersValue().trim());
+				filter.put("minimum_age", gameSearchView.getMinAgeValue().trim());
+				gameListModel.filter(filter);
 			}
 		});
 	}
