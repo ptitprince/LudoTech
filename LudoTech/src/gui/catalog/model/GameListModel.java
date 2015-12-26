@@ -55,12 +55,18 @@ public class GameListModel extends AbstractTableModel {
 			return TextView.makeFirstLetterUpper(this.gameList.get(rowIndex).getEditor());
 		case 4:
 			int publishingYear = this.gameList.get(rowIndex).getPublishingYear();
-			return (publishingYear != 0) ? publishingYear : "";
+			return (publishingYear != 0) ? publishingYear + "" : "";
 		case 5:
-			return this.gameList.get(rowIndex).getMinimumAge();
+			int age = this.gameList.get(rowIndex).getMinimumAge();
+			return (age != 0) ? age + "" : "";
 		case 6:
-			return this.gameList.get(rowIndex).getMinimumPlayers() + " - "
-					+ this.gameList.get(rowIndex).getMaximumPlayers();
+			int minPlayers = this.gameList.get(rowIndex).getMinimumPlayers();
+			int maxPlayers = this.gameList.get(rowIndex).getMaximumPlayers();
+			if (minPlayers == maxPlayers) {
+				return (minPlayers != 0) ? minPlayers + "" : "";
+			} else {
+				return minPlayers + " - " + maxPlayers;
+			}
 		case 7:
 			return true;
 		default:
@@ -74,11 +80,11 @@ public class GameListModel extends AbstractTableModel {
 		case 1:
 		case 2:
 		case 3:
-			return String.class;
-		case 0:
 		case 4:
 		case 5:
 		case 6:
+			return String.class;
+		case 0:
 			return Integer.class;
 		case 7:
 			return Boolean.class;

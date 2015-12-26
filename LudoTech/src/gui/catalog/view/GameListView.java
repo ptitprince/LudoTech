@@ -33,6 +33,7 @@ public class GameListView extends JPanel {
 		this.add(title, BorderLayout.NORTH);
 
 		this.table = new JTable(model);
+		this.table.setAutoCreateRowSorter(true); // Autoriser le tri sur le tableau
 		this.table.removeColumn(table.getColumnModel().getColumn(0)); // Cacher la colonne des identifiants
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
 		
