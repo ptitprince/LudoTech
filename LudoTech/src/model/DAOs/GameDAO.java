@@ -282,7 +282,6 @@ public class GameDAO extends DAO {
 			if (atLeastOneCondition) {
 				request += " WHERE" + whereClause;
 			}
-			System.out.println(request);
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
 			psSelect.closeOnCompletion();

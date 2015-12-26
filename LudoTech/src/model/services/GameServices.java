@@ -120,10 +120,10 @@ public class GameServices {
 		for (Integer id : gameIDs) {
 			Game game = this.getGame(id);
 			boolean conditionsRepected = true;
-			if (!filter.get("category").equals("") && !filter.get("category").toLowerCase().equals(game.getCategory().toLowerCase())) {
+			if (filter.get("category") != null && !filter.get("category").equals("") && !filter.get("category").toLowerCase().equals(game.getCategory().toLowerCase())) {
 				conditionsRepected = false;
 			}
-			if (!filter.get("editor").equals("") && !filter.get("editor").toLowerCase().equals(game.getEditor().toLowerCase())) {
+			if (filter.get("editor") != null && !filter.get("editor").equals("") && !filter.get("editor").toLowerCase().equals(game.getEditor().toLowerCase())) {
 				conditionsRepected = false;
 			}
 			if (conditionsRepected) {
