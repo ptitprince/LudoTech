@@ -175,103 +175,22 @@ public class GameDAO extends DAO {
 		}
 	}
 
-	/**
-	 * Trouve l'identifiant de la catégorie d'un jeu dans la base de données
-	 * 
-	 * @param id
-	 *            L'identifiant du jeu à utiliser
-	 * @return L'identifiant de la catégorie du jeu dont l'identifiant est passé
-	 *         en paramètres ou -1 si le jeu ne possède pas de categorie
-	 */
-	public int getCategoryID(int gameID) {
-		int categoryID = -1;
+	public List<Game> getGames(HashMap<String, String> filter) {
+		List<Game> games = new ArrayList<Game>();
 		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT category_id FROM GAME WHERE id = ?");
-			psSelect.setInt(1, gameID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				categoryID = resultSet.getInt("category_id");
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return categoryID;
-	}
-
-	/**
-	 * Trouve l'identifiant de l'éditeur d'un jeu dans la base de données
-	 * 
-	 * @param id
-	 *            L'identifiant du jeu à utiliser
-	 * @return L'identifiant de l'éditeur du jeu dont l'identifiant est passé en
-	 *         paramètres ou -1 si le jeu ne possède pas d'éditeur
-	 */
-	public int getEditorID(int gameID) {
-		int editorID = -1;
-		try {
-			super.connect();
-
-			PreparedStatement psSelect = connection.prepareStatement("SELECT editor_id FROM GAME WHERE id = ?");
-			psSelect.setInt(1, gameID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				editorID = resultSet.getInt("editor_id");
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return editorID;
-	}
-
-	/**
-	 * Liste les identifiants de tous les jeux de la base de données
-	 * 
-	 * @return La liste des identifiants de tous les jeux
-	 */
-	public List<Integer> getIDs() {
-		List<Integer> ids = new ArrayList<Integer>();
-		try {
-			super.connect();
-
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM GAME");
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			while (resultSet.next()) { // Positionnement sur le premier résultat
-				ids.add(resultSet.getInt("id"));
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return ids;
-	}
-
-	public List<Integer> getIDsAccordingToFilter(HashMap<String, String> filter) {
-		List<Integer> ids = new ArrayList<Integer>();
-		try {
-			super.connect();
-
-			String request = "SELECT * FROM GAME";
+			String request = "SELECT GAME.*, "
+					+ "GAME_EDITOR.name AS editor_name, "
+					+ "GAME_CATEGORY.category AS category_name " 
+					+ "FROM GAME "
+					+ "JOIN GAME_EDITOR ON GAME.editor_id = GAME_EDITOR.id "
+					+ "JOIN GAME_CATEGORY ON GAME.category_id = GAME_CATEGORY.id";
 			String whereClause = "";
 			boolean atLeastOneCondition = false;
 			for (Entry<String, String> property : filter.entrySet()) {
 				if (property.getKey().equals("name") && !property.getValue().equals("")) {
-					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(" + property.getKey() + ")"
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME." + property.getKey() + ")"
 							+ " LIKE LOWER('%" + property.getValue() + "%')";
 					atLeastOneCondition = true;
 				} else if (property.getKey().equals("publishing_year") && !property.getValue().equals("")) {
@@ -286,6 +205,14 @@ public class GameDAO extends DAO {
 					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " <= "
 							+ property.getValue();
 					atLeastOneCondition = true;
+				} else if (property.getKey().equals("category") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME_CATEGORY.category) = LOWER('"
+							+ property.getValue() + "')";
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("editor") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME_EDITOR.name) = LOWER('"
+							+ property.getValue() + "')";
+					atLeastOneCondition = true;
 				}
 			}
 			if (atLeastOneCondition) {
@@ -296,15 +223,18 @@ public class GameDAO extends DAO {
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
-			while (resultSet.next()) { // Positionnement sur le premier résultat
-				ids.add(resultSet.getInt("id"));
+			while (resultSet.next()) {
+				games.add(new Game(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("description"),
+						resultSet.getInt("publishing_year"), resultSet.getInt("minimum_age"),
+						resultSet.getInt("minimum_players"), resultSet.getInt("maximum_players"), 
+						resultSet.getString("category_name"), resultSet.getString("editor_name")));
 			}
 
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return ids;
+		return games;
 	}
 
 }

@@ -67,7 +67,7 @@ public class GameTests extends Tests {
 		Assert.assertNotNull(deletableGame);
 
 		// Suppression du jeu
-		Assert.assertNotNull(gameServices.remove(deletableGame.getGameID()));
+		Assert.assertNotNull(gameServices.removeGame(deletableGame.getGameID()));
 
 		// Verification que le jeu a bien été supprimé
 		Assert.assertNull(gameServices.getGame(deletableGame.getGameID()));
@@ -92,21 +92,21 @@ public class GameTests extends Tests {
 		Assert.assertNotNull(getTableGame2);
 
 		// Obtention de la liste des jeux
-		Assert.assertEquals(2, gameServices.getGameList().size());
+		Assert.assertEquals(2, gameServices.getGames(new HashMap<String, String>()).size());
 	}
 
 	@Test
 	public void testListGameCategories() {
 		// Vérification que la liste des catégories de jeu est bien retounée
 		// (peut-être vide)
-		Assert.assertNotNull(gameServices.getCategoryList(false));
+		Assert.assertNotNull(gameServices.getGameCategories(false));
 	}
 
 	@Test
 	public void testListGameEditors() {
 		// Vérification que la liste des éditeurs de jeu est bien retounée
 		// (peut-être vide)
-		Assert.assertNotNull(gameServices.getEditorList(false));
+		Assert.assertNotNull(gameServices.getGameEditors(false));
 	}
 
 	@Test
@@ -123,37 +123,37 @@ public class GameTests extends Tests {
 		
 		// Recherche sur le nom du jeu
 		filter.put("name", "TestSearchGame");
-		result = gameServices.getGameListAccordingToFilter(filter);
+		result = gameServices.getGames(filter);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals("TestSearchGame", result.get(0).getName());
 		// Recherche sur la catégorie du jeu
 		filter.put("category", "plateau");
-		result = gameServices.getGameListAccordingToFilter(filter);
+		result = gameServices.getGames(filter);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals("plateau", result.get(0).getCategory());
 		// Recherche sur l'éditeur du jeu
 		filter.put("editor", "bidule");
-		result = gameServices.getGameListAccordingToFilter(filter);
+		result = gameServices.getGames(filter);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals("bidule", result.get(0).getEditor());
 		// Recherche sur l'année d'édition du jeu
 		filter.put("publishing_year", "2010");
-		result = gameServices.getGameListAccordingToFilter(filter);
+		result = gameServices.getGames(filter);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(2010, result.get(0).getPublishingYear());
 		// Recherche sur le nombre de joueurs (valeur dans l'intervalle du jeu,
 		// 2 < (3) < 4)
 		filter.put("nb_players", "3");
-		result = gameServices.getGameListAccordingToFilter(filter);
+		result = gameServices.getGames(filter);
 		Assert.assertEquals(1, result.size());
 		// Recherche sur le nombre de joueurs (valeur sur une borne de l'intervalle du jeu,
 		// (2) < 4)
 		filter.put("nb_players", "2");
-		result = gameServices.getGameListAccordingToFilter(filter);
+		result = gameServices.getGames(filter);
 		Assert.assertEquals(1, result.size());
 		// Recherche sur l'age minimum (valeur supérieur ou égale à celle du jeu)
 		filter.put("minimum_age", "7");
-		result = gameServices.getGameListAccordingToFilter(filter);
+		result = gameServices.getGames(filter);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(6, result.get(0).getMinimumAge());
 		
@@ -162,11 +162,11 @@ public class GameTests extends Tests {
 		// Recherche sur le nombre de joueurs (valeur hors de l'intervalle du jeu,
 		// (1) < 2 < 4)
 		filter.put("nb_players", "1");
-		result = gameServices.getGameListAccordingToFilter(filter);
+		result = gameServices.getGames(filter);
 		Assert.assertEquals(0, result.size());
 		// Recherche sur l'age minimum (valeur inférieure à celle du jeu)
 		filter.put("minimum_age", "5");
-		result = gameServices.getGameListAccordingToFilter(filter);
+		result = gameServices.getGames(filter);
 		Assert.assertEquals(0, result.size());
 		
 	}
@@ -174,11 +174,11 @@ public class GameTests extends Tests {
 	@After
 	public void cleanTable() {
 		// Récupération des jeux ajoutés dans la table pendant les tests
-		List<Game> games = gameServices.getGameList();
+		List<Game> games = gameServices.getGames(new HashMap<String, String>());
 
 		// Suppression de tous les jeux dans la table GAME
 		for (Game game : games) {
-			gameServices.remove(game.getGameID());
+			gameServices.removeGame(game.getGameID());
 		}
 	}
 

@@ -52,7 +52,7 @@ public class ExtensionTests extends Tests {
 		for (Extension extension : extensionServices.getExtensionList(this.game.getGameID())) {
 			Assert.assertTrue(extensionServices.deleteExtensionFromGame(extension.getExtensionID()));
 		}
-		Assert.assertTrue(gameServices.remove(this.game.getGameID()));
+		Assert.assertTrue(gameServices.removeGame(this.game.getGameID()));
 	}
 
 }
