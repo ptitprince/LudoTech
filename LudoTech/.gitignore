@@ -1,5 +1,4 @@
 /bin/*
-/db/*
 /.settings/*
 /derby.log
 /.project
