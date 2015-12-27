@@ -1,15 +1,25 @@
 package model.POJOs;
 
 public class Extension {
-
-	private int extensionID;
-	private String name;
+/** Identifiant de l'extension **/
 	
+	private int extensionID;
+	
+	/**Nom de l'extension *
+	 * 
+	 */
+	private String name;
+	/**Construire l'extension 
+	 * 
+	 * @param extensionID
+	 * @param name
+	 */
 	public Extension(int extensionID, String name) {
 		this.extensionID = extensionID;
 		this.name = name;
 	}
 	
+
 	public Extension(String name) {
 		this.name = name;
 	}
