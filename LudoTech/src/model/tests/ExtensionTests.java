@@ -33,24 +33,24 @@ public class ExtensionTests extends Tests {
 	
 	@Test
 	public void testAddExtension() {
-		Assert.assertNotNull(extensionServices.addExtensionToGame("Une extension", this.game.getGameID()));
-		Assert.assertNotNull(extensionServices.addExtensionToGame("Une 2ème extension", this.game.getGameID()));
+		Assert.assertNotNull(extensionServices.addExtension("Une extension", this.game.getGameID()));
+		Assert.assertNotNull(extensionServices.addExtension("Une 2ème extension", this.game.getGameID()));
 		
-		Assert.assertEquals(2, extensionServices.countExtensionOfGame(this.game.getGameID()));
+		Assert.assertEquals(2, extensionServices.countExtensions(this.game.getGameID()));
 	}
 	
 	@Test
 	public void testDeleteExtension() {
-		Extension extension = extensionServices.addExtensionToGame("Une extension à supprimer", this.game.getGameID());
+		Extension extension = extensionServices.addExtension("Une extension à supprimer", this.game.getGameID());
 		Assert.assertNotNull(extension);
 		
-		Assert.assertTrue(extensionServices.deleteExtensionFromGame(extension.getExtensionID()));
+		Assert.assertTrue(extensionServices.deleteExtension(extension.getExtensionID()));
 	}
 
 	@After
 	public void cleanTable() {
-		for (Extension extension : extensionServices.getExtensionList(this.game.getGameID())) {
-			Assert.assertTrue(extensionServices.deleteExtensionFromGame(extension.getExtensionID()));
+		for (Extension extension : extensionServices.getExtensions(this.game.getGameID())) {
+			Assert.assertTrue(extensionServices.deleteExtension(extension.getExtensionID()));
 		}
 		Assert.assertTrue(gameServices.removeGame(this.game.getGameID()));
 	}

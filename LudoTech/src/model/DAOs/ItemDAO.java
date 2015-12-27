@@ -8,8 +8,22 @@ import java.util.List;
 
 import model.POJOs.Item;
 
+/**
+ * Classe manipulant des objets de type Item dans la base de données
+ */
 public class ItemDAO extends DAO {
 
+	/**
+	 * Ajoute un exemplaire (en lui donnant un identifiant) pour un certain jeu
+	 * dans la base de données
+	 * 
+	 * @param item
+	 *            Un exemplaire non null sans identifiant
+	 * @param gameID
+	 *            L'identifiant du jeu existant en base de données
+	 * @return True si l'exemplaire a bien été ajouté en base de données, sinon
+	 *         False
+	 */
 	public boolean add(Item item, int gameID) {
 		try {
 			super.connect();
@@ -39,6 +53,13 @@ public class ItemDAO extends DAO {
 		}
 	}
 
+	/**
+	 * Supprime un exemplaire existant de la base de données
+	 * 
+	 * @param id
+	 *            L'identifiant d'un exemplaire existant
+	 * @return True si l'exemplaire a bien été supprimé, sinon False
+	 */
 	public boolean remove(int id) {
 		try {
 			super.connect();
@@ -56,6 +77,13 @@ public class ItemDAO extends DAO {
 		}
 	}
 
+	/**
+	 * Liste les exemplaires possédés par un certain jeu
+	 * 
+	 * @param gameID
+	 *            L'identifiant d'un jeu existant
+	 * @return La liste des exemplaires possédés par le jeu
+	 */
 	public List<Item> getAllHavingGameID(int gameID) {
 		List<Item> items = new ArrayList<Item>();
 		try {

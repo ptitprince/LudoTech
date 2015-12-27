@@ -102,7 +102,7 @@ public class CatalogController extends JPanel {
 				int selectedRowIndex = table.getSelectedRow();
 				if (selectedRowIndex > -1) {
 					int gameID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
-					int nbExtensions = extensionServices.countExtensionOfGame(gameID);
+					int nbExtensions = extensionServices.countExtensions(gameID);
 					int nbItems = itemServices.countItemsOfGame(gameID);
 					if (nbExtensions > 0) {
 						String text = TextView.get("catalogDeleteGameNbExtensionsException") + "\n"
@@ -170,7 +170,7 @@ public class CatalogController extends JPanel {
 					String name = JOptionPane.showInputDialog(null, TextView.get("catalogGameAddExtensionLabel"),
 							TextView.get("catalogGameAddExtensionTitle"), JOptionPane.QUESTION_MESSAGE);
 					if (name != null && !name.equals("")) {
-						extensionServices.addExtensionToGame(name, gameView.getId());
+						extensionServices.addExtension(name, gameView.getId());
 						refreshExtensionList(gameView.getId());
 					}
 				}
@@ -184,7 +184,7 @@ public class CatalogController extends JPanel {
 				int selectedIndex = list.getSelectedIndex();
 				if (selectedIndex > -1) {
 					int extensionID = ((ExtensionListModel) list.getModel()).getIDAt(selectedIndex);
-					extensionServices.deleteExtensionFromGame(extensionID);
+					extensionServices.deleteExtension(extensionID);
 					refreshExtensionList(gameView.getId());
 				}
 			}

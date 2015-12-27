@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * Classe manipulant des objets de type GameCategory dans la base de données
- *
  */
 public class GameCategoryDAO extends DAO {
 
@@ -84,6 +83,13 @@ public class GameCategoryDAO extends DAO {
 		}
 	}
 
+	/**
+	 * Liste toutes les catégories de jeu existantes
+	 * 
+	 * @param sorted
+	 *            Vrai si la liste doit être triée par ordre alphabétique
+	 * @return La liste des catégories de jeu existantes
+	 */
 	public List<String> list(boolean sorted) {
 		List<String> categories = new ArrayList<String>();
 		try {

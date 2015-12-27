@@ -8,8 +8,22 @@ import java.util.List;
 
 import model.POJOs.Extension;
 
+/**
+ * Classe manipulant des objets de type Extension dans la base de données
+ */
 public class ExtensionDAO extends DAO {
-	
+
+	/**
+	 * Ajoute une extension (en lui donnant un identifiant) pour un certain jeu
+	 * dans la base de données
+	 * 
+	 * @param extension
+	 *            Une extension non null sans identifiant
+	 * @param gameID
+	 *            L'identifiant du jeu existant en base de données
+	 * @return True si l'extension a bien été ajoutée en base de données, sinon
+	 *         False
+	 */
 	public boolean add(Extension extension, int gameID) {
 		try {
 			super.connect();
@@ -22,8 +36,8 @@ public class ExtensionDAO extends DAO {
 
 			psInsert.executeUpdate();
 
-			// Récupération de l'identifiant de l'extension générée automatiquement par
-			// Derby
+			// Récupération de l'identifiant de l'extension générée
+			// automatiquement par Derby
 			ResultSet idRS = psInsert.getGeneratedKeys();
 			if (idRS != null && idRS.next()) {
 				extension.setExtensionID(idRS.getInt(1));
@@ -39,6 +53,13 @@ public class ExtensionDAO extends DAO {
 		}
 	}
 
+	/**
+	 * Supprime une extension existante de la base de données
+	 * 
+	 * @param id
+	 *            L'identifiant d'une extension existante
+	 * @return True si l'extension a bien été supprimée, sinon False
+	 */
 	public boolean remove(int id) {
 		try {
 			super.connect();
@@ -56,7 +77,14 @@ public class ExtensionDAO extends DAO {
 		}
 	}
 
-	public List<Extension> getAllHavingGameID(int gameID) {
+	/**
+	 * Liste les extensions possédées par un certain jeu
+	 * 
+	 * @param gameID
+	 *            L'identifiant d'un jeu existant
+	 * @return La liste des extensions possédées par le jeu
+	 */
+	public List<Extension> getAll(int gameID) {
 		List<Extension> extensions = new ArrayList<Extension>();
 		try {
 			super.connect();
@@ -77,5 +105,5 @@ public class ExtensionDAO extends DAO {
 		}
 		return extensions;
 	}
-	
+
 }

@@ -83,6 +83,11 @@ public class GameEditorDAO extends DAO {
 		}
 	}
 
+	/**
+	 * Liste tous les éditeurs de jeu existants
+	 * @param sorted Vrai si la liste doit être triée par ordre alphabétique
+	 * @return La liste des éditeurs de jeu existantes
+	 */
 	public List<String> list(boolean sorted) {
 		List<String> editors = new ArrayList<String>();
 		try {

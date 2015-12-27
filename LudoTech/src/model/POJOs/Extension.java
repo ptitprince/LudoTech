@@ -1,25 +1,46 @@
 package model.POJOs;
 
+/**
+ * Représentation d'une extension de jeu
+ */
 public class Extension {
-/** Identifiant de l'extension **/
-	
-	private int extensionID;
-	
-	/**Nom de l'extension *
+
+	/**
+	 * L'identifiant unique de l'extension, un nombre entier strictement positif
 	 * 
+	 * @HasGetter
+	 * @HasSetter
+	 */
+	private int extensionID;
+
+	/**
+	 * Le nom de l'extension
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private String name;
-	/**Construire l'extension 
+
+	/**
+	 * Construit une extension de jeu avec un identifiant connu
 	 * 
 	 * @param extensionID
+	 *            L'identifiant unique de l'extension, un nombre entier
+	 *            strictement positif
 	 * @param name
+	 *            Le nom de l'extension
 	 */
 	public Extension(int extensionID, String name) {
+		this(name);
 		this.extensionID = extensionID;
-		this.name = name;
 	}
-	
 
+	/**
+	 * Construit une extension de jeu sans identifiant
+	 * 
+	 * @param name
+	 *            Le nom de l'extension
+	 */
 	public Extension(String name) {
 		this.name = name;
 	}
@@ -27,17 +48,17 @@ public class Extension {
 	public int getExtensionID() {
 		return extensionID;
 	}
-	
+
 	public void setExtensionID(int extensionID) {
 		this.extensionID = extensionID;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 }

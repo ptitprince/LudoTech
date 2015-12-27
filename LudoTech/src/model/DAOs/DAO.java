@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public abstract class DAO {
 
 	/**
-	 * Constante définissant le pilote JDBC � utiliser
+	 * Constante définissant le pilote JDBC à utiliser
 	 */
 	private final static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 
@@ -57,7 +57,7 @@ public abstract class DAO {
 	}
 
 	/**
-	 * Connecte l'application � la base de données embarquée et définie quel
+	 * Connecte l'application à la base de données embarquée et définie quel
 	 * schéma utiliser pour cette connection
 	 * 
 	 * @throws SQLException

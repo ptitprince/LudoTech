@@ -1,90 +1,132 @@
 package model.POJOs;
 
 /**
- * Représentation d'un jeu (conforme à la table Game)
+ * Représentation d'un jeu (informations communes pour tous les exemplaires de
+ * ce jeu)
  */
 public class Game {
 
 	/**
-	 * L'identifiant du jeu
+	 * L'identifiant unique du jeu, un nombre entier strictement positif
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private int gameID;
 
 	/**
 	 * Le nom du jeu
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private String name;
 
 	/**
 	 * La description du jeu
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private String description;
 
 	/**
-	 * Année d'édition du jeu
+	 * L'année d'édition du jeu, un nombre entier positif ou nul
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private int publishingYear;
-	
+
 	/**
-	 * Age minimum recommandé pour ce jeu
+	 * L'âge minimum recommandé pour y jouer, un nombre entier positif ou nul
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private int minimumAge;
 
 	/**
-	 * Nombre minimum de joueurs recommandé pour ce jeu
+	 * Le nombre minimum de joueurs pour y jouer, un nombre entier positif ou
+	 * nul
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private int minimumPlayers;
-	
+
 	/**
-	 * Nombre maximum de joueurs recommandé pour ce jeu
+	 * Le nombre maximum de joueurs pour y jouer, un nombre entier positif ou
+	 * nul
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private int maximumPlayers;
-	
+
 	/**
 	 * La catégorie du jeu
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private String category;
 
 	/**
-	 * L'éditeur du jeu
+	 * La société éditrice du jeu
+	 * 
+	 * @HasGetter
+	 * @HasSetter
 	 */
 	private String editor;
-	
+
 	/**
-	 * Construit et retourne un nouveau jeu avec un identifiant connu
-	 * @param gameID L'identifiant du jeu
-	 * @param name Le nom du jeu
-	 * @param description La description du jeu
-	 * @param publishingYear L'année d'édition
-	 * @param minimumAge L'age minimum recommandé pour jouer
-	 * @param minimumPlayers Le nombre minimum de joueurs necessaires
-	 * @param maximumPlayers Le nombre maximum de joueurs necessaires
-	 * @param category La catégorie du jeu (jeu de cartes, jeu de dés)
-	 * @param editor L'éditeur du jeu
+	 * Construit un jeu avec un identifiant connu
+	 * 
+	 * @param gameID
+	 *            L'identifiant unique du jeu, un nombre entier strictement positif
+	 * @param name
+	 *            Le nom du jeu
+	 * @param description
+	 *            La description du jeu
+	 * @param publishingYear
+	 *            L'année d'édition du jeu, un nombre entier positif ou nul
+	 * @param minimumAge
+	 *            L'age minimum recommandé pour y jouer, un nombre entier positif ou nul
+	 * @param minimumPlayers
+	 *            Le nombre minimum de joueurs pour y jouer, un nombre entier positif ou nul
+	 * @param maximumPlayers
+	 *            Le nombre maximum de joueurs pour y jouer, un nombre entier positif ou nul
+	 * @param category
+	 *            La catégorie du jeu
+	 * @param editor
+	 *            La société éditrice du jeu
 	 */
 	public Game(int gameID, String name, String description, int publishingYear, int minimumAge, int minimumPlayers,
 			int maximumPlayers, String category, String editor) {
+		this(name, description, publishingYear, minimumAge, minimumPlayers, maximumPlayers, category, editor);
 		this.gameID = gameID;
-		this.name = name;
-		this.description = description;
-		this.publishingYear = publishingYear;
-		this.minimumAge = minimumAge;
-		this.minimumPlayers = minimumPlayers;
-		this.maximumPlayers = maximumPlayers;
-		this.category = category;
-		this.editor = editor;
 	}
 
 	/**
-	 * Construit et retourne un nouveau jeu avec un identifiant inconnu
-	 * @param name Le nom du jeu
-	 * @param description La description du jeu
-	 * @param publishingYear L'année d'édition
-	 * @param minimumAge L'age minimum recommandé pour jouer
-	 * @param minimumPlayers Le nombre minimum de joueurs necessaires
-	 * @param maximumPlayers Le nombre maximum de joueurs necessaires
-	 * @param category La catégorie du jeu (jeu de cartes, jeu de dés)
-	 * @param editor L'éditeur du jeu
+	 * Construit un jeu sans identifiant
+	 * 
+	 * @param name
+	 *            Le nom du jeu
+	 * @param description
+	 *            La description du jeu
+	 * @param publishingYear
+	 *            L'année d'édition du jeu, un nombre entier positif ou nul
+	 * @param minimumAge
+	 *            L'age minimum recommandé pour y jouer, un nombre entier positif ou nul
+	 * @param minimumPlayers
+	 *            Le nombre minimum de joueurs pour y jouer, un nombre entier positif ou nul
+	 * @param maximumPlayers
+	 *            Le nombre maximum de joueurs pour y jouer, un nombre entier positif ou nul
+	 * @param category
+	 *            La catégorie du jeu
+	 * @param editor
+	 *            La société éditrice du jeu
 	 */
 	public Game(String name, String description, int publishingYear, int minimumAge, int minimumPlayers,
 			int maximumPlayers, String category, String editor) {
@@ -97,27 +139,11 @@ public class Game {
 		this.category = category;
 		this.editor = editor;
 	}
-	
-	public Game() {
-		this.gameID = 0;
-		this.name = "";
-		this.description = "";
-		this.publishingYear = 0;
-		this.minimumAge = 0;
-		this.minimumPlayers = 0;
-		this.maximumPlayers = 0;
-		this.category = "";
-		this.editor = "";
-	}
-
-	public Game(int id) {
-		this.gameID = id;
-	}
 
 	public int getGameID() {
 		return this.gameID;
 	}
-	
+
 	public void setGameID(int gameID) {
 		this.gameID = gameID;
 	}

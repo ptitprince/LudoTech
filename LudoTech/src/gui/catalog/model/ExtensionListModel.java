@@ -22,7 +22,7 @@ public class ExtensionListModel implements ListModel<String> {
 	}
 	
 	public void refresh(int gameID) {
-		this.extensionList = this.extensionServices.getExtensionList(gameID);
+		this.extensionList = this.extensionServices.getExtensions(gameID);
 		for (ListDataListener listener : this.listeners) {
 			listener.contentsChanged(null);
 		}
