@@ -146,7 +146,15 @@ public class GameDAO extends DAO {
 		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM GAME WHERE id = ?");
+			String request = "SELECT GAME.*, "
+					+ "GAME_EDITOR.name AS editor_name, "
+					+ "GAME_CATEGORY.category AS category_name " 
+					+ "FROM GAME "
+					+ "JOIN GAME_EDITOR ON GAME.editor_id = GAME_EDITOR.id "
+					+ "JOIN GAME_CATEGORY ON GAME.category_id = GAME_CATEGORY.id " 
+					+ "WHERE GAME.id = ?";
+
+			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.setInt(1, id);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -156,7 +164,8 @@ public class GameDAO extends DAO {
 			if (resultSet.next()) { // Positionnement sur le premier résultat
 				game = new Game(id, resultSet.getString("name"), resultSet.getString("description"),
 						resultSet.getInt("publishing_year"), resultSet.getInt("minimum_age"),
-						resultSet.getInt("minimum_players"), resultSet.getInt("maximum_players"), "", "");
+						resultSet.getInt("minimum_players"), resultSet.getInt("maximum_players"), 
+						resultSet.getString("category_name"), resultSet.getString("editor_name"));
 			}
 			super.disconnect();
 			return game;
@@ -262,8 +271,8 @@ public class GameDAO extends DAO {
 			boolean atLeastOneCondition = false;
 			for (Entry<String, String> property : filter.entrySet()) {
 				if (property.getKey().equals("name") && !property.getValue().equals("")) {
-					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(" + property.getKey() + ")" + " LIKE LOWER('%"
-							+ property.getValue() + "%')";
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(" + property.getKey() + ")"
+							+ " LIKE LOWER('%" + property.getValue() + "%')";
 					atLeastOneCondition = true;
 				} else if (property.getKey().equals("publishing_year") && !property.getValue().equals("")) {
 					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " = "

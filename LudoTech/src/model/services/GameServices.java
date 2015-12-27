@@ -92,17 +92,7 @@ public class GameServices {
 	 * @return Un objet de type game ou null s'il n'existe pas en base de données
 	 */
 	public Game getGame(int gameID) {
-		Game game = this.gameDAO.get(gameID);
-		if (game != null) { // Chargement des données issues d'autres tables avec les clés étrangères
-			int categoryID = this.gameDAO.getCategoryID(gameID);
-			String category = this.gameCategoryDAO.getName(categoryID);
-			game.setCategory(category != null ? category : "");
-			
-			int editorID = this.gameDAO.getEditorID(gameID);
-			String editor = this.gameEditorDAO.getName(editorID);
-			game.setEditor(editor != null ? editor : "");
-		}
-		return game;
+		return this.gameDAO.get(gameID);
 	}
 
 	public List<Game> getGameList() {
