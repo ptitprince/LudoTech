@@ -1,6 +1,5 @@
 package model.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,7 +81,7 @@ public class GameServices {
 	 * @param id L'identifiant du jeu
 	 * @return True si le jeu a pu être supprimé de la base de données, sinon False
 	 */
-	public boolean remove(int id) {
+	public boolean removeGame(int id) {
 		return this.gameDAO.remove(id);
 	}
 	
@@ -92,52 +91,18 @@ public class GameServices {
 	 * @return Un objet de type game ou null s'il n'existe pas en base de données
 	 */
 	public Game getGame(int gameID) {
-		Game game = this.gameDAO.get(gameID);
-		if (game != null) { // Chargement des données issues d'autres tables avec les clés étrangères
-			int categoryID = this.gameDAO.getCategoryID(gameID);
-			String category = this.gameCategoryDAO.getName(categoryID);
-			game.setCategory(category != null ? category : "");
-			
-			int editorID = this.gameDAO.getEditorID(gameID);
-			String editor = this.gameEditorDAO.getName(editorID);
-			game.setEditor(editor != null ? editor : "");
-		}
-		return game;
-	}
-
-	public List<Game> getGameList() {
-		List<Game> gameList = new ArrayList<Game>();
-		List<Integer> gameIDs = this.gameDAO.getIDs();
-		for (Integer id : gameIDs) {
-			gameList.add(this.getGame(id));
-		}
-		return gameList;
+		return this.gameDAO.get(gameID);
 	}
 	
-	public List<Game> getGameListAccordingToFilter(HashMap<String, String> filter) {
-		List<Game> gameList = new ArrayList<Game>();
-		List<Integer> gameIDs = this.gameDAO.getIDsAccordingToFilter(filter);
-		for (Integer id : gameIDs) {
-			Game game = this.getGame(id);
-			boolean conditionsRepected = true;
-			if (filter.get("category") != null && !filter.get("category").equals("") && !filter.get("category").toLowerCase().equals(game.getCategory().toLowerCase())) {
-				conditionsRepected = false;
-			}
-			if (filter.get("editor") != null && !filter.get("editor").equals("") && !filter.get("editor").toLowerCase().equals(game.getEditor().toLowerCase())) {
-				conditionsRepected = false;
-			}
-			if (conditionsRepected) {
-				gameList.add(game);
-			}
-		}
-		return gameList;
+	public List<Game> getGames(HashMap<String, String> filter) {
+		return this.gameDAO.getGames(filter);
 	}
 	
-	public List<String> getCategoryList(boolean sorted) {
+	public List<String> getGameCategories(boolean sorted) {
 		return this.gameCategoryDAO.list(sorted);
 	}
 	
-	public List<String> getEditorList(boolean sorted) {
+	public List<String> getGameEditors(boolean sorted) {
 		return this.gameEditorDAO.list(sorted);
 	}
 

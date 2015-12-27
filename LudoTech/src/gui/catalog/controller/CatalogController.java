@@ -113,7 +113,7 @@ public class CatalogController extends JPanel {
 								+ TextView.get("catalogGameNbItems") + " : " + nbItems;
 						JOptionPane.showMessageDialog(null, text);
 					} else {
-						gameServices.remove(gameID);
+						gameServices.removeGame(gameID);
 						refreshGameList();
 					}
 				}
@@ -195,8 +195,8 @@ public class CatalogController extends JPanel {
 	private void loadLists() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				List<String> categories = gameServices.getCategoryList(true);
-				List<String> editors = gameServices.getEditorList(true);
+				List<String> categories = gameServices.getGameCategories(true);
+				List<String> editors = gameServices.getGameEditors(true);
 				for (int i = 0; i < categories.size(); i++) {
 					categories.set(i, TextView.makeFirstLetterUpper(categories.get(i)));
 				}

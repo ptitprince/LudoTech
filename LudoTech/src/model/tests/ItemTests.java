@@ -41,7 +41,7 @@ public class ItemTests extends Tests {
 	@After
 	public void cleanTable() {
 		Assert.assertTrue(itemServices.setItemsNumberOfGame(this.game.getGameID(), 0));
-		Assert.assertTrue(gameServices.remove(this.game.getGameID()));
+		Assert.assertTrue(gameServices.removeGame(this.game.getGameID()));
 	}
 
 }

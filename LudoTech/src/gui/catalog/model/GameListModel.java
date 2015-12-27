@@ -27,7 +27,7 @@ public class GameListModel extends AbstractTableModel {
 	}
 
 	public void refresh(HashMap<String, String> filter) {
-		this.gameList = this.gameServices.getGameListAccordingToFilter(filter);
+		this.gameList = this.gameServices.getGames(filter);
 		this.fireTableDataChanged();
 	}
 
