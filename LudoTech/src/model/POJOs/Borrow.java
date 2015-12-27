@@ -17,27 +17,27 @@ public class Borrow {
 	/**
 	 * L'exemplaire qui a été emprunté.
 	 */
-	//private Item item ; ref exemplaire , à faire.
+	private Item item;
 	
 	/**
-	 * L'utilisateur qui a fait l'emprunt (Member pas encore fait au 27/11).
+	 * L'utilisateur qui a fait l'emprunt.
 	 */
 	private Member member;
 	
 	/**
 	 * Date de début de l'emprunt. besoin classe calendar pour date ?
 	 */
-	private Date dateDebut;
+	private Date beginningDate;
 	
 	/**
 	 * Date de fin de l'emprunt (théorique).
 	 */
-	private Date dateFin;
+	private Date endingDate;
 	
 	/**
 	 * État de l'emprunt (en cours, en retard, ou fini en retard). Enumération à faire. Devra être supprimé si terminé sans encombres.
 	 */
-	private String borrowEtat;
+	private String borrowState;
 	
 	/**
 	 * Savoir si le jeu est disponible, avec un booléen.
@@ -52,13 +52,12 @@ public class Borrow {
 		this.borrowId = borrowId;
 	}
 
-	/* public Game getItem() {
-		return copy;
-	} */
-
-	/* public void setItem(Item item) {
+	public Item getItem() {
+		return item;
+	}
+	public void setItem(Item item) {
 		this.item = item;
-	} */
+	}
 
 	public Member getMember() {
 		return member;
@@ -68,28 +67,28 @@ public class Borrow {
 		this.member = member;
 	}
 
-	public Date getDateDebut() {
-		return dateDebut;
+	public Date getBeginningDate() {
+		return beginningDate;
 	}
 
-	public void setDateDebut(Date dateDebut) {
-		this.dateDebut = dateDebut;
+	public void setDateDebut(Date beginningDate) {
+		this.beginningDate = beginningDate;
 	}
 
-	public Date getDateFin() {
-		return dateFin;
+	public Date getEndingDate() {
+		return endingDate;
 	}
 
-	public void setDateFin(Date dateFin) {
-		this.dateFin = dateFin;
+	public void setEndingDate(Date endingDate) {
+		this.endingDate = endingDate;
 	}
 
-	public String getBorrowEtat() {
-		return borrowEtat;
+	public String getBorrowState() {
+		return borrowState;
 	}
 
-	public void setBorrowEtat(String borrowEtat) {
-		this.borrowEtat = borrowEtat;
+	public void setBorrowState(String borrowState) {
+		this.borrowState = borrowState;
 	}
 
 	public boolean isBorrowAvailable() {
@@ -98,6 +97,46 @@ public class Borrow {
 
 	public void setBorrowAvailable(boolean borrowAvailable) {
 		this.borrowAvailable = borrowAvailable;
+	}
+	
+	/**
+	 * Construit et retourne un nouvel emprunt dont l'identifiant est connu.
+	 * @param borrowID L'identifiant de l'emprunt.
+	 * @param item l'exemplaire concerné.
+	 * @param member le membre concerné.
+	 * @param beginningDate La date de début du prêt.
+	 * @param endingDate La date de fin du prêt.
+	 * @param borrowState L'état de l'emprunt.
+	 * @param borrowAvailable La disponibilité du jeu. 
+	 */
+	public Borrow(int borrowID, Item item, Member member, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable) {
+		this.borrowId = borrowID;
+		this.item = item;
+		this.member = member;
+		this.beginningDate = beginningDate;
+		this.endingDate = endingDate;
+		this.borrowState = borrowState;
+		this.borrowAvailable = borrowAvailable;
+		
+	}
+
+	/**
+	 * Construit et retourne un nouvel emprunt dont l'identifiant inconnu
+	 * @param item l'exemplaire concerné.
+	 * @param member le membre concerné.
+	 * @param beginningDate La date de début du prêt.
+	 * @param endingDate La date de fin du prêt.
+	 * @param borrowState L'état de l'emprunt.
+	 * @param borrowAvailable La disponibilité du jeu. 
+	 */
+	public Borrow(Item item, Member member, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable) {
+		this.item = item; //item ou bien juste l'ID ? 
+		this.member = member; 
+		this.beginningDate = beginningDate;
+		this.endingDate = endingDate;
+		this.borrowState = borrowState;
+		this.borrowAvailable = borrowAvailable;
+		
 	}
 
 }
