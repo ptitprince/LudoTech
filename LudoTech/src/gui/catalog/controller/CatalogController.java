@@ -28,6 +28,7 @@ import model.POJOs.Game;
 import model.services.ExtensionServices;
 import model.services.GameServices;
 import model.services.ItemServices;
+import model.services.MemberServices;
 
 @SuppressWarnings("serial")
 public class CatalogController extends JPanel {
@@ -35,6 +36,7 @@ public class CatalogController extends JPanel {
 	private GameServices gameServices;
 	private ItemServices itemServices;
 	private ExtensionServices extensionServices;
+	private MemberServices memberServices;
 
 	private GameListModel gameListModel;
 	private ExtensionListModel extensionListModel;
@@ -43,12 +45,16 @@ public class CatalogController extends JPanel {
 	private GameListView gameListView;
 	private GameView gameView;
 
-	public CatalogController() {
+	private int currentMemberID;
+
+	public CatalogController(int currentMemberID) {
 		this.gameServices = new GameServices();
 		this.itemServices = new ItemServices();
 		this.extensionServices = new ExtensionServices();
+		this.memberServices = new MemberServices();
 		this.gameListModel = new GameListModel(this.gameServices);
 		this.extensionListModel = new ExtensionListModel(this.extensionServices);
+		this.currentMemberID = currentMemberID;
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 		this.makeListeners();
@@ -56,14 +62,15 @@ public class CatalogController extends JPanel {
 	}
 
 	public void makeGUI() {
+		boolean currentMemberIsAdmin = this.memberServices.isAdmin(this.currentMemberID);
 		this.gameSearchView = new GameSearchView();
-		this.gameListView = new GameListView(this.gameListModel);
+		this.gameListView = new GameListView(this.gameListModel, currentMemberIsAdmin);
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, this.gameSearchView,
 				this.gameListView);
 		splitPane.setDividerLocation(LudoTechApplication.WINDOW_WIDTH / 4);
 		this.add(splitPane, BorderLayout.CENTER);
 
-		this.gameView = new GameView(this.extensionListModel);
+		this.gameView = new GameView(this.extensionListModel, currentMemberIsAdmin);
 		this.gameView.setLocationRelativeTo(this);
 	}
 
@@ -87,39 +94,6 @@ public class CatalogController extends JPanel {
 			}
 		});
 
-		// Clic sur le bouton "ajouter un jeu" de la liste des jeux
-		this.gameListView.getAddGameButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				gameView.load("", -1, "", "", Calendar.getInstance().get(Calendar.YEAR), 1, 2, 3, "", 0);
-				gameView.setVisible(true);
-			}
-		});
-
-		// Clic sur le bouton "suprimmer un jeu" de la liste des jeux
-		this.gameListView.getDeleteGameButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTable table = gameListView.getTable();
-				int selectedRowIndex = table.getSelectedRow();
-				if (selectedRowIndex > -1) {
-					int gameID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
-					int nbExtensions = extensionServices.countExtensions(gameID);
-					int nbItems = itemServices.countItemsOfGame(gameID);
-					if (nbExtensions > 0) {
-						String text = TextView.get("catalogDeleteGameNbExtensionsException") + "\n"
-								+ TextView.get("catalogGameNbExtensions") + " : " + nbExtensions;
-						JOptionPane.showMessageDialog(null, text);
-					} else if (nbItems > 0) {
-						String text = TextView.get("catalogDeleteGameNbItemsException") + "\n"
-								+ TextView.get("catalogGameNbItems") + " : " + nbItems;
-						JOptionPane.showMessageDialog(null, text);
-					} else {
-						gameServices.removeGame(gameID);
-						refreshGameList();
-					}
-				}
-			}
-		});
-
 		// Clic sur le bouton "chercher" sur la liste des jeux
 		this.gameSearchView.getSearchButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -127,68 +101,104 @@ public class CatalogController extends JPanel {
 			}
 		});
 
-		// Clic sur le bouton "valider" de la pop-up de jeu
-		this.gameView.getValidateButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (gameView.isCreatingGame()) {
-						Game newGame = gameServices.addGame(gameView.getName(), gameView.getDescription(),
-								gameView.getPublishingYearStartRange(), gameView.getMinAge(),
-								gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
-								gameView.getCategory(), gameView.getEditor());
-						itemServices.setItemsNumberOfGame(newGame.getGameID(), gameView.getNbItems());
-					} else {
-						gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
-								gameView.getPublishingYearStartRange(), gameView.getMinAge(),
-								gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
-								gameView.getCategory(), gameView.getEditor());
-						itemServices.setItemsNumberOfGame(gameView.getId(), gameView.getNbItems());
-					}
-					gameView.setVisible(false);
-					refreshGameList();
-				} catch (NotValidNumberFieldException exception) {
-					showInvalidFieldsException(exception);
+		if (this.memberServices.isAdmin(this.currentMemberID)) {
+
+			// Clic sur le bouton "ajouter un jeu" de la liste des jeux
+			this.gameListView.getAddGameButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					gameView.load("", -1, "", "", Calendar.getInstance().get(Calendar.YEAR), 1, 2, 3, "", 0);
+					gameView.setVisible(true);
 				}
-			}
-		});
+			});
 
-		// Clic sur le bouton "annuler" de la pop-up de jeu
-		this.gameView.getCancelButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				gameView.setVisible(false);
-			}
-		});
+			// Clic sur le bouton "suprimmer un jeu" de la liste des jeux
+			this.gameListView.getDeleteGameButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JTable table = gameListView.getTable();
+					int selectedRowIndex = table.getSelectedRow();
+					if (selectedRowIndex > -1) {
+						int gameID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
+						int nbExtensions = extensionServices.countExtensions(gameID);
+						int nbItems = itemServices.countItemsOfGame(gameID);
+						if (nbExtensions > 0) {
+							String text = TextView.get("catalogDeleteGameNbExtensionsException") + "\n"
+									+ TextView.get("catalogGameNbExtensions") + " : " + nbExtensions;
+							JOptionPane.showMessageDialog(null, text);
+						} else if (nbItems > 0) {
+							String text = TextView.get("catalogDeleteGameNbItemsException") + "\n"
+									+ TextView.get("catalogGameNbItems") + " : " + nbItems;
+							JOptionPane.showMessageDialog(null, text);
+						} else {
+							gameServices.removeGame(gameID);
+							refreshGameList();
+						}
+					}
+				}
+			});
 
-		// Clic sur le bouton "ajouter un exemplaire" de la pop-up de jeu
-		this.gameView.getAddExtensionButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (gameView.isCreatingGame()) {
-					String text = TextView.get("catalogAddGameExtensionException");
-					String title = TextView.get("catalogGameAddExtensionTitle");
-					JOptionPane.showMessageDialog(null, text, title, JOptionPane.ERROR_MESSAGE);
-				} else {
-					String name = JOptionPane.showInputDialog(null, TextView.get("catalogGameAddExtensionLabel"),
-							TextView.get("catalogGameAddExtensionTitle"), JOptionPane.QUESTION_MESSAGE);
-					if (name != null && !name.equals("")) {
-						extensionServices.addExtension(name, gameView.getId());
+			// Clic sur le bouton "valider" de la pop-up de jeu
+			this.gameView.getValidateButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						if (gameView.isCreatingGame()) {
+							Game newGame = gameServices.addGame(gameView.getName(), gameView.getDescription(),
+									gameView.getPublishingYearStartRange(), gameView.getMinAge(),
+									gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
+									gameView.getCategory(), gameView.getEditor());
+							itemServices.setItemsNumberOfGame(newGame.getGameID(), gameView.getNbItems());
+						} else {
+							gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
+									gameView.getPublishingYearStartRange(), gameView.getMinAge(),
+									gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
+									gameView.getCategory(), gameView.getEditor());
+							itemServices.setItemsNumberOfGame(gameView.getId(), gameView.getNbItems());
+						}
+						gameView.setVisible(false);
+						refreshGameList();
+					} catch (NotValidNumberFieldException exception) {
+						showInvalidFieldsException(exception);
+					}
+				}
+			});
+
+			// Clic sur le bouton "annuler" de la pop-up de jeu
+			this.gameView.getCancelButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					gameView.setVisible(false);
+				}
+			});
+
+			// Clic sur le bouton "ajouter un exemplaire" de la pop-up de jeu
+			this.gameView.getAddExtensionButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (gameView.isCreatingGame()) {
+						String text = TextView.get("catalogAddGameExtensionException");
+						String title = TextView.get("catalogGameAddExtensionTitle");
+						JOptionPane.showMessageDialog(null, text, title, JOptionPane.ERROR_MESSAGE);
+					} else {
+						String name = JOptionPane.showInputDialog(null, TextView.get("catalogGameAddExtensionLabel"),
+								TextView.get("catalogGameAddExtensionTitle"), JOptionPane.QUESTION_MESSAGE);
+						if (name != null && !name.equals("")) {
+							extensionServices.addExtension(name, gameView.getId());
+							refreshExtensionList(gameView.getId());
+						}
+					}
+				}
+			});
+
+			// Clic sur le bouton "suprimmer un exemplaire" de la pop-up de jeu
+			this.gameView.getDeleteExtensionButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JList list = gameView.getExtensionList();
+					int selectedIndex = list.getSelectedIndex();
+					if (selectedIndex > -1) {
+						int extensionID = ((ExtensionListModel) list.getModel()).getIDAt(selectedIndex);
+						extensionServices.deleteExtension(extensionID);
 						refreshExtensionList(gameView.getId());
 					}
 				}
-			}
-		});
-
-		// Clic sur le bouton "suprimmer un exemplaire" de la pop-up de jeu
-		this.gameView.getDeleteExtensionButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JList list = gameView.getExtensionList();
-				int selectedIndex = list.getSelectedIndex();
-				if (selectedIndex > -1) {
-					int extensionID = ((ExtensionListModel) list.getModel()).getIDAt(selectedIndex);
-					extensionServices.deleteExtension(extensionID);
-					refreshExtensionList(gameView.getId());
-				}
-			}
-		});
+			});
+		}
 
 	}
 
@@ -238,14 +248,14 @@ public class CatalogController extends JPanel {
 			}
 		});
 	}
-	
+
 	public void showInvalidFieldsException(NotValidNumberFieldException exception) {
 		String text = TextView.get("invalidField") + "\"" + exception.getFieldName() + "\"" + ".\n"
 				+ TextView.get("valueInInvalidField")
 				+ ((exception.getFieldValue().equals("")) ? TextView.get("emptyValue")
 						: "\"" + exception.getFieldValue() + "\" ")
-				+ TextView.get("typeOfValidValue") + ((exception.getFieldValue().equals(""))
-						? TextView.get("notEmptyValue") : exception.getFieldType())
+				+ TextView.get("typeOfValidValue")
+				+ ((exception.getFieldValue().equals("")) ? TextView.get("notEmptyValue") : exception.getFieldType())
 				+ ".";
 		JOptionPane.showMessageDialog(null, text);
 	}

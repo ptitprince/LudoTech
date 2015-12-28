@@ -6,7 +6,7 @@ import model.POJOs.Member;
 /**
  * Propose des fonctionnalités pour l'authentification dans l'application
  */
-public class LoginServices {
+public class MemberServices {
 
 	/**
 	 * Objet d'accés aux données de type Member (adhérents)
@@ -16,7 +16,7 @@ public class LoginServices {
 	/**
 	 * Construit un nouveau service pour l'authentification
 	 */
-	public LoginServices() {
+	public MemberServices() {
 		this.memberDAO = new MemberDAO();
 	}
 
@@ -45,4 +45,16 @@ public class LoginServices {
 			return null;
 		}
 	}
+
+	/**
+	 * Vérifie si un certain adhérent est administrateur
+	 * 
+	 * @param memberID
+	 *            L'identifiant d'un adhérent existant
+	 * @return True si l'adhérent est administrateur, False sinon
+	 */
+	public boolean isAdmin(int memberID) {
+		return this.memberDAO.isAdmin(memberID);
+	}
+
 }

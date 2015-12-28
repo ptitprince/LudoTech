@@ -11,19 +11,19 @@ import javax.swing.JPanel;
 import gui.login.view.LoginObserver;
 import gui.login.view.LoginView;
 import gui.utils.TextView;
-import model.services.LoginServices;
+import model.services.MemberServices;
 
 @SuppressWarnings("serial")
 public class LoginController extends JPanel {
 
-	private LoginServices loginServices;
+	private MemberServices memberServices;
 
 	private LoginView loginView;
 
 	private List<LoginObserver> observers;
 
 	public LoginController() {
-		this.loginServices = new LoginServices();
+		this.memberServices = new MemberServices();
 		this.observers = new ArrayList<LoginObserver>();
 		this.makeGUI();
 		this.makeListeners();
@@ -41,7 +41,7 @@ public class LoginController extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				String pseudo = loginView.getPseudoField().getText();
 				String password = loginView.getPasswordField().getText();
-				int[] memberData = loginServices.checkAccess(pseudo, password);
+				int[] memberData = memberServices.checkAccess(pseudo, password);
 				if (memberData != null) {
 					for (LoginObserver observer : observers) {
 						observer.notifySuccessfulLogin(memberData[0], (memberData[1] == 1) ? true : false);

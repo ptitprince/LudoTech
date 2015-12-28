@@ -270,18 +270,49 @@ public class MemberDAO extends DAO {
 			if (resultSet.next()) { // Positionnement sur le premier résultat
 				Date date = resultSet.getDate("birth_date");
 				member = new Member(resultSet.getInt("id"), resultSet.getString("first_name"),
-						resultSet.getString("last_name"), resultSet.getString("pseudo"), resultSet.getString("password"),
-						resultSet.getBoolean("is_admin"), date, resultSet.getInt("phone_number"),
-						resultSet.getString("email_address"), resultSet.getString("street_address"),
-						resultSet.getString("postal_code"), resultSet.getString("city"));
+						resultSet.getString("last_name"), resultSet.getString("pseudo"),
+						resultSet.getString("password"), resultSet.getBoolean("is_admin"), date,
+						resultSet.getInt("phone_number"), resultSet.getString("email_address"),
+						resultSet.getString("street_address"), resultSet.getString("postal_code"),
+						resultSet.getString("city"));
 			}
-			
+
 			super.disconnect();
 			return member;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * Obtient la colonne définissant si un adhérent est ou non un
+	 * administrateur
+	 * 
+	 * @param memberID
+	 *            L'identifiant d'un adhérent existant
+	 * @return La valeur de la colonne définissant si l'adhérent est administrateur
+	 */
+	public boolean isAdmin(int memberID) {
+		boolean isAdmin = false;
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection.prepareStatement("SELECT is_admin FROM MEMBER WHERE id = ?");
+			psSelect.setInt(1, memberID);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			if (resultSet.next()) { // Positionnement sur le premier résultat
+				isAdmin = resultSet.getBoolean("is_admin");
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isAdmin;
 	}
 
 }

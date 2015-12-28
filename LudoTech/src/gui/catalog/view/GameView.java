@@ -46,20 +46,23 @@ public class GameView extends JDialog {
 	private JTextField nbPlayersEndRangeField;
 	private JTextField minAgeField;
 	private JTextArea descriptionBox;
-	
+
 	private JList extensionsList;
 	private JButton addExtensionButton;
 	private JButton deleteExtensionButton;
 
 	private JSpinner nbItemsSpinner;
+	private JLabel nbItemsRawValue;
 
 	private JButton validateButton;
 	private JButton cancelButton;
 
 	private boolean creatingGame;
+	private boolean currentMemberIsAdmin;
 
-	public GameView(ExtensionListModel extensionListModel) {
+	public GameView(ExtensionListModel extensionListModel, boolean currentMemberIsAdmin) {
 		this.creatingGame = false;
+		this.currentMemberIsAdmin = currentMemberIsAdmin;
 
 		this.setTitle(TextView.get("catalogGamePopupTitle"));
 		this.setSize((int) (LudoTechApplication.WINDOW_WIDTH / WINDOW_RATIO),
@@ -69,6 +72,10 @@ public class GameView extends JDialog {
 		this.setLayout(new BorderLayout());
 
 		this.makeGUI(extensionListModel);
+
+		if (!currentMemberIsAdmin) {
+			this.disableFields();
+		}
 	}
 
 	private void makeGUI(ExtensionListModel extensionListModel) {
@@ -89,12 +96,14 @@ public class GameView extends JDialog {
 
 		this.add(boxesPanel, BorderLayout.CENTER);
 
-		JPanel actionsPanel = new JPanel();
-		this.validateButton = new JButton(TextView.get("validate"));
-		actionsPanel.add(this.validateButton);
-		this.cancelButton = new JButton(TextView.get("cancel"));
-		actionsPanel.add(this.cancelButton);
-		this.add(actionsPanel, BorderLayout.SOUTH);
+		if (this.currentMemberIsAdmin) {
+			JPanel actionsPanel = new JPanel();
+			this.validateButton = new JButton(TextView.get("validate"));
+			actionsPanel.add(this.validateButton);
+			this.cancelButton = new JButton(TextView.get("cancel"));
+			actionsPanel.add(this.cancelButton);
+			this.add(actionsPanel, BorderLayout.SOUTH);
+		}
 	}
 
 	public void makeInfosPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
@@ -125,7 +134,7 @@ public class GameView extends JDialog {
 		mainInfosPanel.add(idLabel);
 		this.idField = new JTextField();
 		this.idField.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
-		this.idField.setEnabled(false);
+		this.idField.setEditable(false);
 		idLabel.setLabelFor(this.idField);
 		mainInfosPanel.add(this.idField);
 
@@ -234,7 +243,8 @@ public class GameView extends JDialog {
 		boxesPanel.add(descriptionPanel, boxesConstraints);
 	}
 
-	public void makeExtensionsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints, ExtensionListModel extensionListModel) {
+	public void makeExtensionsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints,
+			ExtensionListModel extensionListModel) {
 		JPanel extensionsPanel = new JPanel(new BorderLayout());
 		TitledBorder extensionsBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameExtensionsTitle"));
 		extensionsBorder.setTitleJustification(TitledBorder.LEFT);
@@ -242,7 +252,7 @@ public class GameView extends JDialog {
 		boxesConstraints.gridx = 0;
 		boxesConstraints.gridy = 2;
 		boxesConstraints.gridwidth = 1;
-		
+
 		this.extensionsList = new JList();
 		this.extensionsList.setModel(extensionListModel);
 		this.extensionsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -251,14 +261,16 @@ public class GameView extends JDialog {
 		JScrollPane listScroller = new JScrollPane(this.extensionsList);
 		listScroller.setMaximumSize(new Dimension(listScroller.getWidth(), 50));
 		extensionsPanel.add(listScroller, BorderLayout.CENTER);
-		
-		JPanel extensionsActionsPanel = new JPanel(new FlowLayout());
-		this.addExtensionButton = new JButton(TextView.get("add"));
-		extensionsActionsPanel.add(this.addExtensionButton);
-		this.deleteExtensionButton = new JButton(TextView.get("delete"));
-		extensionsActionsPanel.add(this.deleteExtensionButton);
-		extensionsPanel.add(extensionsActionsPanel, BorderLayout.SOUTH);
-		
+
+		if (this.currentMemberIsAdmin) {
+			JPanel extensionsActionsPanel = new JPanel(new FlowLayout());
+			this.addExtensionButton = new JButton(TextView.get("add"));
+			extensionsActionsPanel.add(this.addExtensionButton);
+			this.deleteExtensionButton = new JButton(TextView.get("delete"));
+			extensionsActionsPanel.add(this.deleteExtensionButton);
+			extensionsPanel.add(extensionsActionsPanel, BorderLayout.SOUTH);
+		}
+
 		boxesPanel.add(extensionsPanel, boxesConstraints);
 	}
 
@@ -273,10 +285,27 @@ public class GameView extends JDialog {
 
 		JLabel nbItemsLabel = new JLabel(TextView.get("catalogGameNbItems"));
 		itemsPanel.add(nbItemsLabel);
-		this.nbItemsSpinner  = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
-		itemsPanel.add(this.nbItemsSpinner);
+
+		this.nbItemsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+		this.nbItemsRawValue = new JLabel();
+		if (this.currentMemberIsAdmin) {
+			itemsPanel.add(this.nbItemsSpinner);
+		} else {
+			itemsPanel.add(this.nbItemsRawValue);
+		}
 
 		boxesPanel.add(itemsPanel, boxesConstraints);
+	}
+
+	private void disableFields() {
+		this.nameField.setEditable(false);
+		this.categoryComboBox.setEnabled(false);
+		this.editorComboBox.setEnabled(false);
+		this.publishingYearField.setEditable(false);
+		this.nbPlayersStartRangeField.setEditable(false);
+		this.nbPlayersEndRangeField.setEditable(false);
+		this.minAgeField.setEditable(false);
+		this.descriptionBox.setEditable(false);
 	}
 
 	public void load(String name, int gameID, String category, String editor, int publishingYear, int minPlayers,
@@ -292,6 +321,7 @@ public class GameView extends JDialog {
 		this.minAgeField.setText("" + minAge);
 		this.descriptionBox.setText(description);
 		this.nbItemsSpinner.setValue(nbItems);
+		this.nbItemsRawValue.setText(nbItems + "");
 	}
 
 	public void loadCategories(List<String> items) {
@@ -365,11 +395,11 @@ public class GameView extends JDialog {
 	public String getDescription() {
 		return this.descriptionBox.getText();
 	}
-	
+
 	public JList getExtensionList() {
 		return this.extensionsList;
 	}
-	
+
 	public JButton getAddExtensionButton() {
 		return this.addExtensionButton;
 	}
@@ -377,9 +407,9 @@ public class GameView extends JDialog {
 	public JButton getDeleteExtensionButton() {
 		return this.deleteExtensionButton;
 	}
-	
+
 	public int getNbItems() {
-		return (Integer)this.nbItemsSpinner.getValue();
+		return (Integer) this.nbItemsSpinner.getValue();
 	}
 
 	public JButton getValidateButton() {

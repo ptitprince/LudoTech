@@ -22,8 +22,6 @@ public class MainController extends JTabbedPane implements LoginObserver {
 
 	public MainController() {
 		this.loginController = new LoginController();
-		this.catalogController = new CatalogController();
-		this.parametersController = new ParametersController();
 		this.makeLoginGUI();
 	}
 
@@ -33,6 +31,9 @@ public class MainController extends JTabbedPane implements LoginObserver {
 	}
 
 	private void makeMainUseGUI(boolean showAdminTabs) {
+		this.catalogController = new CatalogController(currentMemberID);
+		this.catalogController.refreshGameList();
+		this.parametersController = new ParametersController();
 		this.addTab(TextView.get("tabCatalog"), this.catalogController);
 		this.addTab(TextView.get("tabBorrow"), new EmptyPanel());
 		this.addTab(TextView.get("tabBook"), new EmptyPanel());
