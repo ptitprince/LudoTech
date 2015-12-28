@@ -9,7 +9,6 @@ import java.util.List;
 
 import model.POJOs.Member;
 
-
 /**
  * Classe manipulant des objets de type Member dans la base de données
  */
@@ -52,8 +51,6 @@ public class MemberDAO extends DAO {
 			psInsert.setString(8, member.getPostalCode());
 			psInsert.setString(9, member.getCity());
 			psInsert.setInt(10, memberContextID);
-
-
 
 			psInsert.executeUpdate();
 
@@ -113,7 +110,6 @@ public class MemberDAO extends DAO {
 			psEdit.setString(8, member.getPostalCode());
 			psEdit.setString(9, member.getCity());
 			psEdit.setInt(10, memberContextID);
-
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();
@@ -177,9 +173,10 @@ public class MemberDAO extends DAO {
 			if (resultSet.next()) { // Positionnement sur le premier résultat
 				Date date = resultSet.getDate("birthDate");
 				member = new Member(id, resultSet.getString("firstName"), resultSet.getString("lastName"),
-						resultSet.getString("pseudo"), resultSet.getString("password"), resultSet.getBoolean("isAdmin"), date, resultSet.getInt("phoneNumber"),
-						resultSet.getString("email"), resultSet.getString("streetAddress"), 
-						resultSet.getString("postalCode"), resultSet.getString("city"));
+						resultSet.getString("pseudo"), resultSet.getString("password"), resultSet.getBoolean("isAdmin"),
+						date, resultSet.getInt("phoneNumber"), resultSet.getString("email"),
+						resultSet.getString("streetAddress"), resultSet.getString("postalCode"),
+						resultSet.getString("city"));
 
 			}
 			super.disconnect();
@@ -221,7 +218,6 @@ public class MemberDAO extends DAO {
 		return memberContextID;
 	}
 
-
 	/**
 	 * Liste les identifiants de tous les membres de la base de données
 	 * 
@@ -246,6 +242,46 @@ public class MemberDAO extends DAO {
 			e.printStackTrace();
 		}
 		return ids;
+	}
+
+	/**
+	 * Vérifie s'il existe un adhérent possédant ce pseudo et ce mot de passe
+	 * dans la base de données
+	 * 
+	 * @param pseudo
+	 *            Le pseudo de l'adhérent à trouver
+	 * @param password
+	 *            Le mot de passe de l'adhérent à trouver
+	 * @return Un Member si l'adhérent a été trouvé, sinon null
+	 */
+	public Member exist(String pseudo, String password) {
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT * FROM MEMBER WHERE pseudo = ? AND password = ?");
+			psSelect.setString(1, pseudo);
+			psSelect.setString(2, password);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			Member member = null;
+			if (resultSet.next()) { // Positionnement sur le premier résultat
+				Date date = resultSet.getDate("birth_date");
+				member = new Member(resultSet.getInt("id"), resultSet.getString("first_name"),
+						resultSet.getString("last_name"), resultSet.getString("pseudo"), resultSet.getString("password"),
+						resultSet.getBoolean("is_admin"), date, resultSet.getInt("phone_number"),
+						resultSet.getString("email_address"), resultSet.getString("street_address"),
+						resultSet.getString("postal_code"), resultSet.getString("city"));
+			}
+			
+			super.disconnect();
+			return member;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

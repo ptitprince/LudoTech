@@ -5,45 +5,64 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import gui.catalog.controller.CatalogController;
+import gui.login.controller.LoginController;
+import gui.login.view.LoginObserver;
 import gui.parameters.controller.ParametersController;
 import gui.utils.EmptyPanel;
 import gui.utils.TextView;
 
 @SuppressWarnings("serial")
-public class MainController extends JTabbedPane {
-	
+public class MainController extends JTabbedPane implements LoginObserver {
+
+	private LoginController loginController;
 	private CatalogController catalogController;
 	private ParametersController parametersController;
 
+	private int currentMemberID;
+
 	public MainController() {
+		this.loginController = new LoginController();
 		this.catalogController = new CatalogController();
 		this.parametersController = new ParametersController();
-		this.makeGUI();
-		this.makeListeners();
+		this.makeLoginGUI();
 	}
 
-	private void makeGUI() {
-		this.addTab(TextView.get("tabHome"), new EmptyPanel());
+	private void makeLoginGUI() {
+		this.loginController.addObserver(this);
+		this.addTab(TextView.get("tabLogin"), loginController);
+	}
+
+	private void makeMainUseGUI(boolean showAdminTabs) {
 		this.addTab(TextView.get("tabCatalog"), this.catalogController);
 		this.addTab(TextView.get("tabBorrow"), new EmptyPanel());
 		this.addTab(TextView.get("tabBook"), new EmptyPanel());
 		this.addTab(TextView.get("tabProfile"), new EmptyPanel());
-		this.addTab(TextView.get("tabMembers"), new EmptyPanel());
-		this.addTab(TextView.get("tabParameters"), this.parametersController);
+		if (showAdminTabs) {
+			this.addTab(TextView.get("tabMembers"), new EmptyPanel());
+			this.addTab(TextView.get("tabParameters"), this.parametersController);
+		}
 	}
-	
-	private void makeListeners() {
+
+	private void makeMainUseListeners() {
 		this.addChangeListener(new ChangeListener() {
-	        public void stateChanged(ChangeEvent e) {
-	        	switch (MainController.this.getSelectedIndex()) {
-	        	case 1:
-	        		MainController.this.catalogController.refreshGameList();
-	        		break;
-	        	default:
-	        		break;
-	        	}
-	        }
-	    });
+			public void stateChanged(ChangeEvent e) {
+				switch (MainController.this.getSelectedIndex()) {
+				case 0:
+					MainController.this.catalogController.refreshGameList();
+					break;
+				default:
+					break;
+				}
+			}
+		});
 	}
-	
+
+	@Override
+	public void notifySuccessfulLogin(int memberID, boolean isAdmin) {
+		this.currentMemberID = memberID;
+		this.removeTabAt(0);
+		this.makeMainUseGUI(isAdmin);
+		this.makeMainUseListeners();
+	}
+
 }
