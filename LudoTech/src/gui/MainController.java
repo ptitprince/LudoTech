@@ -10,6 +10,7 @@ import gui.login.view.LoginObserver;
 import gui.parameters.controller.ParametersController;
 import gui.utils.EmptyPanel;
 import gui.utils.TextView;
+import gui.member.controller.MemberController;
 
 @SuppressWarnings("serial")
 public class MainController extends JTabbedPane implements LoginObserver {
@@ -17,6 +18,7 @@ public class MainController extends JTabbedPane implements LoginObserver {
 	private LoginController loginController;
 	private CatalogController catalogController;
 	private ParametersController parametersController;
+	private MemberController memberController;
 
 	private int currentMemberID;
 
@@ -37,7 +39,7 @@ public class MainController extends JTabbedPane implements LoginObserver {
 		this.addTab(TextView.get("tabCatalog"), this.catalogController);
 		this.addTab(TextView.get("tabBorrow"), new EmptyPanel());
 		this.addTab(TextView.get("tabBook"), new EmptyPanel());
-		this.addTab(TextView.get("tabProfile"), new EmptyPanel());
+		this.addTab(TextView.get("tabProfile"), this.memberController);
 		if (showAdminTabs) {
 			this.addTab(TextView.get("tabMembers"), new EmptyPanel());
 			this.addTab(TextView.get("tabParameters"), this.parametersController);
