@@ -14,8 +14,6 @@ import model.services.MemberServices;
 @SuppressWarnings("serial")
 public class MemberController extends JPanel {
 
-
-	
 	private MemberServices memberServices;
 
 	private MemberView memberView;
@@ -36,36 +34,35 @@ public class MemberController extends JPanel {
 	}
 
 	private void makeListeners() {
-		this.memberView.getValidateButton().addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						memberServices.saveAllMember(memberView.getFisrtName(),
-						memberView.getLastName(),memberView.getPseudo(), memberView.getPassword(), memberView.getIsAdmin(), memberView.getBirthDate(),
-						memberView.getEmail(),memberView.getStreetAddress(),memberView.getPostalCode(),
-						memberView.getCity());
-							
-					}
-				});
-		
-		this.memberView.getCancelButton().addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						loadMember();
-					}
-				});
+		this.memberView.getValidateButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				/*
+				 * TODO memberServices.saveAllMember(memberView.getFisrtName(),
+				 * memberView.getLastName(), memberView.getPseudo(),
+				 * memberView.getPassword(), memberView.getIsAdmin(),
+				 * memberView.getBirthDate(), memberView.getEmail(),
+				 * memberView.getStreetAddress(), memberView.getPostalCode(),
+				 * memberView.getCity());
+				 */
+			}
+		});
+
+		this.memberView.getCancelButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadMember();
+			}
+		});
 	}
 
 	private void loadMember() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				memberView.load(memberServices.getAllMember());
-
+				/*
+				 * TODO memberView.load(memberServices.getAllMember());
+				 */
 			}
 		});
 
 	}
 
-	
 }
-
-
