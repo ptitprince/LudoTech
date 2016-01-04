@@ -57,4 +57,20 @@ public class MemberServices {
 		return this.memberDAO.isAdmin(memberID);
 	}
 
+	/**
+	 * Trouve un membre existant
+	 * 
+	 * @param memberID
+	 *            L'identifiant du membre
+	 * @return Un objet de type Member si le membre a bien été trouvé, sinon null
+	 */
+	public Member getMember(int memberID) {
+		return this.memberDAO.get(memberID);
+	}
+	
+	
+	
+	
+	
+	
 }
