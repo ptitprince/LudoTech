@@ -8,9 +8,9 @@ import gui.catalog.controller.CatalogController;
 import gui.login.controller.LoginController;
 import gui.login.view.LoginObserver;
 import gui.parameters.controller.ParametersController;
+import gui.profile.controller.ProfileController;
 import gui.utils.EmptyPanel;
 import gui.utils.TextView;
-import gui.member.controller.MemberController;
 
 @SuppressWarnings("serial")
 public class MainController extends JTabbedPane implements LoginObserver {
@@ -18,7 +18,7 @@ public class MainController extends JTabbedPane implements LoginObserver {
 	private LoginController loginController;
 	private CatalogController catalogController;
 	private ParametersController parametersController;
-	private MemberController memberController;
+	private ProfileController profileController;
 
 	private int currentMemberID;
 
@@ -36,10 +36,11 @@ public class MainController extends JTabbedPane implements LoginObserver {
 		this.catalogController = new CatalogController(currentMemberID);
 		this.catalogController.refreshGameList();
 		this.parametersController = new ParametersController();
+		this.profileController = new ProfileController(currentMemberID);
 		this.addTab(TextView.get("tabCatalog"), this.catalogController);
 		this.addTab(TextView.get("tabBorrow"), new EmptyPanel());
 		this.addTab(TextView.get("tabBook"), new EmptyPanel());
-		this.addTab(TextView.get("tabProfile"), this.memberController);
+		this.addTab(TextView.get("tabProfile"), this.profileController);
 		if (showAdminTabs) {
 			this.addTab(TextView.get("tabMembers"), new EmptyPanel());
 			this.addTab(TextView.get("tabParameters"), this.parametersController);

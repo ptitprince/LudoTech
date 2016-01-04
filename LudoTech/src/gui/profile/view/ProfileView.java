@@ -1,11 +1,10 @@
-package gui.member.view;
+package gui.profile.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.Properties;
-
+import java.util.Date;
 import javax.swing.JButton;
-
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -17,13 +16,13 @@ import gui.utils.TextView;
 
 
 @SuppressWarnings("serial")
-public class MemberView extends JPanel {
+public class ProfileView extends JPanel {
 
 	private JTextField firstName;
 	private JTextField lastName;
 	private JTextField pseudo;
 	private JTextField password;
-	private JTextField isAdmin;
+	private JCheckBox isAdmin;
 	private JTextField birthDate;
 	private JTextField phoneNumber;
 	private JTextField email;
@@ -34,7 +33,7 @@ public class MemberView extends JPanel {
 	private JButton cancelButton;
 
 	
-public MemberView() {
+public ProfileView() {
 	this.setLayout(new BorderLayout());
 
 	this.makeGUI();
@@ -49,81 +48,73 @@ private void makeGUI() {
 	JLabel firstNameLabel = new JLabel(TextView.get("firstName"));
 	memberPanel.add(firstNameLabel);
 	this.firstName = new JTextField();
-	this.firstName.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.firstName.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 	firstNameLabel.setLabelFor(this.firstName);
 	memberPanel.add(this.firstName);
 
 	JLabel lastNameLabel = new JLabel(TextView.get("lastName"));
 	memberPanel.add(lastNameLabel);
 	this.lastName = new JTextField();
-	this.lastName.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.lastName.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 	lastNameLabel.setLabelFor(this.lastName);
 	memberPanel.add(this.lastName);
 
 	JLabel pseudoLabel = new JLabel(TextView.get("pseudo"));
 	memberPanel.add(pseudoLabel);
 	this.pseudo = new JTextField();
-	this.pseudo.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.pseudo.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 	pseudoLabel.setLabelFor(this.pseudo);
 	memberPanel.add(this.pseudo);
-	
-	JLabel passwordLabel = new JLabel(TextView.get("password"));
-	memberPanel.add(passwordLabel);
-	this.password = new JTextField();
-	this.password.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
-	passwordLabel.setLabelFor(this.password);
-	memberPanel.add(this.password);
 		
 	JLabel isAdminLabel = new JLabel(TextView.get("isAdmin"));
 	memberPanel.add(isAdminLabel);
-	this.isAdmin = new JTextField();
-	this.isAdmin.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.isAdmin = new JCheckBox();
 	isAdminLabel.setLabelFor(this.isAdmin);
 	memberPanel.add(this.isAdmin);
 	
 	JLabel birthDateLabel = new JLabel(TextView.get("birthDate"));
-	memberPanel.add(birthDate);
+	memberPanel.add(birthDateLabel);
 	this.birthDate = new JTextField();
-	this.birthDate.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.birthDate.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 	birthDateLabel.setLabelFor(this.birthDate);
 	memberPanel.add(this.birthDate);
 	
 	JLabel phoneNumberLabel = new JLabel(TextView.get("phoneNumber"));
 	memberPanel.add(phoneNumberLabel);
 	this.phoneNumber = new JTextField();
-	this.phoneNumber.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.phoneNumber.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 	phoneNumberLabel.setLabelFor(this.phoneNumber);
 	memberPanel.add(this.phoneNumber);
 	
 	JLabel emailLabel = new JLabel(TextView.get("email"));
-	memberPanel.add(email);
+	memberPanel.add(emailLabel);
 	this.email = new JTextField();
-	this.email.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.email.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 	emailLabel.setLabelFor(this.email);
 	memberPanel.add(this.email);
 	
 	JLabel streetAddressLabel = new JLabel(TextView.get("streetAddress"));
-	memberPanel.add(streetAddress);
+	memberPanel.add(streetAddressLabel);
 	this.streetAddress = new JTextField();
-	this.streetAddress.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.streetAddress.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 	streetAddressLabel.setLabelFor(this.streetAddress);
 	memberPanel.add(this.streetAddress);
 	
 	JLabel postalCodeLabel = new JLabel(TextView.get("postalCode"));
-	memberPanel.add(postalCode);
+	memberPanel.add(postalCodeLabel);
 	this.postalCode = new JTextField();
-	this.postalCode.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.postalCode.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 	postalCodeLabel.setLabelFor(this.postalCode);
 	memberPanel.add(this.postalCode);
 	
 	JLabel cityLabel = new JLabel(TextView.get("city"));
-	memberPanel.add(city);
+	memberPanel.add(cityLabel);
 	this.city = new JTextField();
-	this.city.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 10, 20));
+	this.city.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 	cityLabel.setLabelFor(this.city);
 	memberPanel.add(this.city);
 
-	SpringUtilities.makeCompactGrid(memberPanel, 5, 3, 6, 6, 20, 5);
+	SpringUtilities.makeCompactGrid(memberPanel, 10, 2, 6, 6, 20, 5);
 	
 	this.add(memberPanel, BorderLayout.CENTER);
 
@@ -136,20 +127,22 @@ private void makeGUI() {
 
 }
 
-public void load(Properties member) {
-	this.firstName.setText(member.getProperty("firstName"));
-	this.lastName.setText(member.getProperty("lastName"));
-	this.pseudo.setText(member.getProperty("pseudo"));
-	this.password.setText(member.getProperty("password"));
-	this.isAdmin.setText(member.getProperty("isAdmin"));
-	this.birthDate.setText(member.getProperty("birthDate"));
-	this.phoneNumber.setText(member.getProperty("phoneNumber"));
-	this.email.setText(member.getProperty("email"));
-	this.streetAddress.setText(member.getProperty("streetAddress"));
-	this.postalCode.setText(member.getProperty("postalCode"));
-	this.city.setText(member.getProperty("city"));
+
+public void load( String firstName, String lastName, String pseudo, boolean isAdmin, Date birthDate, int phoneNumber,
+		String email, String streetAddress, String postalCode, String city) {
+	this.firstName.setText(firstName);
+	this.lastName.setText(lastName);
+	this.pseudo.setText(pseudo);
+	this.isAdmin.setSelected(isAdmin);
+	this.birthDate.setText(birthDate.toString());
+	this.phoneNumber.setText(phoneNumber+"");
+	this.email.setText(email);
+	this.streetAddress.setText(streetAddress);
+	this.postalCode.setText(postalCode);
+	this.city.setText(city);
 
 }
+
 public String getFisrtName() {
 	return this.firstName.getText();
 }

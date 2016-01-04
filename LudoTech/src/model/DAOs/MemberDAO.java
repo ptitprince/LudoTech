@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import model.POJOs.Extension;
 import model.POJOs.Member;
 
 /**
@@ -37,7 +38,7 @@ public class MemberDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
-					+ "MEMBER(firstName, lastName, pseudo,password, isAdmin, birthDate, phoneNumber, email, streetAddress, postalCode, city, memberContextID) "
+					+ "MEMBER(first_name, last_name, pseudo,password, is_admin, birth_date, phone_number, email, street_address, postal_code, city, member_context_id) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", new String[] { "ID" });
 			psInsert.setString(1, member.getFirstName());
 			psInsert.setString(2, member.getLastName());
@@ -91,25 +92,25 @@ public class MemberDAO extends DAO {
 	 *         passé
 	 */
 
-	public boolean edit(Member member, int memberContextID, int memberCredentialsID) {
+	public boolean edit(Member member, int memberContextID) {
 		try {
 			super.connect();
 
 			PreparedStatement psEdit = connection.prepareStatement("UPDATE MEMBER "
-					+ "SET firtName = ?, lastName = ?, pseudo = ?, password = ?, isAdmin = ?, birthDate = ?, phoneNumber = ?, email = ?, streetAddress = ?, postalCode = ?, city = ?, memberContextID = ? "
+					+ "SET first_name = ?, last_name = ?, pseudo = ?, password = ?, is_admin = ?, birth_date = ?, phone_number = ?, email = ?, street_address = ?, postal_Code = ?, city = ?, member_contextID = ? "
 					+ "WHERE id = ?");
 			psEdit.setString(1, member.getFirstName());
 			psEdit.setString(2, member.getLastName());
 			psEdit.setString(3, member.getPseudo());
-			psEdit.setString(3, member.getPassword());
-			psEdit.setBoolean(3, member.getIsAdmin());
-			psEdit.setDate(4, new java.sql.Date(member.getBirthDate().getTime()));
-			psEdit.setInt(5, member.getPhoneNumber());
-			psEdit.setString(6, member.getEmail());
-			psEdit.setString(7, member.getStreetAddress());
-			psEdit.setString(8, member.getPostalCode());
-			psEdit.setString(9, member.getCity());
-			psEdit.setInt(10, memberContextID);
+			psEdit.setString(4, member.getPassword());
+			psEdit.setBoolean(5, member.getIsAdmin());
+			psEdit.setDate(6, new java.sql.Date(member.getBirthDate().getTime()));
+			psEdit.setInt(7, member.getPhoneNumber());
+			psEdit.setString(8, member.getEmail());
+			psEdit.setString(9, member.getStreetAddress());
+			psEdit.setString(10, member.getPostalCode());
+			psEdit.setString(11, member.getCity());
+			psEdit.setInt(12, memberContextID);
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();
@@ -171,11 +172,11 @@ public class MemberDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 			Member member = null;
 			if (resultSet.next()) { // Positionnement sur le premier résultat
-				Date date = resultSet.getDate("birthDate");
-				member = new Member(id, resultSet.getString("firstName"), resultSet.getString("lastName"),
-						resultSet.getString("pseudo"), resultSet.getString("password"), resultSet.getBoolean("isAdmin"),
-						date, resultSet.getInt("phoneNumber"), resultSet.getString("email"),
-						resultSet.getString("streetAddress"), resultSet.getString("postalCode"),
+				Date date = resultSet.getDate("birth_date");
+				member = new Member(id, resultSet.getString("first_name"), resultSet.getString("last_name"),
+						resultSet.getString("pseudo"), resultSet.getString("password"), resultSet.getBoolean("is_admin"),
+						date, resultSet.getInt("phone_number"), resultSet.getString("email_address"),
+						resultSet.getString("street_address"), resultSet.getString("postal_code"),
 						resultSet.getString("city"));
 
 			}
@@ -186,6 +187,9 @@ public class MemberDAO extends DAO {
 			return null;
 		}
 	}
+	
+
+	
 
 	/**
 	 * Trouve l'identifiant du statut d'un membre (memberContext) dans la base
@@ -201,14 +205,14 @@ public class MemberDAO extends DAO {
 		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT memberContextID FROM MEMBER WHERE id = ?");
+			PreparedStatement psSelect = connection.prepareStatement("SELECT member_context_id FROM MEMBER WHERE id = ?");
 			psSelect.setInt(1, memberID);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 			if (resultSet.next()) { // Positionnement sur le premier résultat
-				memberContextID = resultSet.getInt("memberContextID");
+				memberContextID = resultSet.getInt("member_context_id");
 			}
 
 			super.disconnect();
