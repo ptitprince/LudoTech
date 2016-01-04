@@ -3,6 +3,9 @@ package model.DAOs;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import model.POJOs.Borrow;
 
 public class BorrowDAO extends DAO {
@@ -23,7 +26,7 @@ public class BorrowDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
-					+ "Borrow(borrowId, itemID, memberID, beginningDate, endingDate, borrowState, borrowAvailable) "
+					+ "Borrow(borrow_id, item_id, member_id, beginning_date, ending_date, borrow_state, borrow_available) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?)", new String[] { "ID" });
 			psInsert.setInt(1, borrow.getBorrowId());
 			psInsert.setInt(2, itemID);
@@ -75,14 +78,20 @@ public class BorrowDAO extends DAO {
 			return false;
 		}
 	}
-	
+	/**
+	 * Modifie un emprunt donné en paramètre.
+	 * @param borrow un emprunt.
+	 * @param itemID l'identifiant de l'item.
+	 * @param memberID l'identifiant du membre.
+	 * @return un emprunt modifié.
+	 */
 	public boolean edit(Borrow borrow, int itemID, int memberID)	{
 		try {
 			super.connect();
 
 			PreparedStatement psEdit = connection.prepareStatement("UPDATE BORROW "
-					+ "SET itemID = ?, memberID = ?, beginningDate = ?, endingDate = ?, borrowState = ?, borrowAvailable = ?) "
-					+ "WHERE id = ?");
+					+ "SET item_id = ?, member_id = ?, beginning_date = ?, ending_date = ?, borrow_state = ?, borrow_available = ?) "
+					+ "WHERE borrow_id = ?");
 			psEdit.setInt(1, itemID);
 			//Extension un jeu ? Besoin d'un ID ?
 			psEdit.setInt(2, memberID);
@@ -102,12 +111,16 @@ public class BorrowDAO extends DAO {
 			return false;
 		}
 	}
-	
-	/*public Borrow get(int id) {
-		try { //TODO : problème avec le resultSet
+	/**
+	 * retourne un emprunt.
+	 * @param id
+	 * @return un emprunt dont l'identifiant correspond, ou null.
+	 */
+	public Borrow get(int id) {
+		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM BORROW WHERE id = ?");
+			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM BORROW WHERE borrow_id = ?");
 			psSelect.setInt(1, id);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -115,17 +128,45 @@ public class BorrowDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 			Borrow borrow = null;
 			if (resultSet.next()) { // Positionnement sur le premier résultat
-				borrow = new Borrow(id, resultSet.get("item"), resultSet.get("member"),
-						resultSet.getDate("beginningDate"), resultSet.getDate("endingDate"),
-						resultSet.getString("borrowState"), resultSet.getBoolean("borrowAvailable"));
+				borrow = new Borrow(id, resultSet.getInt("item_id"), resultSet.getInt("member_id"),
+						resultSet.getDate("beginning_date"), resultSet.getDate("ending_date"),
+						resultSet.getString("borrow_state"), resultSet.getBoolean("borrow_available"));
 			}
 			super.disconnect();
-			return game;
+			return borrow;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
-	}*/
-	
+	}
+	/**
+	 * Méthode d'accès à tous les emprunts.
+	 * @return la liste des emprunts.
+	 */
+	public List<Borrow> getBorrows()	{
+		List<Borrow> borrows = new ArrayList<Borrow>();
+		try {
+			super.connect();
+			
+			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM BORROW");
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+			
+			ResultSet resultSet = psSelect.getResultSet();
+			
+			while(resultSet.next())	{// boucle pour sélectionner tous les emprunts.
+				borrows.add(new Borrow(resultSet.getInt("borrow_id"), resultSet.getInt("item_id"), resultSet.getInt("member_id"),
+						resultSet.getDate("beginning_date"), resultSet.getDate("ending_date"),resultSet.getString("borrow_state"), 
+						resultSet.getBoolean("borrow_available")));
+			}//plus de borrow, la fin de la "liste".
+			super.disconnect();
+			return borrows;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		
+	}
 	
 }

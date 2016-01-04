@@ -17,12 +17,12 @@ public class Borrow {
 	/**
 	 * L'exemplaire qui a été emprunté.
 	 */
-	private Item item;
+	private int itemID;
 	
 	/**
 	 * L'utilisateur qui a fait l'emprunt.
 	 */
-	private Member member;
+	private int memberID;
 	
 	/**
 	 * Date de début de l'emprunt. besoin classe calendar pour date ?
@@ -52,19 +52,19 @@ public class Borrow {
 		this.borrowId = borrowId;
 	}
 
-	public Item getItem() {
-		return item;
+	public int getItemId() {
+		return itemID;
 	}
-	public void setItem(Item item) {
-		this.item = item;
-	}
-
-	public Member getMember() {
-		return member;
+	public void setItem(int itemID) {
+		this.itemID = itemID;
 	}
 
-	public void setMember(Member member) {
-		this.member = member;
+	public int getMemberId() {
+		return memberID;
+	}
+
+	public void setMemberId(int memberID) {
+		this.memberID = memberID;
 	}
 
 	public Date getBeginningDate() {
@@ -102,17 +102,17 @@ public class Borrow {
 	/**
 	 * Construit et retourne un nouvel emprunt dont l'identifiant est connu.
 	 * @param borrowID L'identifiant de l'emprunt.
-	 * @param item l'exemplaire concerné.
-	 * @param member le membre concerné.
+	 * @param itemID l'exemplaire concerné.
+	 * @param memberID le membre concerné.
 	 * @param beginningDate La date de début du prêt.
 	 * @param endingDate La date de fin du prêt.
 	 * @param borrowState L'état de l'emprunt.
 	 * @param borrowAvailable La disponibilité du jeu. 
 	 */
-	public Borrow(int borrowID, Item item, Member member, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable) {
+	public Borrow(int borrowID, int itemID, int memberID, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable) {
 		this.borrowId = borrowID;
-		this.item = item;
-		this.member = member;
+		this.itemID = itemID;
+		this.memberID = memberID;
 		this.beginningDate = beginningDate;
 		this.endingDate = endingDate;
 		this.borrowState = borrowState;
@@ -129,9 +129,9 @@ public class Borrow {
 	 * @param borrowState L'état de l'emprunt.
 	 * @param borrowAvailable La disponibilité du jeu. 
 	 */
-	public Borrow(Item item, Member member, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable) {
-		this.item = item; //item ou bien juste l'ID ? 
-		this.member = member; 
+	public Borrow(int itemID, int memberID, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable) {
+		this.itemID = itemID; //item ou bien juste l'ID ? 
+		this.memberID = memberID; 
 		this.beginningDate = beginningDate;
 		this.endingDate = endingDate;
 		this.borrowState = borrowState;
