@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import model.POJOs.Borrow;
 
@@ -119,8 +120,14 @@ public class BorrowDAO extends DAO {
 	public Borrow get(int id) {
 		try {
 			super.connect();
-
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM BORROW WHERE borrow_id = ?");
+			
+			 String request = "SELECT BORROW.*, "
+			 + "BORROW_MEMBER.name AS member_name, "
+			 + "FROM BORROW "
+			 + "JOIN BORROW_MEMBER ON BORROW.member_id = MEMBER.id"
+			 + "WHERE BORROW.borrow_id = ?";
+			 
+			 PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.setInt(1, id);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -147,7 +154,39 @@ public class BorrowDAO extends DAO {
 		List<Borrow> borrows = new ArrayList<Borrow>();
 		try {
 			super.connect();
-			
+			/**
+			String request = "SELECT BORROW.*, "
+			+ "BORROW_MEMBER.name AS member_name, "
+			+"FROM BORROW "
+			+"JOIN BORROW_MEMBER ON BORROW.member_id = MEMBER.id"
+			+"WHERE BORROW.borrow_id = ?";
+			String whereClause = "";
+			boolean atLeastOneCondition = false;
+			for (Entry<String, String> property : filter.entrySet()) {
+				if (property.getKey().equals("item_id") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(BORROW." + property.getKey() + ")"	//lower ?
+							+ " LIKE LOWER('%" + property.getValue() + "%')";
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("member_id") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + property.getValue();
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("beginning_date") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getValue();
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("ending_date") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + property.getValue();
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("borrow_state") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(.category) = LOWER('"
+							+ property.getValue() + "')";
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("editor") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME_EDITOR.name) = LOWER('"
+							+ property.getValue() + "')";
+					atLeastOneCondition = true;
+				}
+			} // Pas compris, à demander.
+			 */
 			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM BORROW");
 			psSelect.execute();
 			psSelect.closeOnCompletion();
