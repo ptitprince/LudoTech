@@ -87,6 +87,7 @@ private void makeGUI() {
 	JLabel isAdminLabel = new JLabel(TextView.get("isAdmin"));
 	memberPanel.add(isAdminLabel);
 	this.isAdmin = new JCheckBox();
+	this.isAdmin.setEnabled(false);
 	isAdminLabel.setLabelFor(this.isAdmin);
 	memberPanel.add(this.isAdmin);
 	
@@ -195,16 +196,13 @@ public boolean getIsAdmin() {
 
 }
 
-public Date getBirthDate() {
+public Date getBirthDate() throws ParseException {
 	DateModel<?> model = this.datePicker.getModel();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	String dateInString = ""+model.getDay()+"/"+model.getMonth()+"/"+model.getYear();
-	try {
-		return sdf.parse(dateInString);
-	} catch (ParseException e) {
-		e.printStackTrace();
-		return null;
-	}
+	
+	return sdf.parse(dateInString);
+	
 }
 
 public String getPhoneNumber() {
