@@ -71,9 +71,9 @@ public class MemberServices {
 		return this.memberDAO.get(memberID);
 	}
 
-	public Member saveMember(int memberID, String firstName, String lastName, String pseudo, String password, boolean isAdmin, int birthDate,
+	public Member saveMember(int memberID, String firstName, String lastName, String pseudo, String password, boolean isAdmin, Date birthDate,
 			String phoneNumber, String email, String streetAddress, String postalCode, String city) {
-		Member member = new Member(memberID, firstName, lastName, pseudo, password, isAdmin, new Date(), phoneNumber, email, streetAddress, postalCode, city);
+		Member member = new Member(memberID, firstName, lastName, pseudo, password, isAdmin, birthDate, phoneNumber, email, streetAddress, postalCode, city);
 		int contextID = this.memberDAO.getMemberContextID(memberID);
 		return this.memberDAO.edit(member, contextID) ? member : null;
 		

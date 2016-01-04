@@ -2,7 +2,11 @@ package gui.profile.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -11,7 +15,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
+import org.jdatepicker.DateModel;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
 import gui.LudoTechApplication;
+import gui.utils.DateFormatter;
 import gui.utils.SpringUtilities;
 import gui.utils.TextView;
 
@@ -24,7 +34,7 @@ public class ProfileView extends JPanel {
 	private JTextField pseudo;
 	private JPasswordField password;
 	private JCheckBox isAdmin;
-	private JTextField birthDate;
+	private JDatePickerImpl datePicker;
 	private JTextField phoneNumber;
 	private JTextField email;
 	private JTextField streetAddress;
@@ -82,10 +92,16 @@ private void makeGUI() {
 	
 	JLabel birthDateLabel = new JLabel(TextView.get("birthDate"));
 	memberPanel.add(birthDateLabel);
-	this.birthDate = new JTextField();
-	this.birthDate.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
-	birthDateLabel.setLabelFor(this.birthDate);
-	memberPanel.add(this.birthDate);
+	UtilDateModel model = new UtilDateModel();
+	model.setSelected(true);
+	Properties p = new Properties();
+	p.put("text.today", "Today");
+	p.put("text.month", "Month");
+	p.put("text.year", "Year");
+	JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+	this.datePicker = new JDatePickerImpl(datePanel, new DateFormatter());
+	birthDateLabel.setLabelFor(this.datePicker);
+	memberPanel.add(datePicker);
 	
 	JLabel phoneNumberLabel = new JLabel(TextView.get("phoneNumber"));
 	memberPanel.add(phoneNumberLabel);
@@ -143,7 +159,15 @@ public void load( String firstName, String lastName, String pseudo, String passw
 	this.pseudo.setText(pseudo);
 	this.password.setText(password);
 	this.isAdmin.setSelected(isAdmin);
-	this.birthDate.setText(birthDate.toString());
+	
+	SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
+	SimpleDateFormat sdfMonth = new SimpleDateFormat("MM");
+	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+	int year = Integer.parseInt(sdfYear.format(birthDate));
+	int month = Integer.parseInt(sdfMonth.format(birthDate));
+	int day = Integer.parseInt(sdfDay.format(birthDate));
+	this.datePicker.getModel().setDate(year, month, day);
+	
 	this.phoneNumber.setText(phoneNumber);
 	this.email.setText(email);
 	this.streetAddress.setText(streetAddress);
@@ -171,8 +195,16 @@ public boolean getIsAdmin() {
 
 }
 
-public int getBirthDate() {
-	return 0;
+public Date getBirthDate() {
+	DateModel<?> model = this.datePicker.getModel();
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	String dateInString = ""+model.getDay()+"/"+model.getMonth()+"/"+model.getYear();
+	try {
+		return sdf.parse(dateInString);
+	} catch (ParseException e) {
+		e.printStackTrace();
+		return null;
+	}
 }
 
 public String getPhoneNumber() {
