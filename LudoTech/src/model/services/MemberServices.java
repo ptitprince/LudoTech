@@ -1,6 +1,9 @@
 package model.services;
 
+import java.util.Date;
+
 import model.DAOs.MemberDAO;
+import model.POJOs.Game;
 import model.POJOs.Member;
 
 /**
@@ -66,6 +69,14 @@ public class MemberServices {
 	 */
 	public Member getMember(int memberID) {
 		return this.memberDAO.get(memberID);
+	}
+
+	public Member saveMember(int memberID, String firstName, String lastName, String pseudo, String password, boolean isAdmin, int birthDate,
+			String phoneNumber, String email, String streetAddress, String postalCode, String city) {
+		Member member = new Member(memberID, firstName, lastName, pseudo, password, isAdmin, new Date(), phoneNumber, email, streetAddress, postalCode, city);
+		int contextID = this.memberDAO.getMemberContextID(memberID);
+		return this.memberDAO.edit(member, contextID) ? member : null;
+		
 	}
 	
 	

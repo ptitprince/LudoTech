@@ -4,10 +4,12 @@ package gui.profile.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import gui.profile.view.ProfileView;
+import gui.utils.TextView;
 import model.POJOs.Member;
 import model.services.MemberServices;
 
@@ -40,11 +42,13 @@ public class ProfileController extends JPanel {
 		this.profileView.getValidateButton().addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						/*memberServices.saveMember(profileView.getFisrtName(),
-						profileView.getLastName(),profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(), profileView.getBirthDate(),
+						memberServices.saveMember(currentMemberID, profileView.getFisrtName(),
+						profileView.getLastName(),profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(), profileView.getBirthDate(), profileView.getPhoneNumber(),
 						profileView.getEmail(),profileView.getStreetAddress(),profileView.getPostalCode(),
-						profileView.getCity());*/
-							
+						profileView.getCity());
+						String text = TextView.get("profileEditMemberConfirmation");
+						String title = TextView.get("profileEditMemberException");
+						JOptionPane.showMessageDialog(null, text, title, JOptionPane.INFORMATION_MESSAGE);	
 					}
 				});
 		
@@ -61,7 +65,7 @@ public class ProfileController extends JPanel {
 			public void run() {
 				Member member = memberServices.getMember(currentMemberID);
 				profileView.load(member.getFirstName(),
-						member.getLastName(),member.getPseudo(), member.getIsAdmin(), member.getBirthDate(), member.getPhoneNumber(),
+						member.getLastName(),member.getPseudo(), member.getPassword(), member.getIsAdmin(), member.getBirthDate(), member.getPhoneNumber(),
 						member.getEmail(),member.getStreetAddress(),member.getPostalCode(),
 						member.getCity());
 

@@ -74,11 +74,11 @@ public class Member {
 		this.birthDate = birthDate;
 	}
 
-	public int getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(int phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
@@ -123,10 +123,10 @@ public class Member {
 	}
 
 
-	public Member(String lastName, String firstName, String pseudo, String password, boolean isAdmin, Date birthDate, int phoneNumber, String email, String streetAddress, String postalCode, String city,
+	public Member(String firstName, String lastName, String pseudo, String password, boolean isAdmin, Date birthDate, String phoneNumber, String email, String streetAddress, String postalCode, String city,
 			MemberContext memberContext) {
-		this.lastName = lastName;
 		this.firstName = firstName;
+		this.lastName = lastName;
 		this.pseudo = pseudo;
 		this.password = password;
 		this.isAdmin = isAdmin;
@@ -141,7 +141,7 @@ public class Member {
 
 	}
 
-	public Member(int memberID, String lastName, String firstName, String pseudo, String password, boolean isAdmin, Date birthDate, int phoneNumber,
+	public Member(int memberID, String lastName, String firstName, String pseudo, String password, boolean isAdmin, Date birthDate, String phoneNumber,
 			String email, String streetAddress, String postalCode, String city, MemberContext memberContext) {
 		this.memberID = memberID;
 		this.lastName = lastName;
@@ -158,7 +158,7 @@ public class Member {
 		this.memberContext = memberContext;
 	}
 
-	public Member(int memberID, String lastName, String firstName, String pseudo, String password, boolean isAdmin, Date birthDate, int phoneNumber,
+	public Member(int memberID, String lastName, String firstName, String pseudo, String password, boolean isAdmin, Date birthDate, String phoneNumber,
 			String email, String streetAddress, String postalCode, String city) {
 		this.memberID = memberID;
 		this.lastName = lastName;
@@ -211,7 +211,7 @@ public class Member {
 	 * Le téléphone du membre
 	 **/
 
-	private int phoneNumber;
+	private String phoneNumber;
 
 	/**
 	 * Le mail du membre

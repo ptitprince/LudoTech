@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
@@ -21,7 +22,7 @@ public class ProfileView extends JPanel {
 	private JTextField firstName;
 	private JTextField lastName;
 	private JTextField pseudo;
-	private JTextField password;
+	private JPasswordField password;
 	private JCheckBox isAdmin;
 	private JTextField birthDate;
 	private JTextField phoneNumber;
@@ -66,6 +67,13 @@ private void makeGUI() {
 	pseudoLabel.setLabelFor(this.pseudo);
 	memberPanel.add(this.pseudo);
 		
+	JLabel passwordLabel = new JLabel(TextView.get("password"));
+	memberPanel.add(passwordLabel);
+	this.password = new JPasswordField();
+	this.password.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
+	passwordLabel.setLabelFor(this.password);
+	memberPanel.add(this.password);
+	
 	JLabel isAdminLabel = new JLabel(TextView.get("isAdmin"));
 	memberPanel.add(isAdminLabel);
 	this.isAdmin = new JCheckBox();
@@ -114,7 +122,7 @@ private void makeGUI() {
 	cityLabel.setLabelFor(this.city);
 	memberPanel.add(this.city);
 
-	SpringUtilities.makeCompactGrid(memberPanel, 10, 2, 6, 6, 20, 5);
+	SpringUtilities.makeCompactGrid(memberPanel, 11, 2, 6, 6, 20, 5);
 	
 	this.add(memberPanel, BorderLayout.CENTER);
 
@@ -128,14 +136,15 @@ private void makeGUI() {
 }
 
 
-public void load( String firstName, String lastName, String pseudo, boolean isAdmin, Date birthDate, int phoneNumber,
+public void load( String firstName, String lastName, String pseudo, String password, boolean isAdmin, Date birthDate, String phoneNumber,
 		String email, String streetAddress, String postalCode, String city) {
 	this.firstName.setText(firstName);
 	this.lastName.setText(lastName);
 	this.pseudo.setText(pseudo);
+	this.password.setText(password);
 	this.isAdmin.setSelected(isAdmin);
 	this.birthDate.setText(birthDate.toString());
-	this.phoneNumber.setText(phoneNumber+"");
+	this.phoneNumber.setText(phoneNumber);
 	this.email.setText(email);
 	this.streetAddress.setText(streetAddress);
 	this.postalCode.setText(postalCode);
@@ -157,44 +166,37 @@ public String getPseudo() {
 
 }
 
-
-public String getPassword() {
-	return this.password.getText();
-
-}
-
 public boolean getIsAdmin() {
-	return this.isAdmin.getText() != null;
+	return this.isAdmin.isSelected();
 
 }
 
 public int getBirthDate() {
-	return Integer.parseInt(this.birthDate.getText());
+	return 0;
+}
+
+public String getPhoneNumber() {
+	return this.phoneNumber.getText();
 
 }
 
-public int getPhoneNumber() {
-	return Integer.parseInt(this.phoneNumber.getText());
+public String getEmail() {
+	return this.email.getText();
 
 }
 
-public int getEmail() {
-	return Integer.parseInt(this.email.getText());
+public String getStreetAddress() {
+	return this.streetAddress.getText();
 
 }
 
-public int getStreetAddress() {
-	return Integer.parseInt(this.streetAddress.getText());
+public String getPostalCode() {
+	return this.postalCode.getText();
 
 }
 
-public int getPostalCode() {
-	return Integer.parseInt(this.postalCode.getText());
-
-}
-
-public int getCity() {
-	return Integer.parseInt(this.city.getText());
+public String getCity() {
+	return this.city.getText();
 
 }
 
@@ -204,6 +206,11 @@ public JButton getValidateButton() {
 
 public JButton getCancelButton() {
 	return this.cancelButton;
+}
+
+
+public String getPassword() {
+	return this.password.getText();
 }
 
 

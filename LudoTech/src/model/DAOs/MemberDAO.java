@@ -38,7 +38,7 @@ public class MemberDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
-					+ "MEMBER(first_name, last_name, pseudo,password, is_admin, birth_date, phone_number, email, street_address, postal_code, city, member_context_id) "
+					+ "MEMBER(first_name, last_name, pseudo,password, is_admin, birth_date, phone_number, email_address, street_address, postal_code, city, context_id) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", new String[] { "ID" });
 			psInsert.setString(1, member.getFirstName());
 			psInsert.setString(2, member.getLastName());
@@ -46,7 +46,7 @@ public class MemberDAO extends DAO {
 			psInsert.setString(3, member.getPassword());
 			psInsert.setBoolean(3, member.getIsAdmin());
 			psInsert.setDate(4, new java.sql.Date(member.getBirthDate().getTime()));
-			psInsert.setInt(5, member.getPhoneNumber());
+			psInsert.setString(5, member.getPhoneNumber());
 			psInsert.setString(6, member.getEmail());
 			psInsert.setString(7, member.getStreetAddress());
 			psInsert.setString(8, member.getPostalCode());
@@ -97,7 +97,9 @@ public class MemberDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psEdit = connection.prepareStatement("UPDATE MEMBER "
-					+ "SET first_name = ?, last_name = ?, pseudo = ?, password = ?, is_admin = ?, birth_date = ?, phone_number = ?, email = ?, street_address = ?, postal_Code = ?, city = ?, member_contextID = ? "
+					+ "SET first_name = ?, last_name = ?, pseudo = ?, password = ?, is_admin = ?, "
+					+ "birth_date = ?, phone_number = ?, email_address = ?, street_address = ?, "
+					+ "postal_code = ?, city = ?, context_id = ? "
 					+ "WHERE id = ?");
 			psEdit.setString(1, member.getFirstName());
 			psEdit.setString(2, member.getLastName());
@@ -105,12 +107,14 @@ public class MemberDAO extends DAO {
 			psEdit.setString(4, member.getPassword());
 			psEdit.setBoolean(5, member.getIsAdmin());
 			psEdit.setDate(6, new java.sql.Date(member.getBirthDate().getTime()));
-			psEdit.setInt(7, member.getPhoneNumber());
+			psEdit.setString(7, member.getPhoneNumber());
 			psEdit.setString(8, member.getEmail());
 			psEdit.setString(9, member.getStreetAddress());
 			psEdit.setString(10, member.getPostalCode());
 			psEdit.setString(11, member.getCity());
 			psEdit.setInt(12, memberContextID);
+			psEdit.setInt(13, member.getMemberID());
+
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();
@@ -174,10 +178,10 @@ public class MemberDAO extends DAO {
 			if (resultSet.next()) { // Positionnement sur le premier résultat
 				Date date = resultSet.getDate("birth_date");
 				member = new Member(id, resultSet.getString("first_name"), resultSet.getString("last_name"),
-						resultSet.getString("pseudo"), resultSet.getString("password"), resultSet.getBoolean("is_admin"),
-						date, resultSet.getInt("phone_number"), resultSet.getString("email_address"),
-						resultSet.getString("street_address"), resultSet.getString("postal_code"),
-						resultSet.getString("city"));
+						resultSet.getString("pseudo"), resultSet.getString("password"),
+						resultSet.getBoolean("is_admin"), date, resultSet.getString("phone_number"),
+						resultSet.getString("email_address"), resultSet.getString("street_address"),
+						resultSet.getString("postal_code"), resultSet.getString("city"));
 
 			}
 			super.disconnect();
@@ -187,9 +191,6 @@ public class MemberDAO extends DAO {
 			return null;
 		}
 	}
-	
-
-	
 
 	/**
 	 * Trouve l'identifiant du statut d'un membre (memberContext) dans la base
@@ -205,14 +206,14 @@ public class MemberDAO extends DAO {
 		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT member_context_id FROM MEMBER WHERE id = ?");
+			PreparedStatement psSelect = connection.prepareStatement("SELECT context_id FROM MEMBER WHERE id = ?");
 			psSelect.setInt(1, memberID);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 			if (resultSet.next()) { // Positionnement sur le premier résultat
-				memberContextID = resultSet.getInt("member_context_id");
+				memberContextID = resultSet.getInt("context_id");
 			}
 
 			super.disconnect();
@@ -276,7 +277,7 @@ public class MemberDAO extends DAO {
 				member = new Member(resultSet.getInt("id"), resultSet.getString("first_name"),
 						resultSet.getString("last_name"), resultSet.getString("pseudo"),
 						resultSet.getString("password"), resultSet.getBoolean("is_admin"), date,
-						resultSet.getInt("phone_number"), resultSet.getString("email_address"),
+						resultSet.getString("phone_number"), resultSet.getString("email_address"),
 						resultSet.getString("street_address"), resultSet.getString("postal_code"),
 						resultSet.getString("city"));
 			}
@@ -295,7 +296,8 @@ public class MemberDAO extends DAO {
 	 * 
 	 * @param memberID
 	 *            L'identifiant d'un adhérent existant
-	 * @return La valeur de la colonne définissant si l'adhérent est administrateur
+	 * @return La valeur de la colonne définissant si l'adhérent est
+	 *         administrateur
 	 */
 	public boolean isAdmin(int memberID) {
 		boolean isAdmin = false;
