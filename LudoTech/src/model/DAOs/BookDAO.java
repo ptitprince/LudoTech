@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.POJOs.Book;
+import model.POJOs.Borrow;
 import model.POJOs.Extension;
 import model.POJOs.Item;
 import model.POJOs.Member;
@@ -203,25 +204,60 @@ public class BookDAO extends DAO {
 	 * 
 	 * @return
 	 */
-	public List<Book> getAllHavingBook() {
+	public List<Book> getBooks(/* HashMap<String, String> filter */) {
 		List<Book> books = new ArrayList<Book>();
 		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM BOOK ");
+			String request = "SELECT item_id, member_id, beginning_date FROM BOOK";
+			/*
+			 * String whereClause = ""; boolean atLeastOneCondition = false; for
+			 * (Entry<String, String> property : filter.entrySet()) { if
+			 * (property.getKey().equals("item_id") &&
+			 * !property.getValue().equals("")) { whereClause +=
+			 * ((atLeastOneCondition) ? " AND " : " ") + "LOWER(BORROW." +
+			 * property.getKey() + ")" + " LIKE LOWER('%" + property.getValue()
+			 * + "%')"; atLeastOneCondition = true; } else if
+			 * (property.getKey().equals("member_id") &&
+			 * !property.getValue().equals("")) { whereClause +=
+			 * ((atLeastOneCondition) ? " AND " : " ") + property.getKey() +
+			 * property.getValue(); atLeastOneCondition = true; } else if
+			 * (property.getKey().equals("beginning_date") &&
+			 * !property.getValue().equals("")) { whereClause +=
+			 * ((atLeastOneCondition) ? " AND " : " ") + property.getValue();
+			 * atLeastOneCondition = true; } else if
+			 * (property.getKey().equals("ending_date") &&
+			 * !property.getValue().equals("")) { whereClause +=
+			 * ((atLeastOneCondition) ? " AND " : " ") + property.getKey() +
+			 * property.getValue(); atLeastOneCondition = true; } else if
+			 * (property.getKey().equals("borrow_state") &&
+			 * !property.getValue().equals("")) { whereClause +=
+			 * ((atLeastOneCondition) ? " AND " : " ") +
+			 * "LOWER(.category) = LOWER('" + property.getValue() + "')";
+			 * atLeastOneCondition = true; } else if
+			 * (property.getKey().equals("editor") &&
+			 * !property.getValue().equals("")) { whereClause +=
+			 * ((atLeastOneCondition) ? " AND " : " ") +
+			 * "LOWER(GAME_EDITOR.name) = LOWER('" + property.getValue() + "')";
+			 * atLeastOneCondition = true; } } // Pas compris, à demander. if
+			 * (atLeastOneCondition) { request += "WHERE" + whereClause; }
+			 */
+			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
-			while (resultSet.next()) { // Positionnement sur le premier résultat
-				/*
-				 */
-			}
 
+			while (resultSet.next()) {// boucle pour sélectionner tous les
+										// emprunts.
+				books.add(this.get(resultSet.getInt("item_id"), resultSet.getInt("member_id"), resultSet.getDate("beginning_date")));
+			}// plus de borrow, la fin de la "liste".
 			super.disconnect();
+			return books;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return null;
 		}
-		return books;
+
 	}
 }

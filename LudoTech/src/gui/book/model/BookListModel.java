@@ -9,6 +9,7 @@ import javax.swing.table.AbstractTableModel;
 import gui.utils.TextView;
 import model.POJOs.Book;
 import model.services.BookServices;
+import model.services.ItemServices;
 
 public class BookListModel extends AbstractTableModel {
 	private final String[] HEADERS = { "", "",""
@@ -16,11 +17,12 @@ public class BookListModel extends AbstractTableModel {
 			TextView.get("bookEndDate"), TextView.get("bookExtensionName") };
 
 	private BookServices bookServices;
-
+	private ItemServices itemServices;
 	private List<Book> bookList;
 
-	public BookListModel(BookServices bookServices) {
-		this.setBookServices(bookServices);
+	public BookListModel(BookServices bookServices,ItemServices itemServices) {
+		this.bookServices=bookServices;
+		this.itemServices=itemServices;
 		this.bookList = new ArrayList<Book>();
 	}
 
@@ -50,7 +52,8 @@ public class BookListModel extends AbstractTableModel {
 		case 2:
 			return this.bookList.get(rowIndex).getExtension().getExtensionID();
 		case 3:
-			return "";
+			int itemID = this.bookList.get(rowIndex).getItem().getItemID();
+			return this.itemServices.getNameOfGame(itemID) ;
 		case 4:
 			return this.bookList.get(rowIndex).getMember().getFirstName()+ " " + this.bookList.get(rowIndex).getMember().getLastName();
 		case 5:

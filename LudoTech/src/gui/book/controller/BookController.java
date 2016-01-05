@@ -13,18 +13,21 @@ import gui.catalog.view.GameListView;
 import gui.catalog.view.GameSearchView;
 import gui.catalog.view.GameView;
 import model.services.BookServices;
+import model.services.ItemServices;
 
 public class BookController extends JPanel {
 	
-	private BookServices bookservices;
+	private BookServices bookServices;
+	private ItemServices itemServices;
 	private BookSearchView bookSearchView;
 	private BookListView bookListView;
 	private BookListModel bookListModel;
 
 	public BookController() {
 		
-		this.bookservices = new BookServices();
-		this.bookListModel= new BookListModel(this.bookservices);
+		this.bookServices = new BookServices();
+		this.itemServices = new ItemServices();
+		this.bookListModel= new BookListModel(this.bookServices,this.itemServices);
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 		
