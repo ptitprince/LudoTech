@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.POJOs.Book;
+import model.POJOs.Extension;
+import model.POJOs.Item;
+import model.POJOs.Member;
 
 public class BookDAO extends DAO {
 
@@ -130,7 +133,64 @@ public class BookDAO extends DAO {
 			return false;
 		}
 	}
+	/**
+	 * 
+	 * @param itemID
+	 * @param memberID
+	 * @param beginningDate
+	 * @return Retourne une reservation
+	 */
+	
+	public Book get(int itemID, int memberID, Date beginningDate) {
+		try {
+			super.connect();
 
+			String request = "SELECT BOOK.*, "
+					+ "MEMBER.*, ITEM.*, EXTENSION.* "
+					+ "FROM BOOK "
+					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id "
+					+ "JOIN ITEM ON BOOK.item_id = ITEM.id "
+					+ "JOIN EXTENSION ON BORROW.extension_id = EXTENSION.id "
+					+ "WHERE BOOK.item_id = ?, BOOK.member_id = ?, BOOK.beginning_date = ?";
+
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.setInt(1, itemID);
+			psSelect.setInt(2, memberID);
+			psSelect.setDate(3, new java.sql.Date(beginningDate.getTime()));
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			Book book = null;
+			if (resultSet.next()) { // Positionnement sur le premier résultat
+				Item item = new Item(resultSet.getInt("ITEM.id"),
+						resultSet.getString("ITEM.comments"));
+				Member member = new Member(resultSet.getInt("MEMBER.id"),
+						resultSet.getString("MEMBER.first_name"),
+						resultSet.getString("MEMBER.last_name"),
+						resultSet.getString("MEMBER.pseudo"),
+						resultSet.getString("MEMBER.password"),
+						resultSet.getBoolean("is_admin"),
+						resultSet.getDate("MEMBER.birth_date"),
+						resultSet.getString("MEMBER.phone_number"),
+						resultSet.getString("MEMBER.email_address"),
+						resultSet.getString("MEMBER.street_address"),
+						resultSet.getString("MEMBER.postal_code"),
+						resultSet.getString("MEMBER.city"));
+				Extension extension = new Extension(
+						resultSet.getInt("EXTENSION.id"),
+						resultSet.getString("EXTENSION.name"));
+				book = new Book(item, member,
+						resultSet.getDate("beginning_date"),
+						resultSet.getDate("ending_date"), extension);
+			}
+			super.disconnect();
+			return book;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	
 	/***

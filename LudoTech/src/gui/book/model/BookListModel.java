@@ -8,14 +8,12 @@ import javax.swing.table.AbstractTableModel;
 
 import gui.utils.TextView;
 import model.POJOs.Book;
-import model.POJOs.Game;
 import model.services.BookServices;
-import model.services.GameServices;
 
 public class BookListModel extends AbstractTableModel {
-	private final String[] HEADERS = { TextView.get("gameID"), TextView.get("gameName"), TextView.get("gameCategory"),
-			TextView.get("gameEditor"), TextView.get("gamePublishingYear"), TextView.get("gameMinAge"),
-			TextView.get("gamePlayers"), TextView.get("gameAvailable") };
+	private final String[] HEADERS = { "", "",""
+			,TextView.get("bookGameName"),TextView.get("bookMemberName"),  TextView.get("bookStartDate"),
+			TextView.get("bookEndDate"), TextView.get("bookExtensionName") };
 
 	private BookServices bookServices;
 
@@ -54,33 +52,39 @@ public class BookListModel extends AbstractTableModel {
 		case 3:
 			return "";
 		case 4:
-			return this.bookList.get(rowIndex).getMember().getLastName();
+			return this.bookList.get(rowIndex).getMember().getFirstName()+ " " + this.bookList.get(rowIndex).getMember().getLastName();
 		case 5:
 			
-			return this.bookList.get(rowIndex).getStartDate();
+			return this.bookList.get(rowIndex).getStartDate().toString();
 		case 6:
-			return this.bookList.get(rowIndex).getEndDate();
+			return this.bookList.get(rowIndex).getEndDate().toString();
 		case 7:
-			return this.bookList.get(rowIndex).getExtension().getExtensionID();
+			if( this.bookList.get(rowIndex).getExtension()!= null)
+				{
+				return this.bookList.get(rowIndex).getExtension().getName();
+				}
+			else return "";
+			
 		default:
 			throw new IllegalArgumentException();
 		}
 	}
 
+	
+
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
-		case 1:
-		case 2:
+		
+		case 0:
+		case 1: 
+		case 2: return Integer.class;
 		case 3:
 		case 4:
 		case 5:
-		case 6:
-			return String.class;
-		case 0:
-			return Integer.class;
+		case 6:		
 		case 7:
-			return Boolean.class;
+			return String.class;
 		default:
 			return Object.class;
 		}
