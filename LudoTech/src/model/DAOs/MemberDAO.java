@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import model.POJOs.Extension;
 import model.POJOs.Member;
+import model.POJOs.MemberContext;
 
 /**
  * Classe manipulant des objets de type Member dans la base de données
@@ -96,11 +96,10 @@ public class MemberDAO extends DAO {
 		try {
 			super.connect();
 
-			PreparedStatement psEdit = connection.prepareStatement("UPDATE MEMBER "
-					+ "SET first_name = ?, last_name = ?, pseudo = ?, password = ?, is_admin = ?, "
-					+ "birth_date = ?, phone_number = ?, email_address = ?, street_address = ?, "
-					+ "postal_code = ?, city = ?, context_id = ? "
-					+ "WHERE id = ?");
+			PreparedStatement psEdit = connection.prepareStatement(
+					"UPDATE MEMBER " + "SET first_name = ?, last_name = ?, pseudo = ?, password = ?, is_admin = ?, "
+							+ "birth_date = ?, phone_number = ?, email_address = ?, street_address = ?, "
+							+ "postal_code = ?, city = ?, context_id = ? " + "WHERE id = ?");
 			psEdit.setString(1, member.getFirstName());
 			psEdit.setString(2, member.getLastName());
 			psEdit.setString(3, member.getPseudo());
@@ -114,7 +113,6 @@ public class MemberDAO extends DAO {
 			psEdit.setString(11, member.getCity());
 			psEdit.setInt(12, memberContextID);
 			psEdit.setInt(13, member.getMemberID());
-
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();
@@ -319,6 +317,38 @@ public class MemberDAO extends DAO {
 			e.printStackTrace();
 		}
 		return isAdmin;
+	}
+
+	public List<Member> getMemberList() {
+		List<Member> member = new ArrayList<Member>();
+		try {
+			super.connect();
+
+			String request = "SELECT MEMBER.*, " + "MEMBER_CONTEXT.*, " + "FROM MEMBER "
+					+ "JOIN MEMBER_CONTEXT ON MEMBER.member_context_id = MEMBER_CONTEXT.id ";
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			while (resultSet.next()) {
+				MemberContext memberContext = new MemberContext(resultSet.getInt("MEMBER_CONTEXT.id"),
+						resultSet.getInt("nb_of_delay"), resultSet.getInt("nb_of_fake_booking"),
+						resultSet.getDate("last_subscription_date"), resultSet.getBoolean("can_borrow"),
+						resultSet.getBoolean("can_book"));
+				member.add(new Member(resultSet.getInt("MEMBER.id"), resultSet.getString("last_name"),
+						resultSet.getString("first_name"), resultSet.getString("pseudo"),
+						resultSet.getString("password"), resultSet.getBoolean("is_admin"),
+						resultSet.getDate("birth_date"), resultSet.getString("phone_number"), resultSet.getString("email"),
+						resultSet.getString("street_adress"), resultSet.getString("postal_code"),
+						resultSet.getString("city"), memberContext));
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return member;
 	}
 
 }

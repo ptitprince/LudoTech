@@ -1,9 +1,9 @@
 package model.services;
 
 import java.util.Date;
+import java.util.List;
 
 import model.DAOs.MemberDAO;
-import model.POJOs.Game;
 import model.POJOs.Member;
 
 /**
@@ -79,9 +79,9 @@ public class MemberServices {
 		
 	}
 	
-	
-	
-	
-	
+	public List<Member> getMemberList()
+	{
+		return this.memberDAO.getMemberList();
+	}
 	
 }
