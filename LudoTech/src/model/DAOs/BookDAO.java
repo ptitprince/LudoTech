@@ -1,8 +1,5 @@
 package model.DAOs;
 
-
-
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,15 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.POJOs.Book;
-import model.POJOs.Borrow;
-import model.POJOs.Extension;
-import model.POJOs.Game;
-import model.POJOs.Member;
 
 public class BookDAO extends DAO {
-	
-	
-	
+
 	/**
 	 * Ajoute une nouvelle ligne dans la table Game de la base de données, avec
 	 * les informations d'un jeu en utilisant la génération automatique de
@@ -27,38 +18,34 @@ public class BookDAO extends DAO {
 	 * 
 	 * @param Book
 	 *            La reservation a ajouter
-	 *  @param Game
-	 *  le jeu a emprunté
+	 * @param Game
+	 *            le jeu a emprunté
 	 * @return true L'ajout du jeu a été fait correctement
 	 * @return false Une exception est survenue, l'ajout s'est peut-être mal
 	 *         passé
 	 */
-	
-	
-	
-	public boolean add(Book Book, int IdItem, int extensionID,int memberId) {
+
+	public boolean add(Book book) {
 		try {
 			super.connect();
 
 			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
-					+ "Book(IdBook, StartDate, EndDate, memberId, itemId, extensionID) "
-					+ "VALUES (?, ?, ?, ?, ?, ?)", new String[] { "ID" }); 
-			// Auto-incrémentation sur la clé primaire ID
-			psInsert.setInt(1,Book.getIdBook());
-			psInsert.setDate(2, new  java.sql.Date (Book.getStartDate().getTime()));
-			psInsert.setDate(3, new java.sql.Date (Book.getEndDate().getTime()));
-			psInsert.setInt(4, memberId );
-			psInsert.setInt(5, IdItem);
-			psInsert.setInt(6, extensionID);
-			
+					+ "Book(item_id, member_id, beginning_date, end_date, extension_id) " + "VALUES (?, ?, ?, ?, ?)",
+					new String[] { "ID" });
+
+			psInsert.setInt(1, book.getItem().getItemID());
+			psInsert.setInt(2, book.getMember().getMemberID());
+			psInsert.setDate(3, new java.sql.Date(book.getStartDate().getTime()));
+			psInsert.setDate(4, new java.sql.Date(book.getEndDate().getTime()));
+			psInsert.setInt(5, book.getExtension().getExtensionID());
 
 			psInsert.executeUpdate();
 
-			// Récupération de l'identifiant de la reservation généré automatiquement par
+			// Récupération de l'identifiant du jeu généré automatiquement par
 			// Derby
 			ResultSet idRS = psInsert.getGeneratedKeys();
 			if (idRS != null && idRS.next()) {
-				Book.setIdBook(idRS.getInt(1));
+				book.setBookID(idRS.getInt(1));
 			} else {
 				throw new SQLException();
 			}
@@ -72,55 +59,38 @@ public class BookDAO extends DAO {
 	}
 
 	/**
-	 * Supprime une ligne de la table Book dans la base de données en se servant
-	 * de l'identifiant d'une reservation
-	 * 
-	 * @param id
-	 *            L'identifiant de la reservation à supprimer
-	 * @return True si la reservation a bien été supprimé ou s'il n'existe pas en base
-	 *         de données, sinon False
-	 */
-	public boolean remove(int BookId) {
-		try {
-			super.connect();
-
-			PreparedStatement psDelete = connection.prepareStatement("DELETE FROM Book WHERE id = ?");
-			psDelete.setInt(1, BookId);
-			psDelete.execute();
-			psDelete.closeOnCompletion();
-
-			super.disconnect();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	/**Modifier une reservation 
+	 * Modifier une reservation
 	 * 
 	 * 
-	 * @param book C'est la reservation
-	 * @param itemID C'est l'identifiant de l'exemplaire
-	 * @param memberID C'est l'identifiant du membre
-	 * @param extensionID C'est l'identifiant de l'extension
+	 * @param book
+	 *            C'est la reservation
+	 * @param itemID
+	 *            C'est l'identifiant de l'exemplaire
+	 * @param memberID
+	 *            C'est l'identifiant du membre
+	 * @param extensionID
+	 *            C'est l'identifiant de l'extension
 	 * @return
 	 */
-	
-	
-	public boolean edit(Book book, int itemID, int memberID,int extensionID)	{
+
+	public boolean edit(Book book) {
 		try {
 			super.connect();
 			PreparedStatement psEdit = connection.prepareStatement("UPDATE BOOK "
-					+ "SET itemID = ?, memberID = ?, StartDate = ?, EndDate= ?, extensionID= ?) "
-					+ "WHERE id = ?");
-			psEdit.setInt(1, itemID);
+					+ "SET  ending_date= ?, extension_id= ?) "
+					+ "WHERE item_id=?,member_id = ? , beginning_date=?");
 			
-			psEdit.setInt(2, memberID);
-			psEdit.setDate(3, new java.sql.Date(Book.getStartDate().getTime()));
-			psEdit.setDate(4, new java.sql.Date(Book.getEndDate().getTime()));
-			psEdit.setInt(5, memberID);
+
 			
+			
+			psEdit.setDate(1, new java.sql.Date(book.getEndDate().getTime()));
+			psEdit.setInt(2, book.getExtension().getExtensionID());
+			psEdit.setInt(3, book.getItem().getItemID());
+			psEdit.setInt(4, book.getMember().getMemberID());
+			psEdit.setDate(5, new java.sql.Date(book.getStartDate().getTime()));
+			
+			
+
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();
 
@@ -132,96 +102,43 @@ public class BookDAO extends DAO {
 		}
 	}
 	
-	/** la fonction qui retourne le membre qui a effectuer la reservation 
-	 *  
+	/**
+	 * Supprime une ligne de la table Book dans la base de données en se servant
+	 * de l'identifiant d'une reservation
 	 * 
-	 * 
-	 * 
-	 * @param bookID
-	 * @return
+	 * @param id
+	 *            L'identifiant de la reservation à supprimer
+	 * @return True si la reservation a bien été supprimé ou s'il n'existe pas
+	 *         en base de données, sinon False
 	 */
-	
-	public int getMemberID(int bookID) {
-		int memberID = 0;
+	public boolean remove(int itemId,int memberId,Date startDate) {
 		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT memeber_id FROM BOOK WHERE id = ?");
-			psSelect.setInt(1, bookID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				memberID = resultSet.getInt("member_id");
-			}
+			PreparedStatement psDelete = connection
+					.prepareStatement("DELETE FROM BOOK WHERE item_id, member_id = ?, begining_date=?");
+			psDelete.setInt(1, itemId);
+			psDelete.setInt(2, memberId);	
+			psDelete.setDate(3,startDate);
+			psDelete.execute();
+			psDelete.closeOnCompletion();
 
 			super.disconnect();
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
-		return memberID;
 	}
-	/** Retourne les extensions reservés
-	 * 
-	 * 
-	 * @param bookID l'identifiant de la reservation
-	 * @return
+
+	
+	
+	/***
+	 * La prendre de chez Yves en changeant la table 
 	 */
-	
-	
-	public int getExtensionID(int bookID) {
-		int extensionID = 0;
-		try {
-			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT extension_id FROM BOOK WHERE id = ?");
-			psSelect.setInt(1, bookID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				extensionID = resultSet.getInt("extension_id");
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return extensionID;
-	}
-	
-	
-	/** retourne l'exemplaire reservé 
-	 * 
-	 * @param bookID
-	 * @return
-	 */
-	
-	
-	public int getItemID(int bookID) {
-		int itemID = 0;
-		try {
-			super.connect();
-
-			PreparedStatement psSelect = connection.prepareStatement("SELECT item_id FROM BOOK WHERE id = ?");
-			psSelect.setInt(1, bookID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				itemID = resultSet.getInt("item_id");
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return itemID;
-	}
-	/** Lister toutes les reservations avec les extensions et les exemplaires 
+	/**
+	 * Lister toutes les reservations avec les extensions et les exemplaires
 	 * 
 	 * 
 	 * @return
@@ -237,9 +154,7 @@ public class BookDAO extends DAO {
 
 			ResultSet resultSet = psSelect.getResultSet();
 			while (resultSet.next()) { // Positionnement sur le premier résultat
-				/** probleme books.add(new Book(resultSet.getInt("id"),resultSet.getDate("startdate") , resultSet.getDate("enddate"),resultSet.getInt("idmember"), resultSet.getInt("iditem"), resultSet.getInt("idextension")));
-				 * 
-				 * 
+				/*
 				 */
 			}
 
@@ -250,7 +165,3 @@ public class BookDAO extends DAO {
 		return books;
 	}
 }
-
-
-
-
