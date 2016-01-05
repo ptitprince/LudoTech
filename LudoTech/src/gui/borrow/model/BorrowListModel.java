@@ -12,6 +12,7 @@ import model.POJOs.Borrow;
 import model.POJOs.Game;
 import model.services.BorrowServices;
 import model.services.GameServices;
+import model.services.ItemServices;
 
 public class BorrowListModel extends AbstractTableModel {
 	private final String[] HEADERS = { "", "", "",
@@ -21,11 +22,13 @@ public class BorrowListModel extends AbstractTableModel {
 			TextView.get("borrowExtensionName") };
 
 	private BorrowServices borrowServices;
+	private ItemServices itemServices;
 
 	private List<Borrow> borrowList;
 
-	public BorrowListModel(BorrowServices borrowServices) {
+	public BorrowListModel(BorrowServices borrowServices, ItemServices itemServices) {
 		this.borrowServices = borrowServices;
+		this.itemServices = itemServices;
 		this.borrowList = new ArrayList<Borrow>();
 	}
 
@@ -56,7 +59,8 @@ public class BorrowListModel extends AbstractTableModel {
 			return this.borrowList.get(rowIndex).getExtension()
 					.getExtensionID();
 		case 3:
-			return "coucou";
+			int itemID = this.borrowList.get(rowIndex).getItem().getItemID();
+			return this.itemServices.getNameOfGame(itemID);
 		case 4:
 			return this.borrowList.get(rowIndex).getMember().getFirstName()
 					+ " "

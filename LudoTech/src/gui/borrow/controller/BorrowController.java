@@ -11,18 +11,21 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import model.services.BorrowServices;
+import model.services.ItemServices;
 
 @SuppressWarnings("serial")
 public class BorrowController extends JPanel {
 
 	private BorrowServices borrowServices;
+	private ItemServices itemServices;
 	private BorrowSearchView borrowSearchView;
 	private BorrowListView borrowListView;
 	private BorrowListModel borrowlistModel;
 
 	public BorrowController() {
 		this.borrowServices = new BorrowServices();
-		this.borrowlistModel = new BorrowListModel(this.borrowServices);
+		this.itemServices = new ItemServices();
+		this.borrowlistModel = new BorrowListModel(this.borrowServices, this.itemServices);
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 	}
