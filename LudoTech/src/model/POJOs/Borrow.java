@@ -10,11 +10,6 @@ import java.util.Date;
 public class Borrow {
 	
 	/**
-	 * Identifiant de l'emprunt.
-	 */
-	private int borrowId;
-	
-	/**
 	 * L'exemplaire qui a été emprunté.
 	 */
 	private Item item;
@@ -34,22 +29,18 @@ public class Borrow {
 	 */
 	private Date endingDate;
 	
-	/**
-	 * État de l'emprunt (en cours, en retard, ou fini en retard). Enumération à faire. Devra être supprimé si terminé sans encombres.
-	 */
-	private String borrowState;
+	private Extension extension;
 	
-	/**
-	 * Savoir si le jeu est disponible, avec un booléen.
-	 */
-	private boolean borrowAvailable;
 	
-	public int getBorrowId() {
-		return borrowId;
-	}
 
-	public void setBorrowId(int borrowId) {
-		this.borrowId = borrowId;
+
+	public Borrow(Item item, Member member, Date beginningDate, Date endingDate, Extension extension) {
+		this.item = item;
+		this.member = member;
+		this.beginningDate = beginningDate;
+		this.endingDate = endingDate;
+		this.extension = extension;
+		
 	}
 
 	public Item getItem() {
@@ -63,7 +54,7 @@ public class Borrow {
 		return member;
 	}
 
-	public void setMember(Member member) {
+	public void setMemberId(Member member) {
 		this.member = member;
 	}
 
@@ -82,61 +73,13 @@ public class Borrow {
 	public void setEndingDate(Date endingDate) {
 		this.endingDate = endingDate;
 	}
-
-	public String getBorrowState() {
-		return borrowState;
-	}
-
-	public void setBorrowState(String borrowState) {
-		this.borrowState = borrowState;
-	}
-
-	public boolean isBorrowAvailable() {
-		return borrowAvailable;
-	}
-
-	public void setBorrowAvailable(boolean borrowAvailable) {
-		this.borrowAvailable = borrowAvailable;
-	}
 	
-	/**
-	 * Construit et retourne un nouvel emprunt dont l'identifiant est connu.
-	 * @param borrowID L'identifiant de l'emprunt.
-	 * @param item l'exemplaire concerné.
-	 * @param member le membre concerné.
-	 * @param beginningDate La date de début du prêt.
-	 * @param endingDate La date de fin du prêt.
-	 * @param borrowState L'état de l'emprunt.
-	 * @param borrowAvailable La disponibilité du jeu. 
-	 */
-	public Borrow(int borrowID, Item item, Member member, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable) {
-		this.borrowId = borrowID;
-		this.item = item;
-		this.member = member;
-		this.beginningDate = beginningDate;
-		this.endingDate = endingDate;
-		this.borrowState = borrowState;
-		this.borrowAvailable = borrowAvailable;
-		
+	public Extension getExtension() {
+		return extension;
 	}
 
-	/**
-	 * Construit et retourne un nouvel emprunt dont l'identifiant inconnu
-	 * @param item l'exemplaire concerné.
-	 * @param member le membre concerné.
-	 * @param beginningDate La date de début du prêt.
-	 * @param endingDate La date de fin du prêt.
-	 * @param borrowState L'état de l'emprunt.
-	 * @param borrowAvailable La disponibilité du jeu. 
-	 */
-	public Borrow(Item item, Member member, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable) {
-		this.item = item; //item ou bien juste l'ID ? 
-		this.member = member; 
-		this.beginningDate = beginningDate;
-		this.endingDate = endingDate;
-		this.borrowState = borrowState;
-		this.borrowAvailable = borrowAvailable;
-		
+	public void setExtension(Extension extension) {
+		this.extension = extension;
 	}
 
 }

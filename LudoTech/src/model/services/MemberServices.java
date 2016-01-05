@@ -1,5 +1,8 @@
 package model.services;
 
+import java.util.Date;
+import java.util.List;
+
 import model.DAOs.MemberDAO;
 import model.POJOs.Member;
 
@@ -57,4 +60,28 @@ public class MemberServices {
 		return this.memberDAO.isAdmin(memberID);
 	}
 
+	/**
+	 * Trouve un membre existant
+	 * 
+	 * @param memberID
+	 *            L'identifiant du membre
+	 * @return Un objet de type Member si le membre a bien été trouvé, sinon null
+	 */
+	public Member getMember(int memberID) {
+		return this.memberDAO.get(memberID);
+	}
+
+	public Member saveMember(int memberID, String firstName, String lastName, String pseudo, String password, boolean isAdmin, Date birthDate,
+			String phoneNumber, String email, String streetAddress, String postalCode, String city) {
+		Member member = new Member(memberID, firstName, lastName, pseudo, password, isAdmin, birthDate, phoneNumber, email, streetAddress, postalCode, city);
+		int contextID = this.memberDAO.getMemberContextID(memberID);
+		return this.memberDAO.edit(member, contextID) ? member : null;
+		
+	}
+	
+	public List<Member> getMemberList()
+	{
+		return this.memberDAO.getMemberList();
+	}
+	
 }
