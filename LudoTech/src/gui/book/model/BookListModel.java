@@ -1,7 +1,6 @@
 package gui.book.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -11,13 +10,18 @@ import model.POJOs.Book;
 import model.services.BookServices;
 import model.services.ItemServices;
 
+@SuppressWarnings("serial")
 public class BookListModel extends AbstractTableModel {
-	private final String[] HEADERS = { "", "",""
-			,TextView.get("bookGameName"),TextView.get("bookMemberName"),  TextView.get("bookStartDate"),
-			TextView.get("bookEndDate"), TextView.get("bookExtensionName") };
+	private final String[] HEADERS = { "", "", "",
+			TextView.get("bookGameName"),
+			TextView.get("bookMemberName"), 
+			TextView.get("bookStartDate"),
+			TextView.get("bookEndDate"), 
+			TextView.get("bookExtensionName") };
 
 	private BookServices bookServices;
 	private ItemServices itemServices;
+	
 	private List<Book> bookList;
 
 	public BookListModel(BookServices bookServices,ItemServices itemServices) {
@@ -27,7 +31,7 @@ public class BookListModel extends AbstractTableModel {
 	}
 
 	public void refresh() {
-		//this.bookList = this.bookServices.getBookList();
+		this.bookList = this.bookServices.getAll();
 		this.fireTableDataChanged();
 	}
 

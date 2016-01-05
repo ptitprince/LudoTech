@@ -1,6 +1,6 @@
 package model.DAOs;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.POJOs.Book;
-import model.POJOs.Borrow;
 import model.POJOs.Extension;
 import model.POJOs.Item;
 import model.POJOs.Member;
@@ -34,7 +33,7 @@ public class BookDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
-					+ "Book(item_id, member_id, beginning_date, end_date, extension_id) " + "VALUES (?, ?, ?, ?, ?)",
+					+ "Book(item_id, member_id, start_date, end_date, extension_id) " + "VALUES (?, ?, ?, ?, ?)",
 					new String[] { "ID" });
 
 			psInsert.setInt(1, book.getItem().getItemID());
@@ -81,19 +80,15 @@ public class BookDAO extends DAO {
 		try {
 			super.connect();
 			PreparedStatement psEdit = connection.prepareStatement("UPDATE BOOK "
-					+ "SET  ending_date= ?, extension_id= ?) "
-					+ "WHERE item_id=?,member_id = ? , beginning_date=?");
-			
-
-			
+					+ "SET end_date = ?, extension_id = ?) "
+					+ "WHERE item_id = ? AND member_id = ? AND start_date = ?");
 			
 			psEdit.setDate(1, new java.sql.Date(book.getEndDate().getTime()));
 			psEdit.setInt(2, book.getExtension().getExtensionID());
 			psEdit.setInt(3, book.getItem().getItemID());
 			psEdit.setInt(4, book.getMember().getMemberID());
-			psEdit.setDate(5, new java.sql.Date(book.getStartDate().getTime()));
-			
-			
+			psEdit.setInt(5, book.getExtension().getExtensionID());
+			psEdit.setDate(7, new java.sql.Date(book.getStartDate().getTime()));
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();
@@ -120,10 +115,10 @@ public class BookDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psDelete = connection
-					.prepareStatement("DELETE FROM BOOK WHERE item_id, member_id = ?, begining_date=?");
+					.prepareStatement("DELETE FROM BOOK WHERE item_id = ? AND member_id = ? AND start_date = ?");
 			psDelete.setInt(1, itemId);
 			psDelete.setInt(2, memberId);	
-			psDelete.setDate(3,startDate);
+			psDelete.setDate(3, new java.sql.Date(startDate.getTime()));
 			psDelete.execute();
 			psDelete.closeOnCompletion();
 
@@ -146,44 +141,38 @@ public class BookDAO extends DAO {
 		try {
 			super.connect();
 
-			String request = "SELECT BOOK.*, "
-					+ "MEMBER.*, ITEM.*, EXTENSION.* "
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+			
+			String request = "SELECT BOOK.start_date AS B_start_date, BOOK.end_date AS B_end_date, "
+					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
+					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
+					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " 
 					+ "FROM BOOK "
-					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id "
+					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " 
 					+ "JOIN ITEM ON BOOK.item_id = ITEM.id "
-					+ "JOIN EXTENSION ON BORROW.extension_id = EXTENSION.id "
-					+ "WHERE BOOK.item_id = ?, BOOK.member_id = ?, BOOK.beginning_date = ?";
-
+					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id";
 			PreparedStatement psSelect = connection.prepareStatement(request);
-			psSelect.setInt(1, itemID);
-			psSelect.setInt(2, memberID);
-			psSelect.setDate(3, new java.sql.Date(beginningDate.getTime()));
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 			Book book = null;
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				Item item = new Item(resultSet.getInt("ITEM.id"),
-						resultSet.getString("ITEM.comments"));
-				Member member = new Member(resultSet.getInt("MEMBER.id"),
-						resultSet.getString("MEMBER.first_name"),
-						resultSet.getString("MEMBER.last_name"),
-						resultSet.getString("MEMBER.pseudo"),
-						resultSet.getString("MEMBER.password"),
-						resultSet.getBoolean("is_admin"),
-						resultSet.getDate("MEMBER.birth_date"),
-						resultSet.getString("MEMBER.phone_number"),
-						resultSet.getString("MEMBER.email_address"),
-						resultSet.getString("MEMBER.street_address"),
-						resultSet.getString("MEMBER.postal_code"),
-						resultSet.getString("MEMBER.city"));
-				Extension extension = new Extension(
-						resultSet.getInt("EXTENSION.id"),
-						resultSet.getString("EXTENSION.name"));
-				book = new Book(item, member,
-						resultSet.getDate("beginning_date"),
-						resultSet.getDate("ending_date"), extension);
+			if (resultSet.next()) {
+				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
+				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				book = new Book(item, member, resultSet.getDate("B_start_date"),
+						resultSet.getDate("B_end_date"), extension);
 			}
 			super.disconnect();
 			return book;
@@ -209,49 +198,41 @@ public class BookDAO extends DAO {
 		try {
 			super.connect();
 
-			String request = "SELECT item_id, member_id, beginning_date FROM BOOK";
-			/*
-			 * String whereClause = ""; boolean atLeastOneCondition = false; for
-			 * (Entry<String, String> property : filter.entrySet()) { if
-			 * (property.getKey().equals("item_id") &&
-			 * !property.getValue().equals("")) { whereClause +=
-			 * ((atLeastOneCondition) ? " AND " : " ") + "LOWER(BORROW." +
-			 * property.getKey() + ")" + " LIKE LOWER('%" + property.getValue()
-			 * + "%')"; atLeastOneCondition = true; } else if
-			 * (property.getKey().equals("member_id") &&
-			 * !property.getValue().equals("")) { whereClause +=
-			 * ((atLeastOneCondition) ? " AND " : " ") + property.getKey() +
-			 * property.getValue(); atLeastOneCondition = true; } else if
-			 * (property.getKey().equals("beginning_date") &&
-			 * !property.getValue().equals("")) { whereClause +=
-			 * ((atLeastOneCondition) ? " AND " : " ") + property.getValue();
-			 * atLeastOneCondition = true; } else if
-			 * (property.getKey().equals("ending_date") &&
-			 * !property.getValue().equals("")) { whereClause +=
-			 * ((atLeastOneCondition) ? " AND " : " ") + property.getKey() +
-			 * property.getValue(); atLeastOneCondition = true; } else if
-			 * (property.getKey().equals("borrow_state") &&
-			 * !property.getValue().equals("")) { whereClause +=
-			 * ((atLeastOneCondition) ? " AND " : " ") +
-			 * "LOWER(.category) = LOWER('" + property.getValue() + "')";
-			 * atLeastOneCondition = true; } else if
-			 * (property.getKey().equals("editor") &&
-			 * !property.getValue().equals("")) { whereClause +=
-			 * ((atLeastOneCondition) ? " AND " : " ") +
-			 * "LOWER(GAME_EDITOR.name) = LOWER('" + property.getValue() + "')";
-			 * atLeastOneCondition = true; } } // Pas compris, à demander. if
-			 * (atLeastOneCondition) { request += "WHERE" + whereClause; }
-			 */
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			String request = "SELECT BOOK.start_date AS B_start_date, BOOK.end_date AS B_end_date, "
+					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
+					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
+					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " 
+					+ "FROM BOOK "
+					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " 
+					+ "JOIN ITEM ON BOOK.item_id = ITEM.id "
+					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id";
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 
-			while (resultSet.next()) {// boucle pour sélectionner tous les
-										// emprunts.
-				books.add(this.get(resultSet.getInt("item_id"), resultSet.getInt("member_id"), resultSet.getDate("beginning_date")));
-			}// plus de borrow, la fin de la "liste".
+			while (resultSet.next()) {
+				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
+				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				Book book = new Book(item, member, resultSet.getDate("B_start_date"),
+						resultSet.getDate("B_end_date"), extension);
+				books.add(book);
+			}
+						
 			super.disconnect();
 			return books;
 		} catch (SQLException e) {

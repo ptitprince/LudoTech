@@ -3,20 +3,19 @@ package gui.borrow.model;
 import gui.utils.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
 import model.POJOs.Borrow;
-import model.POJOs.Game;
 import model.services.BorrowServices;
-import model.services.GameServices;
 import model.services.ItemServices;
 
+@SuppressWarnings("serial")
 public class BorrowListModel extends AbstractTableModel {
 	private final String[] HEADERS = { "", "", "",
-			TextView.get("borrowGameName"), TextView.get("borrowMemberName"),
+			TextView.get("borrowGameName"), 
+			TextView.get("borrowMemberName"),
 			TextView.get("borrowBeginningDate"),
 			TextView.get("borrowEndingDate"),
 			TextView.get("borrowExtensionName") };
@@ -33,7 +32,7 @@ public class BorrowListModel extends AbstractTableModel {
 	}
 
 	public void refresh() {
-		// this.borrowList = this.borrowServices.getBorrows();
+		this.borrowList = this.borrowServices.getAll();
 		this.fireTableDataChanged();
 	}
 

@@ -1,14 +1,21 @@
 package model.services;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
 
 import model.DAOs.BookDAO;
-import model.DAOs.BorrowDAO;
-import model.DAOs.MemberDAO;
 import model.POJOs.*;
 
 
 public class BookServices {
+
+	private BookDAO bookDAO;
+	
+	public BookServices() {
+		this.bookDAO = new BookDAO();
+	}
+	
+	public List<Book> getAll() {
+		return this.bookDAO.getBooks();
+	}
 	
 //	
 //	

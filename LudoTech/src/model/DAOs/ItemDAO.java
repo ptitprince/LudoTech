@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.POJOs.Game;
 import model.POJOs.Item;
 
 /**
@@ -83,7 +82,7 @@ public class ItemDAO extends DAO {
 		try {
 			super.connect();
 
-			String request = "SELECT GAME.name FROM ITEM "
+			String request = "SELECT GAME.name AS game_name FROM ITEM "
 					+ "JOIN GAME ON ITEM.game_id = GAME.id "
 					+ "WHERE ITEM.id = ?";
 
@@ -94,7 +93,7 @@ public class ItemDAO extends DAO {
 
 			ResultSet resultSet = psSelect.getResultSet();
 			if (resultSet.next()) {
-				name = resultSet.getString("GAME.name");
+				name = resultSet.getString("game_name");
 			}
 			super.disconnect();
 		} catch (SQLException e) {

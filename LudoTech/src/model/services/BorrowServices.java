@@ -1,13 +1,21 @@
 package model.services;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import model.DAOs.BorrowDAO;
 import model.POJOs.Borrow;
 
 public class BorrowServices {
+
+	private final BorrowDAO borrowDAO;
+	
+	public BorrowServices()	{
+		this.borrowDAO = new BorrowDAO();
+	}
+	
+	public List<Borrow> getAll() {
+		return this.borrowDAO.getBorrows();
+	}
 //
 //	/**
 //	 * Pour tous :

@@ -37,12 +37,13 @@ public class MainController extends JTabbedPane implements LoginObserver {
 	}
 
 	private void makeMainUseGUI(boolean showAdminTabs) {
-		this.catalogController = new CatalogController(currentMemberID);
-		this.catalogController.refreshGameList();
-		this.parametersController = new ParametersController();
-		this.bookController = new BookController();
+		this.catalogController = new CatalogController(currentMemberID);		
 		this.borrowController = new BorrowController();
+		this.bookController = new BookController();
 		this.profileController = new ProfileController(currentMemberID);
+		this.parametersController = new ParametersController();
+		
+		this.catalogController.refreshGameList(); // Affichage de la liste lors du chargement (car 1er onglet affiché)
 		
 		this.addTab(TextView.get("tabCatalog"), this.catalogController);
 		this.addTab(TextView.get("tabBorrow"), this.borrowController);
@@ -57,9 +58,15 @@ public class MainController extends JTabbedPane implements LoginObserver {
 	private void makeMainUseListeners() {
 		this.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				switch (MainController.this.getSelectedIndex()) {
+				switch (getSelectedIndex()) {
 				case 0:
-					MainController.this.catalogController.refreshGameList();
+					catalogController.refreshGameList();
+					break;
+				case 1 :
+					borrowController.refreshBorrowList();
+					break;
+				case 2 :
+					bookController.refreshBookList();
 					break;
 				default:
 					break;
