@@ -18,9 +18,13 @@ public class BorrowListView extends JPanel{
 	private JButton addBorrowButton;
 	private JButton deleteBorrowButton;
 	
-	public BorrowListView(BorrowListModel borrowModel) {
+	private boolean currentMemberIsAdmin;
+	
+	public BorrowListView(BorrowListModel borrowModel, boolean currentMemberIsAdmin) {
 		this.setLayout(new BorderLayout());
+		this.currentMemberIsAdmin = currentMemberIsAdmin;
 		this.makeGUI(borrowModel);
+		
 	}
 
 	private void makeGUI(BorrowListModel borrowModel) {
@@ -39,6 +43,15 @@ public class BorrowListView extends JPanel{
 		this.table.removeColumn(table.getColumnModel().getColumn(0)); 
 		
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
+		
+		if (this.currentMemberIsAdmin) {
+			JPanel actionsPanel = new JPanel();
+			this.addBorrowButton = new JButton(TextView.get("add"));
+			actionsPanel.add(this.addBorrowButton);
+			this.deleteBorrowButton = new JButton(TextView.get("delete"));
+			actionsPanel.add(this.deleteBorrowButton);
+			this.add(actionsPanel, BorderLayout.SOUTH);
+		}
 	}
 
 }

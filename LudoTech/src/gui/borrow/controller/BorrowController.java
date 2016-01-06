@@ -18,14 +18,18 @@ public class BorrowController extends JPanel {
 	private BorrowServices borrowServices;
 	private ItemServices itemServices;
 	private MemberServices memberServices;
-	
+
 	private BorrowListModel borrowListModel;
 
 	private BorrowListView borrowListView;
 
-	public BorrowController() {
+	private int currentMemberID;
+
+	public BorrowController(int currentMemberID) {
+		this.currentMemberID = currentMemberID;
 		this.borrowServices = new BorrowServices();
 		this.itemServices = new ItemServices();
+		this.memberServices = new MemberServices();
 		this.borrowListModel = new BorrowListModel(this.borrowServices,
 				this.itemServices);
 		this.setLayout(new BorderLayout());
@@ -33,22 +37,15 @@ public class BorrowController extends JPanel {
 	}
 
 	public void makeGUI() {
-		this.borrowListView = new BorrowListView(this.borrowListModel);
+		this.borrowListView = new BorrowListView(this.borrowListModel, this.memberServices.isAdmin(currentMemberID));
 		this.add(borrowListView, BorderLayout.CENTER);
 	}
 
-	
 	public void refreshBorrowList() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				borrowListModel.refresh();
 			}
 		});
-	}
-
-	private void makeListeners() {
-		// Clic sur le bouton "chercher" sur la liste des emprunts
-		
-
 	}
 }

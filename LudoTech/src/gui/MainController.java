@@ -40,7 +40,7 @@ public class MainController extends JTabbedPane implements LoginObserver {
 
 	private void makeMainUseGUI(boolean showAdminTabs) {
 		this.catalogController = new CatalogController(currentMemberID);		
-		this.borrowController = new BorrowController();
+		this.borrowController = new BorrowController(currentMemberID);
 		this.bookController = new BookController();
 		this.profileController = new ProfileController(currentMemberID);
 		this.membersController = new MembersController(currentMemberID);
