@@ -46,6 +46,7 @@ public class BorrowController extends JPanel {
 		this.add(splitPane, BorderLayout.CENTER);
 	}
 
+	
 	public void refreshBorrowList() {
 		/*SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

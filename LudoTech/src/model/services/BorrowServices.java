@@ -10,7 +10,8 @@ import model.POJOs.Item;
 import model.POJOs.Member;
 
 public class BorrowServices {
-/**
+
+	/**
  * Objet d'accès aux données de type Borrow.
  */
 	private final BorrowDAO borrowDAO;
