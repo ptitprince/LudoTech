@@ -5,7 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+
 import model.POJOs.Borrow;
 import model.POJOs.Extension;
 import model.POJOs.Item;
@@ -28,12 +31,16 @@ public class BorrowDAO extends DAO {
 		try {
 			super.connect();
 
-			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
-					+ "Borrow(item_id, member_id, start_date, end_date, extension_id) " + "VALUES (?, ?, ?, ?, ?)");
+			PreparedStatement psInsert = connection
+					.prepareStatement("INSERT INTO "
+							+ "Borrow(item_id, member_id, start_date, end_date, extension_id) "
+							+ "VALUES (?, ?, ?, ?, ?)");
 			psInsert.setInt(1, borrow.getItem().getItemID());
 			psInsert.setInt(2, borrow.getMember().getMemberID());
-			psInsert.setDate(3, new java.sql.Date(borrow.getBeginningDate().getTime()));
-			psInsert.setDate(4, new java.sql.Date(borrow.getEndingDate().getTime()));
+			psInsert.setDate(3, new java.sql.Date(borrow.getBeginningDate()
+					.getTime()));
+			psInsert.setDate(4, new java.sql.Date(borrow.getEndingDate()
+					.getTime()));
 			psInsert.setInt(5, borrow.getExtension().getExtensionID());
 
 			psInsert.executeUpdate();
@@ -45,31 +52,30 @@ public class BorrowDAO extends DAO {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Modifie un emprunt donné en paramètre.
 	 * 
 	 * @param borrow
 	 *            un emprunt.
-	 * @param itemID
-	 *            l'identifiant de l'item.
-	 * @param memberID
-	 *            l'identifiant du membre.
 	 * @return un emprunt modifié.
 	 */
 	public boolean edit(Borrow borrow) {
 		try {
 			super.connect();
 
-			PreparedStatement psEdit = connection.prepareStatement("UPDATE BORROW "
-					+ "SET end_date = ?, extension_id = ? " 
-					+ "WHERE item_id = ? AND member_id = ? AND start_date = ?");
-			psEdit.setDate(1, new java.sql.Date(borrow.getEndingDate().getTime()));
+			PreparedStatement psEdit = connection
+					.prepareStatement("UPDATE BORROW "
+							+ "SET end_date = ?, extension_id = ? "
+							+ "WHERE item_id = ? AND member_id = ? AND start_date = ?");
+			psEdit.setDate(1, new java.sql.Date(borrow.getEndingDate()
+					.getTime()));
 			psEdit.setInt(2, borrow.getExtension().getExtensionID());
 			psEdit.setInt(3, borrow.getItem().getItemID());
 			psEdit.setInt(4, borrow.getMember().getMemberID());
 			psEdit.setInt(5, borrow.getExtension().getExtensionID());
-			psEdit.setDate(7, new java.sql.Date(borrow.getBeginningDate().getTime()));
+			psEdit.setDate(7, new java.sql.Date(borrow.getBeginningDate()
+					.getTime()));
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();
@@ -109,8 +115,6 @@ public class BorrowDAO extends DAO {
 		}
 	}
 
-	
-
 	/**
 	 * retourne un emprunt.
 	 * 
@@ -127,13 +131,13 @@ public class BorrowDAO extends DAO {
 			// une seule connection peut-être active à la fois pour toute la
 			// base de données, donc qu'une seule requête à la fois (contrainte
 			// du SGBD Derby)
-			
+
 			String request = "SELECT BORROW.start_date AS B_start_date, BORROW.end_date AS B_end_date, "
 					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
 					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
-					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " 
+					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name "
 					+ "FROM BORROW "
-					+ "JOIN MEMBER ON BORROW.member_id = MEMBER.id " 
+					+ "JOIN MEMBER ON BORROW.member_id = MEMBER.id "
 					+ "JOIN ITEM ON BORROW.item_id = ITEM.id "
 					+ "LEFT JOIN EXTENSION ON BORROW.extension_id = EXTENSION.id";
 			PreparedStatement psSelect = connection.prepareStatement(request);
@@ -143,15 +147,24 @@ public class BorrowDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 			Borrow borrow = null;
 			if (resultSet.next()) {
-				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
-				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
-						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
-						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
-						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
-						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
-						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
-				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
-				borrow = new Borrow(item, member, resultSet.getDate("B_start_date"),
+				Item item = new Item(resultSet.getInt("I_id"),
+						resultSet.getString("I_comments"));
+				Member member = new Member(resultSet.getInt("M_id"),
+						resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"),
+						resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"),
+						resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"),
+						resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"),
+						resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"),
+						resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"),
+						resultSet.getString("E_name"));
+				borrow = new Borrow(item, member,
+						resultSet.getDate("B_start_date"),
 						resultSet.getDate("B_end_date"), extension);
 			}
 			super.disconnect();
@@ -182,11 +195,12 @@ public class BorrowDAO extends DAO {
 			String request = "SELECT BORROW.start_date AS B_start_date, BORROW.end_date AS B_end_date, "
 					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
 					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
-					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " 
+					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name "
 					+ "FROM BORROW "
-					+ "JOIN MEMBER ON BORROW.member_id = MEMBER.id " 
+					+ "JOIN MEMBER ON BORROW.member_id = MEMBER.id "
 					+ "JOIN ITEM ON BORROW.item_id = ITEM.id "
 					+ "LEFT JOIN EXTENSION ON BORROW.extension_id = EXTENSION.id";
+			
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -194,15 +208,24 @@ public class BorrowDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 
 			while (resultSet.next()) {
-				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
-				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
-						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
-						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
-						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
-						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
-						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
-				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
-				Borrow borrow = new Borrow(item, member, resultSet.getDate("B_start_date"),
+				Item item = new Item(resultSet.getInt("I_id"),
+						resultSet.getString("I_comments"));
+				Member member = new Member(resultSet.getInt("M_id"),
+						resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"),
+						resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"),
+						resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"),
+						resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"),
+						resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"),
+						resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"),
+						resultSet.getString("E_name"));
+				Borrow borrow = new Borrow(item, member,
+						resultSet.getDate("B_start_date"),
 						resultSet.getDate("B_end_date"), extension);
 				borrows.add(borrow);
 			}
