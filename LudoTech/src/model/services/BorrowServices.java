@@ -1,12 +1,19 @@
 package model.services;
 
+import java.util.Date;
 import java.util.List;
 
 import model.DAOs.BorrowDAO;
 import model.POJOs.Borrow;
+import model.POJOs.Extension;
+import model.POJOs.Item;
+import model.POJOs.Member;
 
 public class BorrowServices {
 
+	/**
+ * Objet d'accès aux données de type Borrow.
+ */
 	private final BorrowDAO borrowDAO;
 	
 	public BorrowServices()	{
@@ -16,77 +23,68 @@ public class BorrowServices {
 	public List<Borrow> getAll() {
 		return this.borrowDAO.getBorrows();
 	}
-//
-//	/**
-//	 * Pour tous :
-//	 * Pouvoir faire une recherche parmi les emprunts.
-//	 * 
-//	 * Pour adhérent :
-//	 * - Voir SES emprunts en cours ;
-//	 * Pour chaque emprunt :
-//	 * 	- Accéder aux infos ;
-//	 * 	- Statut de l'emprunt ;
-//	 * 	- Nombre jours restant OU en retard ;
-//	 * 
-//	 * Pour un admin : 
-//	 * - Voir TOUS les emprunts des adhérents (doit pouvoir voir les adhérents);
-//	 * Pour chaque emprunt : 
-//	 * 	- Pour les emprunts finis, indiquer comment ça s'est terminé. 
-//	 * 	- Enregistrer le retour d'un emprunt.
-//	 * 
-//	 */
-//	
-//	/**
-//	 * objet d'accès aux données de type borrow.
-//	 */
-//	private final BorrowDAO borrowDAO;
-//	
-//	public BorrowServices()	{
-//		this.borrowDAO = new BorrowDAO();
-//	}
-//	
-//	/**
-//	 * Création et ajout en base de données d'un nouvel emprunt
-//	 * @param borrowID : l'identifiant de l'emprunt;
-//	 * @param itemID : l'identifiant de l'exemplaire;
-//	 * @param memberID : l'identifiant du membre;
-//	 * @param dateFin : date de fin de l'emprunt. Doit être supérieur à dateDebut (genious);
-//	 * @param dateDebut : date de debut de l'emprunt. Doit être inférieur à dateFin;
-//	 * @param State : Etat de l'emprunt.
-//	 * @param Available : booléen sur l'état de l'emprunt.
-//	 * 
-//	 */
-//	
-//	public Borrow addBorrow(int itemID, int memberID, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable)	{
-//		Borrow borrow = new Borrow(itemID, memberID, beginningDate, endingDate, borrowState, borrowAvailable);
-//		return this.borrowDAO.add(borrow, borrow.getItemId(), borrow.getMemberId()) ? borrow : null;
-//		//Redondance avec le member et l'item dans borrow ?
-//	}
-//	
-//	/**
-//	 * Suppression en base de données de l'emprunt.
-//	 * @param l'id de l'emprunt que l'on veut supprimer.
-//	 * @return un booléen accusant de l'état de la suppression.
-//	 * 
-//	 */
-//	
-//	public boolean removeBorrow(int id)	{
-//		return this.borrowDAO.remove(id);
-//	}
-//	
-//	/**
-//	 * Edition d'un nouvel emprunt dans la base de données.
-//	 * @param borrowID : l'identifiant de l'emprunt;
-//	 * @param itemID : l'identifiant de l'exemplaire;
-//	 * @param memberID : l'identifiant du membre;
-//	 * @param dateFin : date de fin de l'emprunt. Doit être supérieur à dateDebut (genious);
-//	 * @param dateDebut : date de debut de l'emprunt. Doit être inférieur à dateFin;
-//	 * @param State : Etat de l'emprunt.
-//	 * @param Available : booléen sur l'état de l'emprunt.
-//	 * @return Un emprunt modifié.
-//	 * 
-//	 */
-//	
+
+	/**
+	 * Pour tous :
+	 * Pouvoir faire une recherche parmi les emprunts.
+	 * 
+	 * Pour adhérent :
+	 * - Voir SES emprunts en cours ;
+	 * Pour chaque emprunt :
+	 * 	- Accéder aux infos ;
+	 * 	- Statut de l'emprunt ;
+	 * 	- Nombre jours restant OU en retard ;
+	 * 
+	 * Pour un admin : 
+	 * - Voir TOUS les emprunts des adhérents (doit pouvoir voir les adhérents);
+	 * Pour chaque emprunt : 
+	 * 	- Pour les emprunts finis, indiquer comment ça s'est terminé. 
+	 * 	- Enregistrer le retour d'un emprunt.
+	 * 
+	 */
+
+	/**
+	 * Création et ajout en base de données d'un nouvel emprunt
+	 * @param borrowID : l'identifiant de l'emprunt;
+	 * @param itemID : l'identifiant de l'exemplaire;
+	 * @param memberID : l'identifiant du membre;
+	 * @param dateFin : date de fin de l'emprunt. Doit être supérieur à dateDebut (genious);
+	 * @param dateDebut : date de debut de l'emprunt. Doit être inférieur à dateFin;
+	 * @param State : Etat de l'emprunt.
+	 * @param Available : booléen sur l'état de l'emprunt.
+	 * 
+	 */
+	
+	public Borrow addBorrow(Item item, Member member, Date beginningDate, Date endingDate, Extension extension)	{
+		Borrow borrow = new Borrow(item, member, beginningDate, endingDate, extension);
+		return this.borrowDAO.add(borrow) ? borrow : null;
+		//Redondance avec le member et l'item dans borrow ?
+	}
+	
+	/**
+	 * Suppression en base de données de l'emprunt.
+	 * @param l'id de l'emprunt que l'on veut supprimer.
+	 * @return un booléen accusant de l'état de la suppression.
+	 * 
+	 */
+	
+	public boolean removeBorrow(int itemID, int memberID, Date beginningDate)	{
+		return this.borrowDAO.remove(itemID, memberID, beginningDate);
+	}
+	
+	/**
+	 * Edition d'un nouvel emprunt dans la base de données.
+	 * @param borrowID : l'identifiant de l'emprunt;
+	 * @param itemID : l'identifiant de l'exemplaire;
+	 * @param memberID : l'identifiant du membre;
+	 * @param dateFin : date de fin de l'emprunt. Doit être supérieur à dateDebut (genious);
+	 * @param dateDebut : date de debut de l'emprunt. Doit être inférieur à dateFin;
+	 * @param State : Etat de l'emprunt.
+	 * @param Available : booléen sur l'état de l'emprunt.
+	 * @return Un emprunt modifié.
+	 * 
+	 */
+	
 //	public Borrow editBorrow(int itemID, int memberID, Date beginningDate, Date endingDate, String borrowState, boolean borrowAvailable)	{
 //		Borrow borrow = new Borrow(itemID, memberID, beginningDate, endingDate, borrowState, borrowAvailable);
 //		return this.borrowDAO.edit(borrow, borrow.getItemId(), borrow.getMemberId()) ? borrow : null;
@@ -120,5 +118,5 @@ public class BorrowServices {
 //	public List<Borrow> getBorrows(HashMap<String, String> filter)	{
 //		return this.borrowDAO.getBorrows(filter);
 //	}
-	
+//	
 }

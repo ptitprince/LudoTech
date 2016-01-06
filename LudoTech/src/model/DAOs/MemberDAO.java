@@ -33,7 +33,7 @@ public class MemberDAO extends DAO {
 	 * @return false Une exception est survenue, l'ajout s'est peut-être mal
 	 *         passé
 	 */
-	public boolean add(Member member, int memberContextID, int memberCredentialsID) {
+	public boolean add(Member member, int memberContextID) {
 		try {
 			super.connect();
 
@@ -324,23 +324,26 @@ public class MemberDAO extends DAO {
 		try {
 			super.connect();
 
-			String request = "SELECT MEMBER.*, " + "MEMBER_CONTEXT.*, " + "FROM MEMBER "
-					+ "JOIN MEMBER_CONTEXT ON MEMBER.member_context_id = MEMBER_CONTEXT.id ";
+			String request = "SELECT MEMBER.*, MEMBER_CONTEXT.*, " 
+					+ "MEMBER.id AS M_id, "
+					+ "MEMBER_CONTEXT.id AS MC_id " 
+					+ "FROM MEMBER "
+					+ "JOIN MEMBER_CONTEXT ON MEMBER.context_id = MEMBER_CONTEXT.id ";
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 			while (resultSet.next()) {
-				MemberContext memberContext = new MemberContext(resultSet.getInt("MEMBER_CONTEXT.id"),
-						resultSet.getInt("nb_of_delay"), resultSet.getInt("nb_of_fake_booking"),
+				MemberContext memberContext = new MemberContext(resultSet.getInt("MC_id"),
+						resultSet.getInt("nb_delays"), resultSet.getInt("nb_fake_bookings"),
 						resultSet.getDate("last_subscription_date"), resultSet.getBoolean("can_borrow"),
 						resultSet.getBoolean("can_book"));
-				member.add(new Member(resultSet.getInt("MEMBER.id"), resultSet.getString("last_name"),
+				member.add(new Member(resultSet.getInt("M_id"), resultSet.getString("last_name"),
 						resultSet.getString("first_name"), resultSet.getString("pseudo"),
 						resultSet.getString("password"), resultSet.getBoolean("is_admin"),
-						resultSet.getDate("birth_date"), resultSet.getString("phone_number"), resultSet.getString("email"),
-						resultSet.getString("street_adress"), resultSet.getString("postal_code"),
+						resultSet.getDate("birth_date"), resultSet.getString("phone_number"), resultSet.getString("email_address"),
+						resultSet.getString("street_address"), resultSet.getString("postal_code"),
 						resultSet.getString("city"), memberContext));
 			}
 
