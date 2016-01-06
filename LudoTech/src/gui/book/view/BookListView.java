@@ -18,9 +18,11 @@ public class BookListView extends JPanel{
 
 	private JButton addBookButton;
 	private JButton deleteBookButton;
-	
-	public BookListView(BookListModel model)
+	private JButton fromBookToBorrowButton;
+	private boolean currentMemberIsAdmin;
+	public BookListView(BookListModel model, boolean currentMemberIsAdmin)
 	{
+		this.currentMemberIsAdmin = currentMemberIsAdmin;
 		this.setLayout(new BorderLayout());
 		this.makeGUI(model);
 	}
@@ -40,6 +42,18 @@ public class BookListView extends JPanel{
 		this.table.removeColumn(table.getColumnModel().getColumn(0));
 		this.table.removeColumn(table.getColumnModel().getColumn(0));
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
+		
+		JPanel actionsPanel = new JPanel();
+		this.addBookButton = new JButton(TextView.get("add"));
+		actionsPanel.add(this.addBookButton);
+		this.deleteBookButton = new JButton(TextView.get("delete"));
+		actionsPanel.add(this.deleteBookButton);
+		this.add(actionsPanel, BorderLayout.SOUTH);
+		
+		if (this.currentMemberIsAdmin) {
+			this.fromBookToBorrowButton = new JButton(TextView.get("Change"));
+			actionsPanel.add(this.fromBookToBorrowButton);
+		}
 
 	}
 

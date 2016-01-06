@@ -20,6 +20,7 @@ import model.services.BookServices;
 import model.services.ExtensionServices;
 import model.services.GameServices;
 import model.services.ItemServices;
+import model.services.MemberServices;
 
 @SuppressWarnings("serial")
 public class BookController extends JPanel {
@@ -29,10 +30,13 @@ public class BookController extends JPanel {
 	private ItemServices itemServices;
 	private ExtensionServices extensionServices;
 	private BookListView bookListView;
-
+	private MemberServices memberServices;
 	private BookListModel bookListModel;
-
-	public BookController() {
+	private int currentMemberID;
+	
+	public BookController(int currentMemberID) {
+		this.currentMemberID = currentMemberID;
+		this.memberServices = new MemberServices();
 		this.bookServices = new BookServices();
 		this.itemServices = new ItemServices();
 		this.extensionServices = new ExtensionServices();
@@ -45,7 +49,7 @@ public class BookController extends JPanel {
 
 	public void makeGUI() {
 
-		this.bookListView = new BookListView(this.bookListModel);
+		this.bookListView = new BookListView(this.bookListModel,this.memberServices.isAdmin(currentMemberID));
 
 		this.add(bookListView, BorderLayout.CENTER);
 
