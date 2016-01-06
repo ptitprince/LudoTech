@@ -53,5 +53,12 @@ public class BorrowListView extends JPanel{
 			this.add(actionsPanel, BorderLayout.SOUTH);
 		}
 	}
-
+	
+	public JButton getAddBorrowButton() {
+		return this.addBorrowButton;
+	}
+	
+	public JButton getDeleteBorrowButton() {
+		return this.deleteBorrowButton;
+	}
 }

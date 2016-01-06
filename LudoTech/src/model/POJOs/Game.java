@@ -211,4 +211,8 @@ public class Game {
 	public void setEditor(String editor) {
 		this.editor = editor;
 	}
+	
+	public String toString() {
+		return this.name;
+	}
 }
