@@ -9,6 +9,7 @@ import gui.borrow.controller.BorrowController;
 import gui.catalog.controller.CatalogController;
 import gui.login.controller.LoginController;
 import gui.login.view.LoginObserver;
+import gui.members.controller.MembersController;
 import gui.parameters.controller.ParametersController;
 import gui.profile.controller.ProfileController;
 import gui.utils.EmptyPanel;
@@ -22,6 +23,7 @@ public class MainController extends JTabbedPane implements LoginObserver {
 	private ParametersController parametersController;
 	private BookController bookController;
 	private ProfileController profileController;
+	private MembersController membersController;
 	private BorrowController borrowController;
 
 	private int currentMemberID;
@@ -41,6 +43,7 @@ public class MainController extends JTabbedPane implements LoginObserver {
 		this.borrowController = new BorrowController();
 		this.bookController = new BookController();
 		this.profileController = new ProfileController(currentMemberID);
+		this.membersController = new MembersController(currentMemberID);
 		this.parametersController = new ParametersController();
 		
 		this.catalogController.refreshGameList(); // Affichage de la liste lors du chargement (car 1er onglet affiché)
@@ -50,7 +53,7 @@ public class MainController extends JTabbedPane implements LoginObserver {
 		this.addTab(TextView.get("tabBook"), this.bookController);
 		this.addTab(TextView.get("tabProfile"), this.profileController);
 		if (showAdminTabs) {
-			this.addTab(TextView.get("tabMembers"), new EmptyPanel());
+			this.addTab(TextView.get("tabMembers"), this.membersController);
 			this.addTab(TextView.get("tabParameters"), this.parametersController);
 		}
 	}
