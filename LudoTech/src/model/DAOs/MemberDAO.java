@@ -33,7 +33,7 @@ public class MemberDAO extends DAO {
 	 * @return false Une exception est survenue, l'ajout s'est peut-être mal
 	 *         passé
 	 */
-	public boolean add(Member member, int memberContextID, int memberCredentialsID) {
+	public boolean add(Member member, int memberContextID) {
 		try {
 			super.connect();
 

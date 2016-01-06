@@ -7,116 +7,96 @@ import java.util.Date;
 
 
 public class Book {
-	
-	/** Identifiant de la reservation **/
-	
-	int IdBook;
-	/**Date de debut de reservation *
+	/**
+	 * Identifiant de book
 	 */
-	private static	Date StartDate; 
-	/**Date de fin de reservation *
-	 */
-	private static	Date EndDate;
+	int bookId;
 	
-	/**Membre qui reserve *
-	 */
-	private	Member Member;
 	/** L'exemplaire a reserver
 	 *  */
 	private	Item item;
+	
+	/**Membre qui reserve *
+	 */
+	private	Member member;
+	
+	/**Date de debut de reservation *
+	 */
+	private	Date startDate; 
+	/**Date de fin de reservation *
+	 */
+	private	Date endDate;
+	
 	/** L'extensiona a reserver
 	 * 
 	 */
-	private	Extension Extension;
+	private	Extension extension;
 	
-	public Book(int idBook, Date startDate, Date endDate, model.POJOs.Member member, Item item,
-			model.POJOs.Extension extension) {
-		super();
-		this.IdBook = idBook;
-		this.StartDate = startDate;
-		this.EndDate = endDate;
-		this.Member = member;
+	public Book(int bookID, Item item, Member member, Date startDate, Date endDate,
+			Extension extension) {
+		this.bookId = bookID;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.member = member;
 		this.item = item;
-		this.Extension = extension;
+		this.extension = extension;
 	}
-	/**
-	 * @return the startDate
-	 */
-	public static Date getStartDate() {
-		return StartDate;
+	
+	public Book(Item item, Member member, Date startDate, Date endDate,
+			Extension extension) {		
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.member = member;
+		this.item = item;
+		this.extension = extension;
 	}
-	/**
-	 * @param startDate the startDate to set
-	 */
-	public void setStartDate(Date startDate) {
-		StartDate = startDate;
+
+	public int getBookId() {
+		return bookId;
 	}
-	/**
-	 * @return the endDate
-	 */
-	public static Date getEndDate() {
-		return EndDate;
+
+	public void setBookID(int bookId) {
+		this.bookId = bookId;
 	}
-	/**
-	 * @param endDate the endDate to set
-	 */
-	public void setEndDate(Date endDate) {
-		EndDate = endDate;
-	}
-	/**
-	 * @return the member
-	 */
-	public Member getMember() {
-		return Member;
-	}
-	/**
-	 * @param member the member to set
-	 */
-	public void setMember(Member member) {
-		Member = member;
-	}
-	/**
-	 * @return the item
-	 */
+
 	public Item getItem() {
 		return item;
 	}
-	/**
-	 * @param item the item to set
-	 */
+
 	public void setItem(Item item) {
 		this.item = item;
 	}
-	/**
-	 * @return the extension
-	 */
-	public Extension getExtension() {
-		return Extension;
-	}
-	/**
-	 * @param extension the extension to set
-	 */
-	public void setExtension(Extension extension) {
-		Extension = extension;
-	}
-	/**
-	 * @return the idBook
-	 */
-	public int getIdBook() {
-		return IdBook;
-	}
-	/**
-	 * @param idBook the idBook to set
-	 */
-	public void setIdBook(int idBook) {
-		IdBook = idBook;
-	} 
-	
-	
 
-	
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public Extension getExtension() {
+		return extension;
+	}
+
+	public void setExtension(Extension extension) {
+		this.extension = extension;
+	}	
 
 }
-
-
-	

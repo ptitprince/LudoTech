@@ -76,6 +76,31 @@ public class ItemDAO extends DAO {
 			return false;
 		}
 	}
+	
+	public String getGameName(int itemID) {
+		String name = "";
+		try {
+			super.connect();
+
+			String request = "SELECT GAME.name AS game_name FROM ITEM "
+					+ "JOIN GAME ON ITEM.game_id = GAME.id "
+					+ "WHERE ITEM.id = ?";
+
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.setInt(1, itemID);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			if (resultSet.next()) {
+				name = resultSet.getString("game_name");
+			}
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return name;
+	}
 
 	/**
 	 * Liste les exemplaires possédés par un certain jeu

@@ -39,19 +39,30 @@ public class LoginController extends JPanel {
 		// Clic sur le bouton "Se connecter" de l'onglet de connexion
 		this.loginView.getValidateButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String pseudo = loginView.getPseudoField().getText();
-				String password = loginView.getPasswordField().getText();
-				int[] memberData = memberServices.checkAccess(pseudo, password);
-				if (memberData != null) {
-					for (LoginObserver observer : observers) {
-						observer.notifySuccessfulLogin(memberData[0], (memberData[1] == 1) ? true : false);
-					}
-				} else {
-					displayLoginError();
-				}
+				sendLoginRequest();
+			}
+		});
+		
+		// Appuie sur la touche "entrer" du clavier sur le champ de mot de passe
+		this.loginView.getPasswordField().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sendLoginRequest();
 			}
 		});
 
+	}
+	
+	public void sendLoginRequest() {
+		String pseudo = loginView.getPseudoField().getText();
+		String password = loginView.getPasswordField().getText();
+		int[] memberData = memberServices.checkAccess(pseudo, password);
+		if (memberData != null) {
+			for (LoginObserver observer : observers) {
+				observer.notifySuccessfulLogin(memberData[0], (memberData[1] == 1) ? true : false);
+			}
+		} else {
+			displayLoginError();
+		}
 	}
 
 	public void addObserver(LoginObserver observer) {

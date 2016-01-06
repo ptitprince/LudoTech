@@ -84,4 +84,9 @@ public class ItemServices {
 	public int countItemsOfGame(int gameID) {
 		return this.itemDAO.getAllHavingGameID(gameID).size();
 	}
+	
+	public String getNameOfGame(int itemID) {
+		return this.itemDAO.getGameName(itemID);
+		
+	}
 }
