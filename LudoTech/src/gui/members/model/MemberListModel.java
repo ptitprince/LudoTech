@@ -12,7 +12,7 @@ import model.services.MemberServices;
 @SuppressWarnings("serial")
 public class MemberListModel extends AbstractTableModel{
 
-	private final String[] HEADERS = { TextView.get("lastName"), TextView.get("firstName"), TextView.get("pseudo"), TextView.get("birthdate"), TextView.get("phoneNumber"), TextView.get("city"), TextView.get("canBorrow"),
+	private final String[] HEADERS = { TextView.get("lastName"), TextView.get("firstName"), TextView.get("pseudo"), TextView.get("birthDate"), TextView.get("phoneNumber"), TextView.get("city"), TextView.get("canBorrow"),
 			TextView.get("lastSubscriptionDate") };
 	
 	private MemberServices memberServices;

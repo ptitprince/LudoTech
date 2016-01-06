@@ -20,7 +20,7 @@ public class MainController extends JTabbedPane implements LoginObserver {
 	private CatalogController catalogController;
 	private ParametersController parametersController;
 	private ProfileController profileController;
-	//private MembersController membersController;
+	private MembersController membersController;
 
 	private int currentMemberID;
 
@@ -39,13 +39,13 @@ public class MainController extends JTabbedPane implements LoginObserver {
 		this.catalogController.refreshGameList();
 		this.parametersController = new ParametersController();
 		this.profileController = new ProfileController(currentMemberID);
-		//this.membersController = new MembersController();
+		this.membersController = new MembersController(currentMemberID);
 		this.addTab(TextView.get("tabCatalog"), this.catalogController);
 		this.addTab(TextView.get("tabBorrow"), new EmptyPanel());
 		this.addTab(TextView.get("tabBook"), new EmptyPanel());
 		this.addTab(TextView.get("tabProfile"), this.profileController);
 		if (showAdminTabs) {
-			//this.addTab(TextView.get("tabMembers"), this.membersController);
+			this.addTab(TextView.get("tabMembers"), this.membersController);
 			this.addTab(TextView.get("tabParameters"), this.parametersController);
 		}
 	}
