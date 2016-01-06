@@ -106,4 +106,25 @@ public class ExtensionDAO extends DAO {
 		return extensions;
 	}
 
+		public List<String> list(boolean sorted) {
+		List<String> extensions = new ArrayList<String>();
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT * FROM EXTENSION " + ((sorted) ? "ORDER BY name ASC" : ""));
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			while (resultSet.next()) { // Positionnement sur le premier résultat
+				extensions.add(resultSet.getString("name"));
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return extensions;
+	}
 }

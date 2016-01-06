@@ -53,7 +53,7 @@ public class BorrowSearchView extends JPanel{
 		memberNameLabel.setLabelFor(this.memberNameField);
 		
 		// L'état de l'emprunt :
-		JLabel stateLabel = new JLabel(TextView.get("stateComboBox"));
+		JLabel stateLabel = new JLabel(TextView.get("borrowStateComboBox"));
 		searchPropertiesPanel.add(stateLabel);
 		this.stateBorrowComboBox = new JComboBox<String>();
 		this.stateBorrowComboBox.setModel(new PostLoadableComboBoxModel());

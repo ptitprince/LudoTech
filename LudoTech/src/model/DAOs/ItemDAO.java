@@ -131,4 +131,26 @@ public class ItemDAO extends DAO {
 		return items;
 	}
 
+	public List<String> list(boolean sorted) {
+		List<String> itemNames = new ArrayList<String>();
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT * FROM GAME " + ((sorted) ? "ORDER BY name ASC" : ""));
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			while (resultSet.next()) { // Positionnement sur le premier résultat
+				itemNames.add(resultSet.getString("name"));// Pas sur du name
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return itemNames;
+	}
+
 }
