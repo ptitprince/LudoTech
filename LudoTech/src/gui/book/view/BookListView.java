@@ -42,4 +42,28 @@ public class BookListView extends JPanel{
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
 
 	}
+
+	public JTable getTable() {
+		return table;
+	}
+
+	public void setTable(JTable table) {
+		this.table = table;
+	}
+
+	public JButton getAddBookButton() {
+		return addBookButton;
+	}
+
+	public void setAddBookButton(JButton addBookButton) {
+		this.addBookButton = addBookButton;
+	}
+
+	public JButton getDeleteBookButton() {
+		return deleteBookButton;
+	}
+
+	public void setDeleteBookButton(JButton deleteBookButton) {
+		this.deleteBookButton = deleteBookButton;
+	}
 }

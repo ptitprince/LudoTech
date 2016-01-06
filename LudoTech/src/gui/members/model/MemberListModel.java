@@ -1,6 +1,7 @@
 package gui.members.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -12,7 +13,7 @@ import model.services.MemberServices;
 @SuppressWarnings("serial")
 public class MemberListModel extends AbstractTableModel{
 
-	private final String[] HEADERS = { TextView.get("lastName"), TextView.get("firstName"), TextView.get("pseudo"), TextView.get("birthDate"), TextView.get("phoneNumber"), TextView.get("city"), TextView.get("canBorrow"),
+	private final String[] HEADERS = { "", TextView.get("lastName"), TextView.get("firstName"), TextView.get("pseudo"), TextView.get("birthDate"), TextView.get("phoneNumber"), TextView.get("canBorrow"),
 			TextView.get("lastSubscriptionDate") };
 	
 	private MemberServices memberServices;
@@ -70,13 +71,14 @@ public class MemberListModel extends AbstractTableModel{
 		case 1:
 		case 2:
 		case 3:
+		case 5:
 			return String.class;
 		case 0:
-		case 4:
-		case 5:
 			return Integer.class;
-		case 6:
+		case 4:
 		case 7:
+			return Date.class;
+		case 6:
 			return Boolean.class;
 		default:
 			return Object.class;

@@ -1,22 +1,38 @@
 package model.services;
+import java.sql.Date;
+
 import java.util.List;
-
 import model.DAOs.BookDAO;
+import model.DAOs.ExtensionDAO;
+import model.DAOs.ItemDAO;
+import model.DAOs.MemberDAO;
 import model.POJOs.*;
-
-
+import model.DAOs.*;
 public class BookServices {
 
-	private BookDAO bookDAO;
-	
+private BookDAO bookDAO;
+
+private ExtensionDAO extensionDAO;
+private ItemDAO itemDAO;
+//
+//	
+//	
 	public BookServices() {
 		this.bookDAO = new BookDAO();
+		this.extensionDAO= new ExtensionDAO();
+		this.itemDAO= new ItemDAO();
 	}
-	
 	public List<Book> getAll() {
 		return this.bookDAO.getBooks();
 	}
-	
+	public List<String> getExtension(boolean sorted) {
+		return this.extensionDAO.list(sorted);
+	}
+
+	public List<String> getItem(boolean sorted) {
+		return this.itemDAO.list(sorted);
+	}
+//	
 //	
 //	
 //	/**Ojet d'acces a book 
@@ -42,8 +58,13 @@ public class BookServices {
 //	 * @return La reservation
 //	 */
 //	public Book addBook(int memberID,int itemID, int extensionID, Date StartDate,Date EndDate) {
-//		Book book = new Book(Member, Item, extensionID, StartDate,EndDate);
-//		if (this.bookDAO.add(book, Item.getItemID(),Extension.getExtensionID(),Member.getMemberID())) {
+//		Item item;
+//		Member member;
+//		Date StartDate;
+//		Date EndDate;
+//		Extension extension;
+//		Book book = new Book( item,member,StartDate ,EndDate,extension);
+//		if (this.bookDAO.add(book.getItem().getItemID(), book.getMember().getMemberID(),book.getStartDate().getTime(), book.getEndDate().getTime(), book.getExtension().getExtensionID()) {
 //			return book;
 //		}
 //			else {
@@ -70,9 +91,9 @@ public class BookServices {
 //	 * @return Changer la ligne d'une base de données
 //	 */
 //	
-//	public Book editBook( Member member,Item item,Extension extension, Date StartDate, Date EndDate)	{
-//		Book book = new Book( member,item, extension, StartDate, EndDate);
-//		return this.bookDAO.edit(book.getItem().getItemID(), book.getMember().getMemberID(),book.getExtension().getExtensionID(), StartDate, EndDate) ? book : null;
+//	public Book editBook( int memberID,int itemID,int extensionID, Date StartDate, Date EndDate)	{
+//		Book book = new Book( membeID,itemID, extensionID, StartDate, EndDate);
+//		return this.bookDAO.edit(book.getItem().getItemID(), book.getMember().getMemberID(),book.getStartDate().getTime(), book.getEndDate().getTime(), book.getExtension().getExtensionID()) ? book : null;
 //	}
 //	public MemberDAO getMemberDAO() {
 //		return memberDAO;
@@ -98,7 +119,7 @@ public class BookServices {
 //	public boolean GetMyBooks(Member Member)
 //	
 //	{
-//		Book book = new Book(member,
+//		Book book = new Book(member
 //	}
 //	
 //	
@@ -113,4 +134,5 @@ public class BookServices {
 //		
 //		
 //	}
+//}
 }
