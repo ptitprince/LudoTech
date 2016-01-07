@@ -111,6 +111,52 @@ public class BorrowDAO extends DAO {
 			return false;
 		}
 	}
+	
+	public boolean getByItemID(int itemID) {
+		try {
+			super.connect();
+			PreparedStatement psSelect = connection .prepareStatement("SELECT * FROM BORROW WHERE borrow.item_id = ?");
+			psSelect.setInt(1, itemID);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+			
+			ResultSet resultSet = psSelect.getResultSet();
+			Borrow borrow = null;
+			if (resultSet.next()) {
+				Item item = new Item(resultSet.getInt("I_id"),
+						resultSet.getString("I_comments"));
+				Member member = new Member(resultSet.getInt("M_id"),
+						resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"),
+						resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"),
+						resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"),
+						resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"),
+						resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"),
+						resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"),
+						resultSet.getString("E_name"));
+				borrow = new Borrow(item, member,
+						resultSet.getDate("B_start_date"),
+						resultSet.getDate("B_end_date"), extension);
+			}
+			
+			super.disconnect();
+			if(borrow == null) {
+				return false;
+			} else {
+				return true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
 
 	/**
 	 * retourne un emprunt.
