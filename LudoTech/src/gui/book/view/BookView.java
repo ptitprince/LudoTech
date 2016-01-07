@@ -1,4 +1,4 @@
-package gui.borrow.view;
+package gui.book.view;
 
 import gui.LudoTechApplication;
 import gui.utils.DateFormatter;
@@ -35,11 +35,11 @@ import model.POJOs.Game;
 import model.POJOs.Member;
 
 @SuppressWarnings("serial")
-public class BorrowView extends JDialog {
+public class BookView extends JDialog {
 
 	private static final double WINDOW_RATIO = 1.5;
 
-	private int durationOfBorrowingsInWeeks;
+	private int durationOfBookingsInWeeks;
 
 	private JComboBox<Game> gameComboBox;
 	private JComboBox<Member> memberComboBox;
@@ -50,8 +50,8 @@ public class BorrowView extends JDialog {
 	private JButton validateButton;
 	private JButton cancelButton;
 
-	public BorrowView(int durationOfBorrowingsInWeeks) {
-		this.durationOfBorrowingsInWeeks = durationOfBorrowingsInWeeks;
+	public BookView(int durationOfBookingsInWeeks) {
+		this.durationOfBookingsInWeeks = durationOfBookingsInWeeks;
 		this.setSize((int) (LudoTechApplication.WINDOW_WIDTH / WINDOW_RATIO),
 				(int) (LudoTechApplication.WINDOW_HEIGHT / WINDOW_RATIO));
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -61,35 +61,35 @@ public class BorrowView extends JDialog {
 	}
 
 	private void makeGUI() {
-		JLabel title = new JLabel(TextView.get("borrowAdd"));
+		JLabel title = new JLabel(TextView.get("bookAdd"));
 		Font police = new Font("Arial", Font.BOLD, 16);
 		title.setFont(police);
 		title.setHorizontalAlignment(JLabel.CENTER);
 		this.add(title, BorderLayout.NORTH);
 
-		JPanel borrowPanel = new JPanel(new SpringLayout());
+		JPanel bookPanel = new JPanel(new SpringLayout());
 
 		// Nom du jeu
-		JLabel borrowGameNameLabel = new JLabel(TextView.get("borrowGame"));
-		borrowPanel.add(borrowGameNameLabel);
+		JLabel bookGameNameLabel = new JLabel(TextView.get("bookGame"));
+		bookPanel.add(bookGameNameLabel);
 		this.gameComboBox = new JComboBox<Game>();
 		this.gameComboBox.setModel(new PostLoadableGameComboBoxModel());
 		this.gameComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-		borrowGameNameLabel.setLabelFor(this.gameComboBox);
-		borrowPanel.add(this.gameComboBox);
+		bookGameNameLabel.setLabelFor(this.gameComboBox);
+		bookPanel.add(this.gameComboBox);
 
 		// Nom du membre
-		JLabel borrowMemberNameLabel = new JLabel(TextView.get("borrowMember"));
-		borrowPanel.add(borrowMemberNameLabel);
+		JLabel bookMemberNameLabel = new JLabel(TextView.get("bookMember"));
+		bookPanel.add(bookMemberNameLabel);
 		this.memberComboBox = new JComboBox<Member>();
 		this.memberComboBox.setModel(new PostLoadableMemberComboBoxModel());
 		this.memberComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-		borrowMemberNameLabel.setLabelFor(this.memberComboBox);
-		borrowPanel.add(this.memberComboBox);
+		bookMemberNameLabel.setLabelFor(this.memberComboBox);
+		bookPanel.add(this.memberComboBox);
 
 		// Date de début
-		JLabel beginningDateLabel = new JLabel(TextView.get("borrowBeginningDate"));
-		borrowPanel.add(beginningDateLabel);
+		JLabel beginningDateLabel = new JLabel(TextView.get("bookBeginningDate"));
+		bookPanel.add(beginningDateLabel);
 		UtilDateModel startDateModel = new UtilDateModel();
 		startDateModel.setSelected(true);
 		Properties startDateProperties = new Properties();
@@ -99,14 +99,14 @@ public class BorrowView extends JDialog {
 		JDatePanelImpl startDatePanel = new JDatePanelImpl(startDateModel, startDateProperties);
 		this.startDatePicker = new JDatePickerImpl(startDatePanel, new DateFormatter());
 		beginningDateLabel.setLabelFor(this.startDatePicker);
-		borrowPanel.add(startDatePicker);
+		bookPanel.add(startDatePicker);
 
 		// Date de fin
-		JLabel endingDateLabel = new JLabel(TextView.get("borrowEndingDate"));
-		borrowPanel.add(endingDateLabel);
+		JLabel endingDateLabel = new JLabel(TextView.get("bookEndingDate"));
+		bookPanel.add(endingDateLabel);
 		UtilDateModel endDateModel = new UtilDateModel();
 		endDateModel.setSelected(true);
-		endDateModel.addDay(7 * durationOfBorrowingsInWeeks); // 7 jours fois le
+		endDateModel.addDay(7 * durationOfBookingsInWeeks); // 7 jours fois le
 																// nombre de
 																// semaines
 		Properties endDateProperties = new Properties();
@@ -116,20 +116,20 @@ public class BorrowView extends JDialog {
 		JDatePanelImpl endDatePanel = new JDatePanelImpl(endDateModel, endDateProperties);
 		this.endDatePicker = new JDatePickerImpl(endDatePanel, new DateFormatter());
 		beginningDateLabel.setLabelFor(this.endDatePicker);
-		borrowPanel.add(endDatePicker);
+		bookPanel.add(endDatePicker);
 
 		// Nom de l'extension
-		JLabel borrowExtensionNameLabel = new JLabel(TextView.get("borrowExtension"));
-		borrowPanel.add(borrowExtensionNameLabel);
+		JLabel bookExtensionNameLabel = new JLabel(TextView.get("bookExtension"));
+		bookPanel.add(bookExtensionNameLabel);
 		this.extensionComboBox = new JComboBox<Extension>();
 		this.extensionComboBox.setModel(new PostLoadableExtensionComboBoxModel());
 		this.extensionComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-		borrowExtensionNameLabel.setLabelFor(this.extensionComboBox);
-		borrowPanel.add(this.extensionComboBox);
+		bookExtensionNameLabel.setLabelFor(this.extensionComboBox);
+		bookPanel.add(this.extensionComboBox);
 
-		SpringUtilities.makeCompactGrid(borrowPanel, 5, 2, 6, 6, 6, 6);
+		SpringUtilities.makeCompactGrid(bookPanel, 5, 2, 6, 6, 6, 6);
 
-		this.add(borrowPanel, BorderLayout.CENTER);
+		this.add(bookPanel, BorderLayout.CENTER);
 
 		JPanel actionsPanel = new JPanel();
 		this.validateButton = new JButton(TextView.get("validate"));
@@ -207,10 +207,17 @@ public class BorrowView extends JDialog {
 		int day = Integer.parseInt(sdfDay.format(currentDate));
 		this.startDatePicker.getModel().setDate(year, month, day);
 		this.endDatePicker.getModel().setDate(year, month, day);
-		this.endDatePicker.getModel().addDay(7 * this.durationOfBorrowingsInWeeks);
+		this.endDatePicker.getModel().addDay(7 * this.durationOfBookingsInWeeks);
 	}
 
 	public void clearExtensions() {
 		this.extensionComboBox.getModel().setSelectedItem(null);
+	}
+
+	public void setMemberComboBoxValue(int memberID, boolean admin) {
+		if (!admin) {
+			((PostLoadableMemberComboBoxModel) this.memberComboBox.getModel()).selectItemByID(memberID);
+		}
+		this.memberComboBox.setEnabled(admin);
 	}
 }
