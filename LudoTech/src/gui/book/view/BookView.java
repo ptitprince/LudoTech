@@ -32,6 +32,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import model.POJOs.Extension;
 import model.POJOs.Game;
+import model.POJOs.Item;
 import model.POJOs.Member;
 
 @SuppressWarnings("serial")
@@ -164,6 +165,8 @@ public class BookView extends JDialog {
 		return (Member) this.memberComboBox.getSelectedItem();
 	}
 
+	
+	
 	public Date getStartDate() throws ParseException {
 		DateModel<?> model = this.startDatePicker.getModel();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");

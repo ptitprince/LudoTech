@@ -136,6 +136,70 @@ public class MemberContextDAO extends DAO {
 		}
 	}
 
+	public boolean getCanBOOK(int id) {
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM MEMBER_CONTEXT WHERE id = ?");
+			psSelect.setInt(1, id);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			boolean answer = true;
+			if (resultSet.next()) { // Positionnement sur le premier résultat
+					answer =	resultSet.getBoolean("can_book");
+			}
+			super.disconnect();
+			return answer;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return true;
+		}
+	}
+	
+	public int getNbFakeBooks(int id) {
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM MEMBER_CONTEXT WHERE id = ?");
+			psSelect.setInt(1, id);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			int answer = 0;
+			if (resultSet.next()) { // Positionnement sur le premier résultat
+					answer =	resultSet.getInt("nb_fake_bookings");
+			}
+			super.disconnect();
+			return answer;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	public boolean editNbFakeBook(int memberContextId,int NbFakeBookings) {
+		try {
+			super.connect();
+
+			PreparedStatement psEdit = connection.prepareStatement("UPDATE MEMBER_CONTEXT "
+					+ "SET nb_fake_bookings = ?"
+					+ "WHERE id = ?");
+			
+			psEdit.setInt(2, NbFakeBookings);
+			psEdit.setInt(6, memberContextId);
+
+			psEdit.executeUpdate();
+			psEdit.closeOnCompletion();
+
+			super.disconnect();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 
 }

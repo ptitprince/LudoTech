@@ -1,21 +1,41 @@
 package model.services;
 
 import java.util.Date;
+import model.services.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import model.DAOs.BookDAO;
+import model.DAOs.BorrowDAO;
+import model.DAOs.ItemDAO;
 import model.POJOs.Book;
 import model.POJOs.Extension;
 import model.POJOs.Game;
+import model.POJOs.Item;
 import model.POJOs.Member;
 
 public class BookServices {
-
+	private final BorrowDAO borrowDAO;
 	private final BookDAO bookDAO;
+	private final ItemDAO itemDAO;
+	private final ParametersServices parametersServices;
+	private final ItemServices itemServices;
+	private final ExtensionServices extensionServices;
+	private final MemberContextServices memberContextServices;
+	private BookDAO bookDAO2;
 
 	public BookServices() {
+		super();
+		this.borrowDAO = new BorrowDAO();
 		this.bookDAO = new BookDAO();
+		this.itemDAO = new ItemDAO();
+		this.parametersServices = new ParametersServices();
+		this.itemServices = new ItemServices();
+		this.extensionServices = new  ExtensionServices();
+		this.memberContextServices = new MemberContextServices();
 	}
+
+	
 
 	public List<Book> getAll() {
 		return this.bookDAO.getBooks(-1);
@@ -30,8 +50,50 @@ public class BookServices {
 	 * TODO
 	 * Ajouter une nouvelle réservation
 	 */
-	public Book addBook(Game game, Member member, Date beginningDate,
-			Date endingDate, Extension extension) {
+//	public Book addBook(Game game ,Item item, Member member, Date beginningDate,
+//			Date endingDate, Extension extension) {
+//		
+//		int a;
+//		long diffValue = beginningDate.getTime() - endingDate.getTime();
+//		long diffDays = TimeUnit.DAYS.convert(diffValue, TimeUnit.MILLISECONDS);
+//		
+//		
+//		ParametersServices parametresServices = null;
+//		if ((diffDays>=0)&&(diffDays>=parametresServices.getDurationOfBorrowingsInWeeks())&&
+//				(diffDays>=parametresServices.getDurationBetweenBookingandBorrowingInWeeks()
+//			)&&
+//				(itemServices.countItemsOfGame(game.getGameID())>=0)
+//				&& (borrowDAO.getExtension(game.getGameID(),member.getMemberID(),beginningDate)!=0)
+//				&&
+//				(memberContextServices.getCanBook(member.getMemberID()))
+//				) 
+//				{
+//			if(endingDate.getDay()==0)
+//			{
+//				 endingDate.setDate(endingDate.getDate() + 1);;
+//				
+//			}
+//			else if (endingDate.getDay()==6)
+//			{ 
+//				endingDate.setDate(endingDate.getDate()-5);// Si c'est samedi je le remet a lundi
+//			}
+//			
+//			Book book = new Book(item,member,beginningDate,endingDate,extension);
+//			bookDAO.add(book);
+//			
+//			
+//			
+//			return book;
+//				}
+//		else 
+//			return null;
+//	
+//	
+//			
+		
+		
+		
+		
 		/*
 		 * game et member ne peuvent pas être null, 
 		 * - vérifier si la date de fin est > à la date de début
@@ -45,14 +107,33 @@ public class BookServices {
 		 * - ajouter le book en base de données, le retourner
 		 * - si une vérification n'est pas effectuée, retourner null
 		 */
-		return null;
-	}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	//}
 	
 	/**
 	 * TODO
 	 * Annulation d'une réservation, mettre en malus à l'adhérent à cause de cette fausse réservation et supprimer la réservation
 	 */
 	public boolean cancelBook(int itemID, int memberID, Date beginningDate) {
+		
+		memberContextServices.oneMoreNbFakeBooking(memberID);
+		
+		
+	bookDAO2 = null;
+	
+	bookDAO2.remove(itemID, memberID, beginningDate);
+		
 		/*
 		 * - Utiliser (créer) une fonction dans MemberContextServices pour incrémenter le compteur de nbFakeBookings de l'adhérent
 		 * - Supprimer le book en base de données avec le couple des 3 clés primaires (itemID, memberID, beginningDate) et retourner le résultat booléen

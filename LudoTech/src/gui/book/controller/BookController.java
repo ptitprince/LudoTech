@@ -20,6 +20,7 @@ import javax.swing.SwingUtilities;
 
 import model.POJOs.Extension;
 import model.POJOs.Game;
+import model.POJOs.Item;
 import model.POJOs.Member;
 import model.services.BookServices;
 import model.services.ExtensionServices;
@@ -105,6 +106,7 @@ public class BookController extends JPanel {
 		this.bookView.getValidateButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Game selectedGame = bookView.getSelectedGame();
+				
 				Member selectedMember = bookView.getSelectedMember();
 				if (selectedGame == null || selectedMember == null) {
 					showNoGameOrMemberSelectedException();
@@ -113,7 +115,7 @@ public class BookController extends JPanel {
 						Date startDate = bookView.getStartDate();
 						Date endDate = bookView.getEndDate();
 						Extension selectedExtension = bookView.getSelectedExtension();
-						bookServices.addBook(selectedGame, selectedMember, startDate, endDate, selectedExtension);
+						//bookServices.addBook(selectedGame, selectedMember, startDate, endDate, selectedExtension);
 						bookView.setVisible(false);
 					} catch (ParseException e1) {
 						showInvalidDatesException();

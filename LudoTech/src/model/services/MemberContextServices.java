@@ -48,6 +48,28 @@ public class MemberContextServices {
 		return this.memberContextDAO.add(newMemberContext) ? newMemberContext : null;
 	}
 	
+	
+	
+	public boolean getCanBook(int id)
+	{
+		boolean yesOrNo;
+		yesOrNo = memberContextDAO.getCanBOOK(id);
+		return yesOrNo;
+		
+		
+	}
+	
+	public void oneMoreNbFakeBooking(int idMemberContext)
+	{
+		
+		
+		memberContextDAO.editNbFakeBook(idMemberContext, (memberContextDAO.getNbFakeBooks(idMemberContext)+1));
+	 
+	}
+	
+	
+	
+	
 	/**
 	 * Modifier un contexte d'adhérent existant dans la base de données
 	 * @param id
@@ -64,6 +86,14 @@ public class MemberContextServices {
 	 *            A le droit de réserver des jeux
 	 * @return Le contexte d'adhérent modifié
 	 */
+	
+	
+	
+	public void setNbDelays(int nbDelays)
+	{
+		nbDelays = nbDelays + 1;
+	}
+	
 	public MemberContext editMemberContext(int id, int nbDelays, int nbFakeBookings, Date lastSubscriptionDate, boolean canBorrow, boolean canBook) {
 		MemberContext editableMemberContext = new MemberContext(id, nbDelays, nbFakeBookings, lastSubscriptionDate, canBorrow, canBook);
 		return this.memberContextDAO.edit(editableMemberContext) ? editableMemberContext : null;
