@@ -247,7 +247,9 @@ public class Member {
 		this.memberID = ID;
 	}
 
-
+	public String toString() {
+		return this.firstName + " " + this.lastName;
+	}
 
 
 

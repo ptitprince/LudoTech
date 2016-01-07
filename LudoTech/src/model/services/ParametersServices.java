@@ -1,5 +1,6 @@
 package model.services;
 
+import java.awt.Frame;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -43,6 +44,10 @@ public class ParametersServices {
 			e.printStackTrace();
 		}
 		
+	}
+
+	public int getDurationOfBorrowingsInWeeks() {
+		return Integer.parseInt(this.getAllParameters().getProperty("durationOfBorrowingsInWeeks", 0+""));
 	}
 
 }

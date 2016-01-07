@@ -5,10 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-
 import model.POJOs.Borrow;
 import model.POJOs.Extension;
 import model.POJOs.Item;
@@ -180,7 +177,7 @@ public class BorrowDAO extends DAO {
 	 * 
 	 * @return la liste des emprunts.
 	 */
-	public List<Borrow> getBorrows() {
+	public List<Borrow> getBorrows(int userID) {
 		List<Borrow> borrows = new ArrayList<Borrow>();
 		try {
 			super.connect();
@@ -199,7 +196,11 @@ public class BorrowDAO extends DAO {
 					+ "FROM BORROW "
 					+ "JOIN MEMBER ON BORROW.member_id = MEMBER.id "
 					+ "JOIN ITEM ON BORROW.item_id = ITEM.id "
-					+ "LEFT JOIN EXTENSION ON BORROW.extension_id = EXTENSION.id";
+					+ "LEFT JOIN EXTENSION ON BORROW.extension_id = EXTENSION.id ";
+			
+			if (userID != -1) { // Filtrer sur l'utilisateur si l'identifiant n'est pas -1
+				request += "WHERE BORROW.member_id = " + userID;
+			}
 			
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();

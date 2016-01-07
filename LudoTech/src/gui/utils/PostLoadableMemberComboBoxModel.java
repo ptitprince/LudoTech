@@ -15,6 +15,7 @@ public class PostLoadableMemberComboBoxModel extends DefaultComboBoxModel<Member
 	}
 	
 	public void loadData(List<Member> members) {
+		super.removeAllElements();
 		for (Member member : members) {
 			super.addElement(member);
 		}

@@ -15,6 +15,7 @@ public class PostLoadableExtensionComboBoxModel extends DefaultComboBoxModel<Ext
 	}
 	
 	public void loadData(List<Extension> extensions) {
+		super.removeAllElements();
 		for (Extension extension : extensions) {
 			super.addElement(extension);
 		}

@@ -13,6 +13,7 @@ public class PostLoadableComboBoxModel extends DefaultComboBoxModel<String> {
 	}
 	
 	public void loadData(List<String> items) {
+		super.removeAllElements();
 		for (String item : items) {
 			super.addElement(item);
 		}

@@ -15,6 +15,7 @@ public class PostLoadableGameComboBoxModel extends DefaultComboBoxModel<Game> {
 	}
 	
 	public void loadData(List<Game> items) {
+		super.removeAllElements();
 		for (Game item : items) {
 			super.addElement(item);
 		}

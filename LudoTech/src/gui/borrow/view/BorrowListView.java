@@ -12,11 +12,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+@SuppressWarnings("serial")
 public class BorrowListView extends JPanel{
 	
 	private JTable table;
 	private JButton addBorrowButton;
-	private JButton deleteBorrowButton;
+	private JButton receiveBorrowButton;
 	
 	private boolean currentMemberIsAdmin;
 	
@@ -48,17 +49,21 @@ public class BorrowListView extends JPanel{
 			JPanel actionsPanel = new JPanel();
 			this.addBorrowButton = new JButton(TextView.get("add"));
 			actionsPanel.add(this.addBorrowButton);
-			this.deleteBorrowButton = new JButton(TextView.get("delete"));
-			actionsPanel.add(this.deleteBorrowButton);
+			this.receiveBorrowButton = new JButton(TextView.get("borrowReceive"));
+			actionsPanel.add(this.receiveBorrowButton);
 			this.add(actionsPanel, BorderLayout.SOUTH);
 		}
+	}
+	
+	public JTable getTable() {
+		return this.table;
 	}
 	
 	public JButton getAddBorrowButton() {
 		return this.addBorrowButton;
 	}
 	
-	public JButton getDeleteBorrowButton() {
-		return this.deleteBorrowButton;
+	public JButton getReceiveBorrowButton() {
+		return this.receiveBorrowButton;
 	}
 }
