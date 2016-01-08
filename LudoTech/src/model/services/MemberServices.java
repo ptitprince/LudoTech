@@ -1,6 +1,7 @@
 package model.services;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import model.DAOs.MemberDAO;
@@ -72,11 +73,18 @@ public class MemberServices {
 
 
 	
-	public List<Member> getMemberList()
+	public List<Member> getMemberList(HashMap<String, String> filter)
 	{
-		return this.memberDAO.getMemberList();
+		return this.memberDAO.getMemberList(filter);
 	}
 	
+	public boolean removeMember(int memberID) {
+		return this.memberDAO.remove(memberID);
+	}
+	
+	public MemberContext getMemberContext(int memberID){
+		return this.memberDAO.get(memberID).getMemberContext();
+	}
 	
 	
 	

@@ -5,7 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import model.POJOs.Member;
 import model.POJOs.MemberContext;
@@ -166,7 +168,10 @@ public class MemberDAO extends DAO {
 		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM MEMBER WHERE id = ?");
+			PreparedStatement psSelect = connection.prepareStatement("SELECT MEMBER.*, MEMBER_CONTEXT.*, "
+			+ "MEMBER.id AS M_id, "
+			+ "MEMBER_CONTEXT.id AS MC_id " 
+			+" FROM MEMBER JOIN MEMBER_CONTEXT ON MEMBER.context_id = MEMBER_CONTEXT.id WHERE MEMBER.id = ? ");
 			psSelect.setInt(1, id);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -174,13 +179,16 @@ public class MemberDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 			Member member = null;
 			if (resultSet.next()) { // Positionnement sur le premier résultat
-				Date date = resultSet.getDate("birth_date");
+				MemberContext memberContext = new MemberContext(resultSet.getInt("MC_id"),
+						resultSet.getInt("nb_delays"), resultSet.getInt("nb_fake_bookings"),
+						resultSet.getDate("last_subscription_date"), resultSet.getBoolean("can_borrow"),
+						resultSet.getBoolean("can_book"));
 				member = new Member(id, resultSet.getString("first_name"), resultSet.getString("last_name"),
 						resultSet.getString("pseudo"), resultSet.getString("password"),
-						resultSet.getBoolean("is_admin"), date, resultSet.getString("phone_number"),
+						resultSet.getBoolean("is_admin"), resultSet.getDate("birth_date"), resultSet.getString("phone_number"),
 						resultSet.getString("email_address"), resultSet.getString("street_address"),
-						resultSet.getString("postal_code"), resultSet.getString("city"));
-
+						resultSet.getString("postal_code"), resultSet.getString("city"), memberContext);
+				
 			}
 			super.disconnect();
 			return member;
@@ -190,6 +198,8 @@ public class MemberDAO extends DAO {
 		}
 	}
 
+	
+	
 	/**
 	 * Trouve l'identifiant du statut d'un membre (memberContext) dans la base
 	 * de données
@@ -319,7 +329,7 @@ public class MemberDAO extends DAO {
 		return isAdmin;
 	}
 
-	public List<Member> getMemberList() {
+	public List<Member> getMemberList(HashMap <String, String> filter) {
 		List<Member> member = new ArrayList<Member>();
 		try {
 			super.connect();
@@ -329,6 +339,29 @@ public class MemberDAO extends DAO {
 					+ "MEMBER_CONTEXT.id AS MC_id " 
 					+ "FROM MEMBER "
 					+ "JOIN MEMBER_CONTEXT ON MEMBER.context_id = MEMBER_CONTEXT.id ";
+			
+			String whereClause = "";
+			boolean atLeastOneCondition = false;
+			for (Entry<String, String> property : filter.entrySet()) {
+				if (property.getKey().equals("first_name") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(MEMBER." + property.getKey() + ")"
+							+ " LIKE LOWER('%" + property.getValue() + "%')";
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("last_name") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(MEMBER." + property.getKey() + ")"
+							+ " LIKE LOWER('%" + property.getValue() + "%')";
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("pseudo") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(MEMBER." + property.getKey() + ")"
+							+ " LIKE LOWER('%" + property.getValue() + "%')";
+					atLeastOneCondition = true;
+				}
+			}
+			
+			if (atLeastOneCondition) {
+				request += " WHERE" + whereClause;
+			}
+			
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
 			psSelect.closeOnCompletion();

@@ -172,7 +172,7 @@ public class BookController extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				List<Game> games = gameServices.getGames(new HashMap<String, String>());
-				List<Member> members = memberServices.getMemberList();
+				List<Member> members = memberServices.getMemberList(new HashMap<String, String>());
 				bookView.loadGames(games);
 				bookView.loadMembers(members);
 				bookView.clear(); // Pour déselectionner le premier élément

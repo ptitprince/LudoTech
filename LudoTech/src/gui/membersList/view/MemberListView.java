@@ -14,8 +14,8 @@ import gui.members.model.MemberListModel;
 import gui.utils.TextView;
 
 @SuppressWarnings("serial")
-public class MemberListView extends JPanel{
-	
+public class MemberListView extends JPanel {
+
 	private JTable table;
 
 	private JButton addMemberButton;
@@ -40,28 +40,27 @@ public class MemberListView extends JPanel{
 		// Autoriser le tri sur le tableau
 		this.table.setAutoCreateRowSorter(true);
 		// Cacher la colonne des identifiants
-		this.table.removeColumn(table.getColumnModel().getColumn(0)); 
+		this.table.removeColumn(table.getColumnModel().getColumn(0));
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
 
-		if (this.currentMemberIsAdmin) {
-			JPanel actionsPanel = new JPanel();
-			this.addMemberButton = new JButton(TextView.get("add"));
-			actionsPanel.add(this.addMemberButton);
-			this.deleteMemberButton = new JButton(TextView.get("delete"));
-			actionsPanel.add(this.deleteMemberButton);
-			this.add(actionsPanel, BorderLayout.SOUTH);
-		}
+		JPanel actionsPanel = new JPanel();
+		this.addMemberButton = new JButton(TextView.get("add"));
+		actionsPanel.add(this.addMemberButton);
+		this.deleteMemberButton = new JButton(TextView.get("delete"));
+		actionsPanel.add(this.deleteMemberButton);
+		this.add(actionsPanel, BorderLayout.SOUTH);
+
 	}
 
 	public JTable getTable() {
 		return this.table;
 	}
 
-	public JButton getAddGameButton() {
+	public JButton getAddMemberButton() {
 		return this.addMemberButton;
 	}
 
-	public JButton getDeleteGameButton() {
+	public JButton getDeleteMemberButton() {
 		return this.deleteMemberButton;
 	}
 }
