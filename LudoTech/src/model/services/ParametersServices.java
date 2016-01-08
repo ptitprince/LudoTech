@@ -48,6 +48,10 @@ public class ParametersServices {
 	public int getDurationOfBorrowingsInWeeks() {
 		return Integer.parseInt(this.getAllParameters().getProperty("durationOfBorrowingsInWeeks", 0+""));
 	}
+	
+	public int getNumberOfBorrowings() {
+		return Integer.parseInt(this.getAllParameters().getProperty("nbBorrowings", 0+""));
+	}
 
 	public int getDurationBetweenBookingandBorrowingInWeeks() {
 		return Integer.parseInt(this.getAllParameters().getProperty("durationBetweenBookingandBorrowingInWeeks", 0+""));

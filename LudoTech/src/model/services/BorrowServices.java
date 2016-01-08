@@ -41,10 +41,10 @@ public class BorrowServices {
 	/**
 	 * TODO Ajout d'un nouveau prêt dans la base de données Il est nécessaire
 	 * d'effecuter des vérifications avant de l'ajouter
+	 * Non fonctionnel, à revoir.
 	 */
 	@SuppressWarnings("deprecation")
-	public Borrow addBorrow(Game game, Member member, Date beginningDate,
-			Date endingDate, Extension extension) {
+	public Borrow addBorrow(Game game, Member member, Date beginningDate, Date endingDate, Extension extension) {
 		/*
 		 * - vérifier si l'adhénent n'a pas dépassé le quota d'emprunts possible
 		 * (utiliser ParametersServices avec une fonction en + pour recup
@@ -54,13 +54,13 @@ public class BorrowServices {
 		 * retourner null
 		 */
 		if (this.memberContextServices.getCanBook(member.getMemberContextID())) {
-			
+			// if(this.parametersServices) TODO
 			if (endingDate.before(beginningDate)) {
 				return null; // renvoi de l'erreur.
 			} else if (endingDate.getMonth() == beginningDate.getMonth()) {
 				// endingDate >= beginningDate
-				if ((endingDate.getDate() - beginningDate.getDate() == parametersServices
-						.getDurationOfBorrowingsInWeeks() * 7)) {
+				if ((endingDate.getDate()
+						- beginningDate.getDate() == parametersServices.getDurationOfBorrowingsInWeeks() * 7)) {
 					// Durée de prêt bien égale ici.
 					if (endingDate.getDay() == 0) {
 						// dimanche, on reporte au lundi
@@ -76,13 +76,9 @@ public class BorrowServices {
 				}
 			} else {
 				int ecartDate = 0;
-				if (beginningDate.getMonth() == 0
-						|| beginningDate.getMonth() == 2
-						|| beginningDate.getMonth() == 4
-						|| beginningDate.getMonth() == 6
-						|| beginningDate.getMonth() == 7
-						|| beginningDate.getMonth() == 9
-						|| beginningDate.getMonth() == 11) {
+				if (beginningDate.getMonth() == 0 || beginningDate.getMonth() == 2 || beginningDate.getMonth() == 4
+						|| beginningDate.getMonth() == 6 || beginningDate.getMonth() == 7
+						|| beginningDate.getMonth() == 9 || beginningDate.getMonth() == 11) {
 					// le mois avec 31 est repéré
 					int newDate = beginningDate.getDate() % 31;
 					ecartDate = newDate + endingDate.getDate();
@@ -90,8 +86,7 @@ public class BorrowServices {
 					int newDate = beginningDate.getDate() % 30;
 					ecartDate = newDate + endingDate.getDate();
 				}
-				if (ecartDate == parametersServices
-						.getDurationOfBorrowingsInWeeks() * 7) {
+				if (ecartDate == parametersServices.getDurationOfBorrowingsInWeeks() * 7) {
 					if (endingDate.getDay() == 0) {
 						// dimanche, on reporte au lundi
 						endingDate.setDate(endingDate.getDate() + 1);
@@ -107,8 +102,7 @@ public class BorrowServices {
 
 			if (this.itemServices.countItemsOfGame(game.getGameID()) > 0) {
 				// S'il reste des items du jeu
-				List<Item> items = this.itemDAO.getAllHavingGameID(game
-						.getGameID());
+				List<Item> items = this.itemDAO.getAllHavingGameID(game.getGameID());
 				boolean atLeastOneGood = false;
 				int i = 0;
 				// On vérifie qu'au moins un des items ne fasse pas partie
@@ -122,42 +116,49 @@ public class BorrowServices {
 						atLeastOneGood = true;
 					}
 					i++;
-				}// i => item.size() || atLeastOneGood
+				} // i => item.size() || atLeastOneGood
 				if (atLeastOneGood) {
 					this.itemDAO.remove(items.get(i - 1).getItemID());
-					// Borrow borrow = new Borrow(items.get(i-1), member,
-					// beginningDate, endingDate, extension);
+					if (extension != null) {
+						if (this.extensionServices.countExtensions(game.getGameID()) > 0) {
+							// On vérifie si le jeu a des extensions.
+							List<Extension> extensions = this.extensionServices.getExtensions(game.getGameID());
+							int j = 0;
+							atLeastOneGood = false;
+							while (j < extensions.size() && !(atLeastOneGood)) {
+								if (this.borrowDAO.getByExtensionID(extensions.get(j).getExtensionID())) {
+									atLeastOneGood = true;
+								}
+								j++;
+							}
+							if (atLeastOneGood) {
+								this.extensionServices.deleteExtension(extensions.get(j - 1).getExtensionID());
+								Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate,
+										extension);
+								this.borrowDAO.add(borrow);
+								return borrow;
+							} else {
+								return null;
+							}
+						} else {
+							return null;
+						}
+					} else {
+						Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate, extension);
+						this.borrowDAO.add(borrow);
+						return borrow;
+					}
+
+				} else {
+					return null;
 				}
 			} else {
 				return null;
 			}
-			if (this.extensionServices.countExtensions(game.getGameID()) > 0) {
-				// On vérifie si le jeu peut avoir des extensions.
-				List<Item> extensionItems = this.itemDAO
-						.getAllHavingGameID(extension.getExtensionID());
-				boolean atLeastOneGood = false;
-				int i = 0;
 
-				if (this.itemServices.countItemsOfGame(extension
-						.getExtensionID()) > 0) {
-					// TODO Vérifier qu'on estime que les items d'extension sont
-					// classés comme les items de game.
-
-					while (i < extensionItems.size() && !(atLeastOneGood)) {
-						if (!(this.borrowDAO.getByItemID(extensionItems.get(i)
-								.getItemID()))) {
-							atLeastOneGood = true;
-						}
-						i++;
-					}
-				}
-				if (atLeastOneGood) {
-					this.itemDAO.remove(extensionItems.get(i - 1).getItemID());
-				}
-			}
-
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -165,8 +166,7 @@ public class BorrowServices {
 	 * vérifications de fin de prêt pour modifier le contexte de l'adhérent /
 	 * emprunteur
 	 */
-	public boolean removeBorrow(int itemID, int memberID, Date beginningDate,
-			Date endingDate) {
+	public boolean removeBorrow(int itemID, int memberID, Date beginningDate, Date endingDate) {
 		/*
 		 * - Vérification que la date de retour (aujourd'hui) est <= à la date
 		 * de fin de prêt Si non, incrémenter le compteur "nbDelays" de
