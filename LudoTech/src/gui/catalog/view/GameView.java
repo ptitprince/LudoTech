@@ -152,6 +152,7 @@ public class GameView extends JDialog {
 		JLabel categoryLabel = new JLabel(TextView.get("gameCategory"));
 		mainInfosPanel.add(categoryLabel);
 		this.categoryComboBox = new JComboBox<String>();
+		this.categoryComboBox.setEditable(true);
 		this.categoryComboBox.setModel(new PostLoadableComboBoxModel());
 		this.categoryComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
 		categoryLabel.setLabelFor(this.categoryComboBox);
@@ -161,6 +162,7 @@ public class GameView extends JDialog {
 		JLabel editorLabel = new JLabel(TextView.get("gameEditor"));
 		mainInfosPanel.add(editorLabel);
 		this.editorComboBox = new JComboBox<String>();
+		this.editorComboBox.setEditable(true);
 		this.editorComboBox.setModel(new PostLoadableComboBoxModel());
 		this.editorComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
 		editorLabel.setLabelFor(this.editorComboBox);
@@ -313,8 +315,8 @@ public class GameView extends JDialog {
 		this.nameField.setText(name);
 		this.creatingGame = (gameID == -1);
 		this.idField.setText((gameID == -1) ? "" : "" + gameID);
-		this.categoryComboBox.setSelectedItem(category);
-		this.editorComboBox.setSelectedItem(editor);
+		this.categoryComboBox.setSelectedItem(TextView.makeFirstLetterUpper(category));
+		this.editorComboBox.setSelectedItem(TextView.makeFirstLetterUpper(editor));
 		this.publishingYearField.setText("" + publishingYear);
 		this.nbPlayersStartRangeField.setText("" + minPlayers);
 		this.nbPlayersEndRangeField.setText("" + maxPlayers);
@@ -341,11 +343,13 @@ public class GameView extends JDialog {
 	}
 
 	public String getCategory() {
-		return this.categoryComboBox.getItemAt(this.categoryComboBox.getSelectedIndex());
+		String category = (String) this.categoryComboBox.getSelectedItem();
+		return (category != null) ? category : "";
 	}
 
 	public String getEditor() {
-		return this.editorComboBox.getItemAt(this.editorComboBox.getSelectedIndex());
+		String editor = (String) this.editorComboBox.getSelectedItem();
+		return (editor != null) ? editor : "";
 	}
 
 	public int getPublishingYearStartRange() throws NotValidNumberFieldException {

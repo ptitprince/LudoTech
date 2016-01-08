@@ -207,12 +207,6 @@ public class CatalogController extends JPanel {
 			public void run() {
 				List<String> categories = gameServices.getGameCategories(true);
 				List<String> editors = gameServices.getGameEditors(true);
-				for (int i = 0; i < categories.size(); i++) {
-					categories.set(i, TextView.makeFirstLetterUpper(categories.get(i)));
-				}
-				for (int i = 0; i < editors.size(); i++) {
-					editors.set(i, TextView.makeFirstLetterUpper(editors.get(i)));
-				}
 				gameSearchView.loadCategories(categories);
 				gameSearchView.loadEditors(editors);
 				gameView.loadCategories(categories);
