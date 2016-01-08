@@ -19,6 +19,7 @@ public class BorrowServices {
 	private final ParametersServices parametersServices;
 	private final ItemServices itemServices;
 	private final ExtensionServices extensionServices;
+	private final MemberContextServices memberContextServices;
 
 	public BorrowServices() {
 		this.borrowDAO = new BorrowDAO();
@@ -26,6 +27,7 @@ public class BorrowServices {
 		this.parametersServices = new ParametersServices();
 		this.itemServices = new ItemServices();
 		this.extensionServices = new ExtensionServices();
+		this.memberContextServices = new MemberContextServices();
 	}
 
 	public List<Borrow> getAll() {
@@ -40,102 +42,121 @@ public class BorrowServices {
 	 * TODO Ajout d'un nouveau prêt dans la base de données Il est nécessaire
 	 * d'effecuter des vérifications avant de l'ajouter
 	 */
+	@SuppressWarnings("deprecation")
 	public Borrow addBorrow(Game game, Member member, Date beginningDate,
 			Date endingDate, Extension extension) {
 		/*
-		 * - vérifier si la date de fin est > à la date de début - vérifier si
-		 * l'écart entre les dates corresponds au paramètre de durée de prêt
-		 * (utiliser encore ParametersServices, avec
-		 * "durationOfBorrowingsInWeeks" cette fois ci - si la date de retour
-		 * tombe un week-end (samedi ou dimanche), la reporter au lundi suivant
-		 * - vérifier si le game a un item disponible (en comptant qu'il en faut
-		 * au moins 1 en stock) (qui ne fais pas partie d'un Borrow qui se
-		 * superpose sur les dates indiquées -> utiliser/créer une fonction dans
-		 * BorrowDAO), si oui en récupérer un - vérifier si l'extension est
-		 * dispo pour ces dates (encore BorrowDAO) - vérifier si l'adhérent à le
-		 * droit d'emprunter (booléen de permission dans le contexte) - vérifier
-		 * si l'adhénent n'a pas dépassé le quota d'emprunts possible (utiliser
-		 * ParametersServices avec une fonction en + pour recup "nbBorrowings"
-		 * se calquer sur celle déjà faite et voir le
+		 * - vérifier si l'adhénent n'a pas dépassé le quota d'emprunts possible
+		 * (utiliser ParametersServices avec une fonction en + pour recup
+		 * "nbBorrowings" se calquer sur celle déjà faite et voir le
 		 * fichierres/preferences.properties - ajouter le borrow en base de
 		 * données, le retourner - si une vérification n'est pas effectuée,
 		 * retourner null
 		 */
-		if (endingDate.before(beginningDate)) {
-			return null; // renvoi de l'erreur.
-		} else if (endingDate.getMonth() == beginningDate.getMonth()) {
-			// endingDate >= beginningDate
-			if ((endingDate.getDate() - beginningDate.getDate() == parametersServices
-					.getDurationOfBorrowingsInWeeks() * 7)) {
-				// Durée de prêt bien égale ici.
-				if (endingDate.getDay() == 0) {
-					// dimanche, on reporte au lundi
-					endingDate.setDate(endingDate.getDate() + 1);
+		if (this.memberContextServices.getCanBook(member.getMemberContextID())) {
+			
+			if (endingDate.before(beginningDate)) {
+				return null; // renvoi de l'erreur.
+			} else if (endingDate.getMonth() == beginningDate.getMonth()) {
+				// endingDate >= beginningDate
+				if ((endingDate.getDate() - beginningDate.getDate() == parametersServices
+						.getDurationOfBorrowingsInWeeks() * 7)) {
+					// Durée de prêt bien égale ici.
+					if (endingDate.getDay() == 0) {
+						// dimanche, on reporte au lundi
+						endingDate.setDate(endingDate.getDate() + 1);
 
-				} else if (endingDate.getDay() == 6) {
-					// Samedi, on reporte au lundi
-					endingDate.setDate(endingDate.getDate() + 2);
+					} else if (endingDate.getDay() == 6) {
+						// Samedi, on reporte au lundi
+						endingDate.setDate(endingDate.getDate() + 2);
+					}
+
+				} else {
+					return null;
 				}
+			} else {
+				int ecartDate = 0;
+				if (beginningDate.getMonth() == 0
+						|| beginningDate.getMonth() == 2
+						|| beginningDate.getMonth() == 4
+						|| beginningDate.getMonth() == 6
+						|| beginningDate.getMonth() == 7
+						|| beginningDate.getMonth() == 9
+						|| beginningDate.getMonth() == 11) {
+					// le mois avec 31 est repéré
+					int newDate = beginningDate.getDate() % 31;
+					ecartDate = newDate + endingDate.getDate();
+				} else {
+					int newDate = beginningDate.getDate() % 30;
+					ecartDate = newDate + endingDate.getDate();
+				}
+				if (ecartDate == parametersServices
+						.getDurationOfBorrowingsInWeeks() * 7) {
+					if (endingDate.getDay() == 0) {
+						// dimanche, on reporte au lundi
+						endingDate.setDate(endingDate.getDate() + 1);
 
+					} else if (endingDate.getDay() == 6) {
+						// Samedi, on reporte au lundi
+						endingDate.setDate(endingDate.getDate() + 2);
+					}
+				} else {
+					return null;
+				}
+			}
+
+			if (this.itemServices.countItemsOfGame(game.getGameID()) > 0) {
+				// S'il reste des items du jeu
+				List<Item> items = this.itemDAO.getAllHavingGameID(game
+						.getGameID());
+				boolean atLeastOneGood = false;
+				int i = 0;
+				// On vérifie qu'au moins un des items ne fasse pas partie
+				// d'un prêt.
+				while (i < items.size() && !(atLeastOneGood)) {
+					/*
+					 * Invariant : parcours de la liste jusqu'à la fin ou avoir
+					 * un item utilisable.
+					 */
+					if (!(this.borrowDAO.getByItemID(items.get(i).getItemID()))) {
+						atLeastOneGood = true;
+					}
+					i++;
+				}// i => item.size() || atLeastOneGood
+				if (atLeastOneGood) {
+					this.itemDAO.remove(items.get(i - 1).getItemID());
+					// Borrow borrow = new Borrow(items.get(i-1), member,
+					// beginningDate, endingDate, extension);
+				}
 			} else {
 				return null;
 			}
-		} else {
-			int ecartDate = 0;
-			if (beginningDate.getMonth() == 0 || beginningDate.getMonth() == 0
-					|| beginningDate.getMonth() == 0
-					|| beginningDate.getMonth() == 0
-					|| beginningDate.getMonth() == 0
-					|| beginningDate.getMonth() == 0
-					|| beginningDate.getMonth() == 0) {
-				int newDate = beginningDate.getDate() % 31;
-				ecartDate = newDate + endingDate.getDate();
-			} else {
-				int newDate = beginningDate.getDate() % 30;
-				ecartDate = newDate + endingDate.getDate();
-			}
-			if (ecartDate == parametersServices
-					.getDurationOfBorrowingsInWeeks() * 7) {
-				if (endingDate.getDay() == 0) {
-					// dimanche, on reporte au lundi
-					endingDate.setDate(endingDate.getDate() + 1);
+			if (this.extensionServices.countExtensions(game.getGameID()) > 0) {
+				// On vérifie si le jeu peut avoir des extensions.
+				List<Item> extensionItems = this.itemDAO
+						.getAllHavingGameID(extension.getExtensionID());
+				boolean atLeastOneGood = false;
+				int i = 0;
 
-				} else if (endingDate.getDay() == 6) {
-					// Samedi, on reporte au lundi
-					endingDate.setDate(endingDate.getDate() + 2);
-				}
-			} else {
-				return null;
-			}
-		}
+				if (this.itemServices.countItemsOfGame(extension
+						.getExtensionID()) > 0) {
+					// TODO Vérifier qu'on estime que les items d'extension sont
+					// classés comme les items de game.
 
-		if (this.itemServices.countItemsOfGame(game.getGameID()) > 0) {
-			// S'il reste des items du jeu
-			List<Item> items = this.itemDAO
-					.getAllHavingGameID(game.getGameID());
-			boolean atLeastOneGood = false;
-			int i = 0;
-			// On vérifie qu'au moins un des items ne fasse pas partie
-			// d'un prêt.
-			while (i < items.size() && !(atLeastOneGood)) {
-				/*
-				 * Invariant : parcours de la liste jusqu'à la fin ou avoir un
-				 * item utilisable.
-				 */
-				if (!(this.borrowDAO.getByItemID(items.get(i).getItemID()))) {
-					atLeastOneGood = true;
+					while (i < extensionItems.size() && !(atLeastOneGood)) {
+						if (!(this.borrowDAO.getByItemID(extensionItems.get(i)
+								.getItemID()))) {
+							atLeastOneGood = true;
+						}
+						i++;
+					}
 				}
-				i++;
-			}// i => item.size() || atLeastOneGood
-			if (atLeastOneGood) {
-				this.itemDAO.remove(items.get(i - 1).getItemID());
-				// Borrow borrow = new Borrow(items.get(i-1), member,
-				// beginningDate, endingDate, extension);
+				if (atLeastOneGood) {
+					this.itemDAO.remove(extensionItems.get(i - 1).getItemID());
+				}
 			}
-		} else {
-			return null;
+
 		}
-		/* Extension possède des items ? */
 		return null;
 	}
 
