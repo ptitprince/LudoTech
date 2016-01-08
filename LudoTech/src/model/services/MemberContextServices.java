@@ -93,6 +93,14 @@ public class MemberContextServices {
 	{
 		nbDelays = nbDelays + 1;
 	}
+	/**
+	 * On incrémente la valeur du nombre de retard
+	 * @param memberContext le contexte d'un membre
+	 */
+	public void addNbDelays(MemberContext memberContext) {
+		memberContext.setNbDelays(memberContext.getNbDelays() +1);
+		this.memberContextDAO.edit(memberContext);
+	}
 	
 	public MemberContext editMemberContext(int id, int nbDelays, int nbFakeBookings, Date lastSubscriptionDate, boolean canBorrow, boolean canBook) {
 		MemberContext editableMemberContext = new MemberContext(id, nbDelays, nbFakeBookings, lastSubscriptionDate, canBorrow, canBook);

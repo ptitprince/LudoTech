@@ -20,6 +20,7 @@ public class BorrowServices {
 	private final ItemServices itemServices;
 	private final ExtensionServices extensionServices;
 	private final MemberContextServices memberContextServices;
+	private final MemberServices memberServices;
 
 	public BorrowServices() {
 		this.borrowDAO = new BorrowDAO();
@@ -28,6 +29,7 @@ public class BorrowServices {
 		this.itemServices = new ItemServices();
 		this.extensionServices = new ExtensionServices();
 		this.memberContextServices = new MemberContextServices();
+		this.memberServices = new MemberServices();
 	}
 
 	public List<Borrow> getAll() {
@@ -40,8 +42,8 @@ public class BorrowServices {
 
 	/**
 	 * TODO Ajout d'un nouveau prêt dans la base de données Il est nécessaire
-	 * d'effecuter des vérifications avant de l'ajouter
-	 * Non fonctionnel, à revoir.
+	 * d'effecuter des vérifications avant de l'ajouter Non fonctionnel, à
+	 * revoir.
 	 */
 	@SuppressWarnings("deprecation")
 	public Borrow addBorrow(Game game, Member member, Date beginningDate, Date endingDate, Extension extension) {
@@ -107,11 +109,11 @@ public class BorrowServices {
 				int i = 0;
 				// On vérifie qu'au moins un des items ne fasse pas partie
 				// d'un prêt.
-				while(!(atLeastOneGood) && i < items.size()) {
+				while (!(atLeastOneGood) && i < items.size()) {
 					atLeastOneGood = this.borrowDAO.getIfExists(items.get(i).getItemID());
 					i++;
 				}
-				
+
 				if (atLeastOneGood) {
 					this.itemDAO.remove(items.get(i - 1).getItemID());
 					if (extension != null) {
@@ -149,21 +151,22 @@ public class BorrowServices {
 	}
 
 	/**
-	 * TODO Retour d'un emprunt -> suppression dans la base de données Faire des
-	 * vérifications de fin de prêt pour modifier le contexte de l'adhérent /
-	 * emprunteur
+	 * FONCTIONNE \o/
 	 */
 	public boolean removeBorrow(int itemID, int memberID, Date beginningDate, Date endingDate) {
-		/*
-		 * - Vérification que la date de retour (aujourd'hui) est <= à la date
-		 * de fin de prêt Si non, incrémenter le compteur "nbDelays" de
-		 * l'adhérent à l'aide d'une fonction dans MemberServices (qui
-		 * enregistera également la modification dans la BDD à l'aide de la
-		 * fonction edit) - Supprimer le borrow en base de données avec le
-		 * couple des 3 clés primaires (itemID, memberID, beginningDate) et
-		 * retourner le résultat booléen
-		 */
-		return true;
+
+		Date today = new Date();
+		int delay = endingDate.compareTo(today);
+		// compareTo donne 0 si égaux, 1 si endingDate est plus grand, -1 si
+		// plus petit
+		if (delay == 1) {
+			this.memberContextServices.addNbDelays(this.memberServices.getMemberContext(memberID));
+		}
+		if (this.borrowDAO.remove(itemID, memberID, beginningDate)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
