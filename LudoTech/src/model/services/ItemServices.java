@@ -2,6 +2,8 @@ package model.services;
 
 import java.util.List;
 
+import model.DAOs.BookDAO;
+import model.DAOs.BorrowDAO;
 import model.DAOs.ItemDAO;
 import model.POJOs.Item;
 
@@ -14,6 +16,11 @@ public class ItemServices {
 	 * Objet d'accés aux données de type Item (exemplaires de jeux)
 	 */
 	private ItemDAO itemDAO;
+	
+	private BorrowDAO borrowDAO;
+	
+	private BookDAO bookDAO;
+	
 
 	/**
 	 * Construit un nouveau service pour les exemplaires de jeux
@@ -89,4 +96,10 @@ public class ItemServices {
 		return this.itemDAO.getGameName(itemID);
 		
 	}
+	
+	
+	
+	
+	
+	
 }

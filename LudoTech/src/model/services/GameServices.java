@@ -3,11 +3,15 @@ package model.services;
 import java.util.HashMap;
 import java.util.List;
 
+import model.DAOs.BookDAO;
+import model.DAOs.BorrowDAO;
 import model.DAOs.GameCategoryDAO;
 import model.DAOs.GameDAO;
 import model.DAOs.GameEditorDAO;
+import model.DAOs.ItemDAO;
 import model.POJOs.Game;
-
+import model.POJOs.Item;
+import model.POJOs.*;
 /**
  * Propose des fonctionnalités de traitement sur des jeux
  */
@@ -27,7 +31,9 @@ public class GameServices {
 	 * Objet d'accés aux données de type GameEditor (éditeur de jeux)
 	 */
 	private final GameEditorDAO gameEditorDAO;
-
+	private	final BookDAO bookDAO ;
+	private	final BorrowDAO borrowDAO ;
+private final ItemDAO itemDAO;
 	/**
 	 * Construit un nouveau service pour les jeux
 	 */
@@ -35,6 +41,9 @@ public class GameServices {
 		this.gameDAO = new GameDAO();
 		this.gameCategoryDAO = new GameCategoryDAO();
 		this.gameEditorDAO = new GameEditorDAO();
+		this.itemDAO = new ItemDAO();
+		this.borrowDAO = new BorrowDAO();
+		this.bookDAO = new BookDAO();
 	}
 
 	/**
@@ -157,5 +166,25 @@ public class GameServices {
 	public List<String> getGameEditors(boolean sorted) {
 		return this.gameEditorDAO.list(sorted);
 	}
+public Item getItem(int gameId)
+	
+	{
 
+	
+	
+	for (Item item : itemDAO.getAllHavingGameID(gameId) ) 
+	{
+		
+		
+		if (bookDAO.getIfExists(item.getItemID()) && (borrowDAO.getIfExists(item.getItemID())))
+		{	
+			
+		}
+		return item;
+	
+		
+	
 }
+return null;
+
+	}}

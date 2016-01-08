@@ -300,13 +300,15 @@ public class BorrowDAO extends DAO {
 	}
 	
 	public int getExtension(int itemId, int memberId, Date beginningDate) {
+		
+		
 		try {
 			super.connect();
 
 			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM BORROW WHERE item_id = ? AND member_id = ? AND start_date = ?");
 			psSelect.setInt(1, itemId);
 			psSelect.setInt(2, memberId);
-			psSelect.setDate(3, (java.sql.Date) beginningDate);
+			psSelect.setDate(3, new java.sql.Date(beginningDate.getTime()));
 
 
 			
@@ -325,5 +327,95 @@ public class BorrowDAO extends DAO {
 			return 0;
 		}
 	}
+	
+	
+	public boolean getIfExists(int idItem) {
+		boolean result=false;
+		try {
+			
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			PreparedStatement psSelect = connection .prepareStatement("SELECT count( item_id ) FROM BORROW WHERE borrow.item_id = ?");
+			
+			psSelect.setInt(1, idItem);
+
+			
+			
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				int itemNb =resultSet.getInt(1);
+				if (itemNb>=0)
+					return true;
+			
+			}
+			
+			
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
+return result;
+	}
+	
+	
+	
+	public boolean getIfExtensionExists(int idExtension) {
+		boolean result=false;
+		try {
+			
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			PreparedStatement psSelect = connection .prepareStatement("SELECT count( extension_id ) FROM BORROW WHERE borrow.extension_id = ?");
+			
+			psSelect.setInt(1, idExtension);
+
+			
+			
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				int itemNb =resultSet.getInt(1);
+				if (itemNb>=0)
+					return true;
+			
+			}
+			
+			
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
+return result;
+	}
+	
+	
+	
+	
+	
 
 }

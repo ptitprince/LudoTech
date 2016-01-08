@@ -38,7 +38,8 @@ public class BookDAO extends DAO {
 					.getTime()));
 			psInsert.setDate(4, new java.sql.Date(book.getEndDate()
 					.getTime()));
-			psInsert.setInt(5, book.getExtension().getExtensionID());
+			psInsert.setInt(5, (book.getExtension() != null) ? book.getExtension().getExtensionID() : -1);
+			// RQendre la colonne extgension nullable
 
 			psInsert.executeUpdate();
 
@@ -240,6 +241,85 @@ public class BookDAO extends DAO {
 
 	}
 	
-	
+	public boolean getIfExists(int idItem) {
+		boolean result=false;
+		try {
+			
+			super.connect();
 
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			PreparedStatement psSelect = connection .prepareStatement("SELECT count( item_id ) FROM BOOK WHERE book.item_id = ?");
+			
+			psSelect.setInt(1, idItem);
+
+			
+			
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				int itemNb =resultSet.getInt(1);
+				if (itemNb>=0)
+					return true;
+			
+			}
+			
+			
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
+return result;
+	}
+	
+	public boolean getIfExtensionExists(int idExtension) {
+		boolean result=false;
+		try {
+			
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			PreparedStatement psSelect = connection .prepareStatement("SELECT count( extension_id ) FROM BOOK WHERE book.extension_id = ?");
+			
+			psSelect.setInt(1, idExtension);
+
+			
+			
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				int itemNb =resultSet.getInt(1);
+				if (itemNb>=0)
+					return true;
+			
+			}
+			
+			
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
+return result;
+	}
 }

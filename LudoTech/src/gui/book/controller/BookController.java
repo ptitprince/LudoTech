@@ -115,7 +115,7 @@ public class BookController extends JPanel {
 						Date startDate = bookView.getStartDate();
 						Date endDate = bookView.getEndDate();
 						Extension selectedExtension = bookView.getSelectedExtension();
-						//bookServices.addBook(selectedGame, selectedMember, startDate, endDate, selectedExtension);
+						bookServices.addBook(selectedGame, selectedMember, startDate, endDate, selectedExtension);
 						bookView.setVisible(false);
 					} catch (ParseException e1) {
 						showInvalidDatesException();
