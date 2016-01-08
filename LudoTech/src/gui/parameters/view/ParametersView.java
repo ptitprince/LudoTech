@@ -7,6 +7,7 @@ import java.util.Properties;
 import gui.LudoTechApplication;
 import gui.utils.SpringUtilities;
 import gui.utils.TextView;
+import gui.utils.exceptions.NotValidNumberFieldException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,6 +25,7 @@ public class ParametersView extends JPanel {
 	private JTextField durationOfCotisation;
 	private JButton validateButton;
 	private JButton cancelButton;
+	private Object getnbBorrowingsField;
 
 	public ParametersView() {
 		this.setLayout(new BorderLayout());
@@ -95,6 +97,9 @@ public class ParametersView extends JPanel {
 		this.add(actionsPanel, BorderLayout.SOUTH);
 
 	}
+	
+	
+
 
 	public void load(Properties parameters) {
 		this.nbBorrowings.setText(parameters.getProperty("nbBorrowings"));
@@ -107,30 +112,63 @@ public class ParametersView extends JPanel {
 				.getProperty("durationOfCotisationInYears"));
 
 	}
-
-	public int getNbBorrowings() {
-		return Integer.parseInt(this.nbBorrowings.getText());
+	
+	
+	public int getNbBorrowings() throws NotValidNumberFieldException {
+		int testBorrowings = -1;
+		try {
+			testBorrowings = Integer.parseInt(this.nbBorrowings.getText());
+		} catch (NumberFormatException exception) {
+			throw new NotValidNumberFieldException(TextView.get("nbBorrowings"), this.nbBorrowings.getText(),
+					TextView.get("integerType"));
+		}
+		return testBorrowings;
 	}
 
-	public int getNbBookings() {
-		return Integer.parseInt(this.nbBookings.getText());
-
+	public int getNbBookings()throws NotValidNumberFieldException {
+		int testBookings = -1;
+		try {
+			testBookings = Integer.parseInt(this.nbBookings.getText());
+		} catch (NumberFormatException exception) {
+			throw new NotValidNumberFieldException(TextView.get("nbBookings"), this.nbBookings.getText(),
+					TextView.get("integerType"));
+		}
+		return testBookings;
 	}
-
-	public int getDurationOfBorrowings() {
-		return Integer.parseInt(this.durationOfBorrowings.getText());
-
+	
+	public int getDurationOfBorrowings() throws NotValidNumberFieldException {
+		int testdurationOfBorrowings = -1;
+		try {
+			testdurationOfBorrowings = Integer.parseInt(this.durationOfBorrowings.getText());
+		} catch (NumberFormatException exception) {
+			throw new NotValidNumberFieldException(TextView.get("durationOfBorrowings"), this.durationOfBorrowings.getText(),
+					TextView.get("integerType"));
+		}
+		return testdurationOfBorrowings;
 	}
-
-	public int getDurationBetweenBookingandBorrowing() {
-		return Integer.parseInt(this.durationBetweenBookingandBorrowing
-				.getText());
-
+	
+	
+	public int getDurationBetweenBookingandBorrowing() throws NotValidNumberFieldException {
+		int durationBetweenBookingandBorrowing = -1;
+		try {
+			durationBetweenBookingandBorrowing = Integer.parseInt(this.durationBetweenBookingandBorrowing.getText());
+		} catch (NumberFormatException exception) {
+			throw new NotValidNumberFieldException(TextView.get("durationBetweenBookingandBorrowing"), this.durationBetweenBookingandBorrowing.getText(),
+					TextView.get("integerType"));
+		}
+		return durationBetweenBookingandBorrowing;
 	}
-
-	public int getDurationOfCotisation() {
-		return Integer.parseInt(this.durationOfCotisation.getText());
-
+	
+	
+	public int getDurationOfCotisation() throws NotValidNumberFieldException {
+		int durationOfCotisation = -1;
+		try {
+			durationOfCotisation= Integer.parseInt(this.durationOfCotisation.getText());
+		} catch (NumberFormatException exception) {
+			throw new NotValidNumberFieldException(TextView.get("durationOfCotisation"), this.durationOfCotisation.getText(),
+					TextView.get("integerType"));
+		}
+		return durationOfCotisation;
 	}
 
 	public JButton getValidateButton() {
@@ -140,5 +178,8 @@ public class ParametersView extends JPanel {
 	public JButton getCancelButton() {
 		return this.cancelButton;
 	}
+
+
+	
 
 }
