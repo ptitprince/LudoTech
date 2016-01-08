@@ -20,5 +20,16 @@ public class PostLoadableMemberComboBoxModel extends DefaultComboBoxModel<Member
 			super.addElement(member);
 		}
 	}
+	
+	public void selectItemByID(int memberID) {
+		int i = 0;
+		while (i < super.getSize()) {
+			if (super.getElementAt(i).getMemberID() == memberID) {
+				super.setSelectedItem(super.getElementAt(i));
+				break;
+			}
+			i++;
+		}
+	}
 
 }

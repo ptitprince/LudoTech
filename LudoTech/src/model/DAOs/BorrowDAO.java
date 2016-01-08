@@ -285,5 +285,32 @@ public class BorrowDAO extends DAO {
 		}
 
 	}
+	
+	public int getExtension(int itemId, int memberId, Date beginningDate) {
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM BORROW WHERE item_id = ? AND member_id = ? AND start_date = ?");
+			psSelect.setInt(1, itemId);
+			psSelect.setInt(2, memberId);
+			psSelect.setDate(3, (java.sql.Date) beginningDate);
+
+
+			
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			int answer = 0;
+			if (resultSet.next()) { // Positionnement sur le premier résultat
+					answer =	resultSet.getInt("extension_id");
+			}
+			super.disconnect();
+			return answer;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
 
 }
