@@ -322,4 +322,44 @@ return result;
 		}
 return result;
 	}
-}
+	
+	public int getBooksNb(int idMember) {
+		try {
+			
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			PreparedStatement psSelect = connection .prepareStatement("SELECT count() FROM BOOK WHERE member_id = ?");
+			
+			psSelect.setInt(1, idMember);
+
+			
+			
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				int booksNb =resultSet.getInt(1);
+				
+					return booksNb;
+			
+			}
+			
+			
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
+		return 0;
+}}
+	

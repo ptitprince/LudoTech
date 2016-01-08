@@ -188,7 +188,7 @@ public class MemberContextDAO extends DAO {
 					+ "WHERE id = ?");
 			
 			psEdit.setInt(2, NbFakeBookings);
-			psEdit.setInt(6, memberContextId);
+			psEdit.setInt(3, memberContextId);
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();

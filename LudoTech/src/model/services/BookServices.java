@@ -1,14 +1,16 @@
 package model.services;
 
 import java.util.Date;
-import model.services.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import model.DAOs.BookDAO;
 import model.DAOs.BorrowDAO;
+import model.DAOs.ExtensionDAO;
 import model.DAOs.ItemDAO;
+import model.DAOs.MemberDAO;
 import model.POJOs.Book;
+import model.POJOs.Borrow;
 import model.POJOs.Extension;
 import model.POJOs.Game;
 import model.POJOs.Item;
@@ -18,22 +20,24 @@ public class BookServices {
 	private final BorrowDAO borrowDAO;
 	private final BookDAO bookDAO;
 	private final ItemDAO itemDAO;
+	private final MemberDAO memberDAO;
+	private final ExtensionDAO extensionDAO;
 	private final ParametersServices parametersServices;
 	private final GameServices gamesServices;
 	private final ItemServices itemServices;
-	private final ExtensionServices extensionServices;
+	
 	private final MemberContextServices memberContextServices;
-	private BookDAO bookDAO2;
-
 	public BookServices() {
 		super();
 		this.gamesServices = new GameServices();
 		this.borrowDAO = new BorrowDAO();
+		this.memberDAO = new MemberDAO();
+		this.extensionDAO = new ExtensionDAO();
 		this.bookDAO = new BookDAO();
 		this.itemDAO = new ItemDAO();
 		this.parametersServices = new ParametersServices();
 		this.itemServices = new ItemServices();
-		this.extensionServices = new ExtensionServices();
+		new ExtensionServices();
 		this.memberContextServices = new MemberContextServices();
 	}
 
@@ -48,14 +52,14 @@ public class BookServices {
 	/**
 	 * TODO Ajouter une nouvelle réservation
 	 */
+	@SuppressWarnings("deprecation")
 	public Book addBook(Game game, Member member, Date beginningDate,
 			Date endingDate, Extension extension) {
 
-		int a; // compteur
 		long diffValue = endingDate.getTime() - beginningDate.getTime();
 		long diffDays = TimeUnit.DAYS.convert(diffValue, TimeUnit.MILLISECONDS);
 
-		if ((diffDays >= 0) && (diffDays <= 7 * this.parametersServices.getDurationOfBorrowingsInWeeks()) && (diffDays <= 7 * this.parametersServices.getDurationBetweenBookingandBorrowingInWeeks()) && (itemServices.countItemsOfGame(game.getGameID()) >= 1) && (memberContextServices.getCanBook(member.getMemberID()))) {
+		if ((diffDays >= 0) &&(bookDAO.getBooksNb(member.getMemberID())<=this.parametersServices.getNumberOfBookings()) &&(diffDays <= 7 * this.parametersServices.getDurationOfBorrowingsInWeeks()) && (diffDays <= 7 * this.parametersServices.getDurationBetweenBookingandBorrowingInWeeks()) && (itemServices.countItemsOfGame(game.getGameID()) >= 1) && (memberContextServices.getCanBook(member.getMemberID()))) {
 			if ((extension != null)	&& (!borrowDAO.getIfExtensionExists(extension.getExtensionID())) && (!bookDAO.getIfExtensionExists(extension.getExtensionID()))) {
 				if (endingDate.getDay() == 0) {
 					endingDate.setDate(endingDate.getDate() + 1);
@@ -116,9 +120,9 @@ public class BookServices {
 
 		memberContextServices.oneMoreNbFakeBooking(memberID);
 
-		bookDAO2 = null;
+	/*J'incremente le nombre de fausses reservations a revoir */
 
-		bookDAO2.remove(itemID, memberID, beginningDate);
+		bookDAO.remove(itemID, memberID, beginningDate);
 
 		/*
 		 * - Utiliser (créer) une fonction dans MemberContextServices pour
@@ -141,6 +145,16 @@ public class BookServices {
 		 * Borrow et l'enregistrer dans la base de données avec BorrowDAO et
 		 * retourner le résultat booléen
 		 */
+		
+		
+		bookDAO.remove(itemID, memberID, beginningDate);
+	
+		
+		Borrow borrow= new Borrow (itemDAO.get(itemID), memberDAO.get(memberID), beginningDate, endingDate, extensionDAO.get(extensionID));
+	
+		
+		borrowDAO.add(borrow);
+		
 		return true;
 	}
 
