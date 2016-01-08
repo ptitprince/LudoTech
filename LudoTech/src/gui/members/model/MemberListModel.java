@@ -2,6 +2,7 @@ package gui.members.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -25,8 +26,8 @@ public class MemberListModel extends AbstractTableModel{
 		this.memberList = new ArrayList<Member>();
 	}
 	
-	public void refresh() {
-		this.memberList = this.memberServices.getMemberList();
+	public void refresh(HashMap <String, String> filter) {
+		this.memberList = this.memberServices.getMemberList(filter);
 		this.fireTableDataChanged();
 	}
 	

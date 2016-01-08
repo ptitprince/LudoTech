@@ -27,76 +27,76 @@ public class MemberSearchView extends JPanel {
 	private JTextField firstName;
 	private JTextField lastName;
 	private JTextField pseudo;
-	private JCheckBox isAdmin;
 	private JButton validateButton;
 	private JButton cancelButton;
-	
+
 	private JButton searchButton;
-	
+
 	public MemberSearchView() {
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 	}
-		
-		private void makeGUI() {
-			JLabel title = new JLabel(TextView.get("membersSearchTitle"));
-			Font police = new Font("Arial", Font.BOLD, 16);
-			title.setFont(police);
-			title.setHorizontalAlignment(JLabel.CENTER);
-			this.add(title, BorderLayout.NORTH);
 
-			JPanel searchPropertiesPanel = new JPanel(new SpringLayout());
+	private void makeGUI() {
+		JLabel title = new JLabel(TextView.get("membersSearchTitle"));
+		Font police = new Font("Arial", Font.BOLD, 16);
+		title.setFont(police);
+		title.setHorizontalAlignment(JLabel.CENTER);
+		this.add(title, BorderLayout.NORTH);
 
-			// prénom
-			JLabel firstNameLabel = new JLabel(TextView.get("firstName"));
-			searchPropertiesPanel.add(firstNameLabel);
-			this.firstName = new JTextField();
-			this.firstName.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-			firstNameLabel.setLabelFor(this.firstName);
-			searchPropertiesPanel.add(this.firstName);
+		JPanel searchPropertiesPanel = new JPanel(new SpringLayout());
 
-			// nom
-			JLabel lastNameLabel = new JLabel(TextView.get("lastName"));
-			searchPropertiesPanel.add(lastNameLabel);
-			this.lastName = new JTextField();
-			this.lastName.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-			lastNameLabel.setLabelFor(this.lastName);
-			searchPropertiesPanel.add(this.lastName);
-			
-			// pseudo
-			JLabel pseudoLabel = new JLabel(TextView.get("pseudo"));
-			searchPropertiesPanel.add(pseudoLabel);
-			this.pseudo = new JTextField();
-			this.pseudo.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-			pseudoLabel.setLabelFor(this.pseudo);
-			searchPropertiesPanel.add(this.pseudo);
-			
-			// isAdmin
-			JLabel isAdminLabel = new JLabel(TextView.get("isAdmin"));
-			searchPropertiesPanel.add(isAdminLabel);
-			this.isAdmin = new JCheckBox();
-			this.isAdmin.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-			isAdminLabel.setLabelFor(this.isAdmin);
-			searchPropertiesPanel.add(this.isAdmin);
+		// prénom
+		JLabel firstNameLabel = new JLabel(TextView.get("firstName"));
+		searchPropertiesPanel.add(firstNameLabel);
+		this.firstName = new JTextField();
+		this.firstName.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
+		firstNameLabel.setLabelFor(this.firstName);
+		searchPropertiesPanel.add(this.firstName);
 
+		// nom
+		JLabel lastNameLabel = new JLabel(TextView.get("lastName"));
+		searchPropertiesPanel.add(lastNameLabel);
+		this.lastName = new JTextField();
+		this.lastName.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
+		lastNameLabel.setLabelFor(this.lastName);
+		searchPropertiesPanel.add(this.lastName);
 
-			SpringUtilities.makeCompactGrid(searchPropertiesPanel, 4, 2, 6, 6, 6, 6);
+		// pseudo
+		JLabel pseudoLabel = new JLabel(TextView.get("pseudo"));
+		searchPropertiesPanel.add(pseudoLabel);
+		this.pseudo = new JTextField();
+		this.pseudo.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
+		pseudoLabel.setLabelFor(this.pseudo);
+		searchPropertiesPanel.add(this.pseudo);
 
-			this.add(searchPropertiesPanel, BorderLayout.CENTER);
+		SpringUtilities.makeCompactGrid(searchPropertiesPanel, 3, 2, 6, 6, 6, 6);
 
-			this.searchButton = new JButton(TextView.get("validate"));
-			this.add(this.searchButton, BorderLayout.SOUTH);
+		this.add(searchPropertiesPanel, BorderLayout.CENTER);
+
+		this.searchButton = new JButton(TextView.get("validate"));
+		this.add(this.searchButton, BorderLayout.SOUTH);
+	}
+
+	public JButton getSearchButton() {
+		return this.searchButton;
+	}
+
+	public String getFirstNameValue() {
+		return this.firstName.getText();
+	}
+
+	public String getLastNameValue() {
+			return this.lastName.getText();
 		}
 
-		
-		public JButton getSearchButton() {
-			return this.searchButton;
-		}
-		
-		public void resetFields() {
-			this.firstName.setText("");
-			this.lastName.setText("");
-			this.pseudo.setText("");
-			this.isAdmin.setSelected(false);
-		}
+	public String getPseudoValue() {
+		return this.pseudo.getText();
+	}
+
+	public void resetFields() {
+		this.firstName.setText("");
+		this.lastName.setText("");
+		this.pseudo.setText("");
+	}
 }

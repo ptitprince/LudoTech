@@ -24,6 +24,7 @@ import gui.LudoTechApplication;
 import gui.utils.DateFormatter;
 import gui.utils.SpringUtilities;
 import gui.utils.TextView;
+import gui.utils.exceptions.NotValidNumberFieldException;
 
 
 @SuppressWarnings("serial")
@@ -40,18 +41,25 @@ public class ProfileView extends JPanel {
 	private JTextField streetAddress;
 	private JTextField postalCode;
 	private JTextField city;
+	
+	private JTextField nbFakeBookings;
+	private JTextField nbDelays;
+	private JCheckBox canBook;
+	private JCheckBox canBorrow;
+	private JDatePickerImpl lastSubscriptionDatePicker;
+
+
 	private JButton validateButton;
 	private JButton cancelButton;
-
 	
-public ProfileView() {
+public ProfileView(boolean currentIsAdmin) {
 	this.setLayout(new BorderLayout());
 
-	this.makeGUI();
+	this.makeGUI(currentIsAdmin);
 }
 
 
-private void makeGUI() {
+private void makeGUI(boolean currentIsAdmin) {
 
 	JPanel memberPanel = new JPanel(new SpringLayout());
 	
@@ -139,7 +147,51 @@ private void makeGUI() {
 	cityLabel.setLabelFor(this.city);
 	memberPanel.add(this.city);
 
-	SpringUtilities.makeCompactGrid(memberPanel, 11, 2, 6, 6, 20, 5);
+	JLabel nbFakeBookingsLabel = new JLabel(TextView.get("nbFakeBookings"));
+	memberPanel.add(nbFakeBookingsLabel);
+	this.nbFakeBookings = new JTextField();
+	this.nbFakeBookings.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
+	nbFakeBookingsLabel.setLabelFor(this.nbFakeBookings);
+	this.nbFakeBookings.setEnabled(currentIsAdmin);
+	memberPanel.add(this.nbFakeBookings);
+	
+	JLabel nbDelaysLabel = new JLabel(TextView.get("nbDelays"));
+	memberPanel.add(nbDelaysLabel);
+	this.nbDelays = new JTextField();
+	this.nbDelays.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
+	nbDelaysLabel.setLabelFor(this.nbDelays);
+	this.nbDelays.setEnabled(currentIsAdmin);
+	memberPanel.add(this.nbDelays);
+	
+	JLabel canBookLabel = new JLabel(TextView.get("canBook"));
+	memberPanel.add(canBookLabel);
+	this.canBook = new JCheckBox();
+	canBookLabel.setLabelFor(this.canBook);
+	this.canBook.setEnabled(currentIsAdmin);
+	memberPanel.add(this.canBook);
+
+	JLabel canBorrowLabel = new JLabel(TextView.get("canBorrow"));
+	memberPanel.add(canBorrowLabel);
+	this.canBorrow = new JCheckBox();
+	canBorrowLabel.setLabelFor(this.canBorrow);
+	this.canBorrow.setEnabled(currentIsAdmin);
+	memberPanel.add(this.canBorrow);
+	
+	JLabel lastSubscriptionDateLabel = new JLabel(TextView.get("lastSubscriptionDate"));
+	memberPanel.add(lastSubscriptionDateLabel);
+	UtilDateModel subscriptionModel = new UtilDateModel();
+	subscriptionModel.setSelected(true);
+	Properties pSubs = new Properties();
+	pSubs.put("text.today", "Today");
+	pSubs.put("text.month", "Month");
+	pSubs.put("text.year", "Year");
+	JDatePanelImpl dateSubsPanel = new JDatePanelImpl(subscriptionModel, pSubs);
+	this.lastSubscriptionDatePicker = new JDatePickerImpl(dateSubsPanel, new DateFormatter());
+	lastSubscriptionDateLabel.setLabelFor(this.lastSubscriptionDatePicker);
+	this.lastSubscriptionDatePicker.setEnabled(currentIsAdmin);
+	memberPanel.add(lastSubscriptionDatePicker);
+
+	SpringUtilities.makeCompactGrid(memberPanel, 16, 2, 6, 6, 20, 5);
 	
 	this.add(memberPanel, BorderLayout.CENTER);
 
@@ -154,7 +206,7 @@ private void makeGUI() {
 
 
 public void load( String firstName, String lastName, String pseudo, String password, boolean isAdmin, Date birthDate, String phoneNumber,
-		String email, String streetAddress, String postalCode, String city) {
+		String email, String streetAddress, String postalCode, String city, int nbFakeBookings, int nbDelays, boolean canBorrow, boolean canBook, Date lastSubscriptionDate) {
 	this.firstName.setText(firstName);
 	this.lastName.setText(lastName);
 	this.pseudo.setText(pseudo);
@@ -175,15 +227,49 @@ public void load( String firstName, String lastName, String pseudo, String passw
 	this.postalCode.setText(postalCode);
 	this.city.setText(city);
 
+	this.nbFakeBookings.setText(Integer.toString(nbFakeBookings));
+	this.nbDelays.setText(Integer.toString(nbDelays));
+	this.canBook.setSelected(canBook);
+	this.canBorrow.setSelected(canBorrow);
+	
+	SimpleDateFormat sdfDaySubs = new SimpleDateFormat("dd");
+	SimpleDateFormat sdfMonthSubs = new SimpleDateFormat("MM");
+	SimpleDateFormat sdfYearSubs = new SimpleDateFormat("yyyy");
+	int yearSubs = Integer.parseInt(sdfYearSubs.format(lastSubscriptionDate));
+	int monthSubs = Integer.parseInt(sdfMonthSubs.format(lastSubscriptionDate));
+	int daySubs = Integer.parseInt(sdfDaySubs.format(lastSubscriptionDate));
+	this.lastSubscriptionDatePicker.getModel().setDate(yearSubs, monthSubs, daySubs);
 }
 
-public String getFisrtName() {
+public String getFirstName() {
 	return this.firstName.getText();
 }
 
 public String getLastName() {
 	return this.lastName.getText();
 
+}
+
+public int getNbDelays() throws NotValidNumberFieldException {
+	int nbDelays = -1;
+	try {
+		nbDelays = Integer.parseInt(this.nbDelays.getText());
+	} catch (NumberFormatException exception) {
+		throw new NotValidNumberFieldException(TextView.get("nbDelays"), this.nbDelays.getText(),
+				TextView.get("integerType"));
+	}
+	return nbDelays;
+}
+
+public int getNbFakeBookings() throws NotValidNumberFieldException {
+	int nbFakeBookings = -1;
+	try {
+		nbFakeBookings = Integer.parseInt(this.nbFakeBookings.getText());
+	} catch (NumberFormatException exception) {
+		throw new NotValidNumberFieldException(TextView.get("nbFakeBookings"), this.nbFakeBookings.getText(),
+				TextView.get("integerType"));
+	}
+	return nbFakeBookings;
 }
 
 public String getPseudo() {
@@ -196,8 +282,27 @@ public boolean getIsAdmin() {
 
 }
 
+public boolean getCanBook() {
+	return this.canBook.isSelected();
+
+}
+
+public boolean getCanBorrow() {
+	return this.canBorrow.isSelected();
+
+}
+
 public Date getBirthDate() throws ParseException {
 	DateModel<?> model = this.datePicker.getModel();
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	String dateInString = ""+model.getDay()+"/"+model.getMonth()+"/"+model.getYear();
+	
+	return sdf.parse(dateInString);
+	
+}
+
+public Date getLastSubscriptionDate() throws ParseException {
+	DateModel<?> model = this.lastSubscriptionDatePicker.getModel();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	String dateInString = ""+model.getDay()+"/"+model.getMonth()+"/"+model.getYear();
 	
