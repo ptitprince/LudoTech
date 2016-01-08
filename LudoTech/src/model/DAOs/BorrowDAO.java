@@ -112,66 +112,6 @@ public class BorrowDAO extends DAO {
 		}
 	}
 	/**
-	 * TODO documentation à compléter.
-	 * @param itemID
-	 * @return
-	 */
-	public boolean getByItemID(int itemID) {
-		boolean isHere;
-		try {
-			super.connect();
-			PreparedStatement psSelect = connection .prepareStatement("SELECT * FROM BORROW WHERE borrow.item_id = ?");
-			psSelect.setInt(1, itemID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-			
-			ResultSet resultSet = psSelect.getResultSet();
-			Borrow borrow = null;
-			if (resultSet.next()) {
-				isHere = true;
-			} else {
-				isHere = false;
-			}
-			super.disconnect();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			isHere = false;
-		}
-	return isHere;	
-		
-	}
-	/**
-	 * TODO documentation à compléter.
-	 * @param extensionID
-	 * @return
-	 */
-	public boolean getByExtensionID(int extensionID) {
-		boolean isHere;
-		try {
-			super.connect();
-			PreparedStatement psSelect = connection .prepareStatement("SELECT * FROM BORROW WHERE borrow.extension_id = ?");
-			psSelect.setInt(1, extensionID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-			
-			ResultSet resultSet = psSelect.getResultSet();
-			Borrow borrow = null;
-			if (resultSet.next()) {
-				isHere = true;
-			} else {
-				isHere = false;
-			}
-			super.disconnect();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			isHere = false;
-		}
-	return isHere;	
-	}
-
-	/**
 	 * retourne un emprunt.
 	 * 
 	 * @param id

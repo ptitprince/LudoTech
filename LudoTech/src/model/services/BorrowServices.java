@@ -107,32 +107,19 @@ public class BorrowServices {
 				int i = 0;
 				// On vérifie qu'au moins un des items ne fasse pas partie
 				// d'un prêt.
-				while (i < items.size() && !(atLeastOneGood)) {
-					/*
-					 * Invariant : parcours de la liste jusqu'à la fin ou avoir
-					 * un item utilisable.
-					 */
-					if (!(this.borrowDAO.getByItemID(items.get(i).getItemID()))) {
-						atLeastOneGood = true;
-					}
+				while(!(atLeastOneGood) && i < items.size()) {
+					atLeastOneGood = this.borrowDAO.getIfExists(items.get(i).getItemID());
 					i++;
-				} // i => item.size() || atLeastOneGood
+				}
+				
 				if (atLeastOneGood) {
 					this.itemDAO.remove(items.get(i - 1).getItemID());
 					if (extension != null) {
 						if (this.extensionServices.countExtensions(game.getGameID()) > 0) {
 							// On vérifie si le jeu a des extensions.
-							List<Extension> extensions = this.extensionServices.getExtensions(game.getGameID());
-							int j = 0;
-							atLeastOneGood = false;
-							while (j < extensions.size() && !(atLeastOneGood)) {
-								if (this.borrowDAO.getByExtensionID(extensions.get(j).getExtensionID())) {
-									atLeastOneGood = true;
-								}
-								j++;
-							}
+							atLeastOneGood = this.borrowDAO.getIfExtensionExists(extension.getExtensionID());
 							if (atLeastOneGood) {
-								this.extensionServices.deleteExtension(extensions.get(j - 1).getExtensionID());
+								this.extensionServices.deleteExtension(extension.getExtensionID());
 								Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate,
 										extension);
 								this.borrowDAO.add(borrow);
