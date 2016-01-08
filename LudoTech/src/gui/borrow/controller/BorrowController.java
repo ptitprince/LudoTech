@@ -134,7 +134,7 @@ public class BorrowController extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				List<Game> games = gameServices.getGames(new HashMap<String, String>());
-				List<Member> members = memberServices.getMemberList();
+				List<Member> members = memberServices.getMemberList(new HashMap<String, String>());
 				borrowView.loadGames(games);
 				borrowView.loadMembers(members);
 				borrowView.clear(); // Pour déselectionner le premier élément
