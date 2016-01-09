@@ -129,4 +129,41 @@ public class ExtensionDAO extends DAO {
 	}
 		
 		
+		
+		public Extension get(int extensionID) {
+			try {
+				super.connect();
+
+				// Utilisation des "AS" à cause des jointures.
+				// Il n'est pas possible
+				// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+				// une seule connection peut-être active à la fois pour toute la
+				// base de données, donc qu'une seule requête à la fois (contrainte
+				// du SGBD Derby)
+
+				String request = "SELECT name FROM EXTENSION WHERE id=?";
+				PreparedStatement psSelect = connection.prepareStatement(request);
+				psSelect.setInt(1, extensionID);
+				psSelect.execute();
+				psSelect.closeOnCompletion();
+
+				ResultSet resultSet = psSelect.getResultSet();
+				Extension extension = null;
+				if (resultSet.next()) {
+					resultSet.getString("name")	;
+					
+							
+						
+					extension = new Extension(extensionID,resultSet.getString("name"));
+				}
+				super.disconnect();
+				return extension;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		
+		
 }

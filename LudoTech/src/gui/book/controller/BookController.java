@@ -20,7 +20,6 @@ import javax.swing.SwingUtilities;
 
 import model.POJOs.Extension;
 import model.POJOs.Game;
-import model.POJOs.Item;
 import model.POJOs.Member;
 import model.services.BookServices;
 import model.services.ExtensionServices;
@@ -117,6 +116,7 @@ public class BookController extends JPanel {
 						Extension selectedExtension = bookView.getSelectedExtension();
 						bookServices.addBook(selectedGame, selectedMember, startDate, endDate, selectedExtension);
 						bookView.setVisible(false);
+						refreshBookList();
 					} catch (ParseException e1) {
 						showInvalidDatesException();
 					}

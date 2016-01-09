@@ -54,8 +54,7 @@ public class BorrowController extends JPanel {
 		this.gameServices = new GameServices();
 		this.extensionServices = new ExtensionServices();
 		this.parametersServices = new ParametersServices();
-		this.borrowListModel = new BorrowListModel(this.borrowServices,
-				this.itemServices);
+		this.borrowListModel = new BorrowListModel(this.borrowServices, this.itemServices);
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 		this.makeListeners();
@@ -63,12 +62,10 @@ public class BorrowController extends JPanel {
 	}
 
 	public void makeGUI() {
-		this.borrowListView = new BorrowListView(this.borrowListModel,
-				this.memberServices.isAdmin(currentMemberID));
+		this.borrowListView = new BorrowListView(this.borrowListModel, this.memberServices.isAdmin(currentMemberID));
 		this.add(borrowListView, BorderLayout.CENTER);
 
-		this.borrowView = new BorrowView(
-				this.parametersServices.getDurationOfBorrowingsInWeeks());
+		this.borrowView = new BorrowView(this.parametersServices.getDurationOfBorrowingsInWeeks());
 		this.borrowView.setLocationRelativeTo(this);
 	}
 
@@ -147,6 +144,7 @@ public class BorrowController extends JPanel {
 										selectedMember, startDate, endDate,
 										selectedExtension);
 								borrowView.setVisible(false);
+								refreshBorrowList();
 							} catch (ParseException e1) {
 								showInvalidDatesException();
 							}
@@ -178,11 +176,9 @@ public class BorrowController extends JPanel {
 	private void loadExtensionListAccordingToGame() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				Game selectedGame = (Game) borrowView.getGameComboBox()
-						.getSelectedItem();
+				Game selectedGame = (Game) borrowView.getGameComboBox().getSelectedItem();
 				if (selectedGame != null) {
-					List<Extension> extensions = extensionServices
-							.getExtensions(selectedGame.getGameID());
+					List<Extension> extensions = extensionServices.getExtensions(selectedGame.getGameID());
 					borrowView.loadExtensions(extensions);
 					borrowView.clearExtensions();
 				}
@@ -210,8 +206,7 @@ public class BorrowController extends JPanel {
 
 	public boolean showDeleteBorrowConfirmation() {
 		String text = TextView.get("borrowConfirmDeleting");
-		int result = JOptionPane.showConfirmDialog(null, text, "",
-				JOptionPane.YES_OPTION);
+		int result = JOptionPane.showConfirmDialog(null, text, "", JOptionPane.YES_OPTION);
 		return (result == 0);
 	}
 }

@@ -29,54 +29,18 @@ public class BookDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psInsert = connection
-					.prepareStatement("INSERT INTO "
-							+ "Book(item_id, member_id, start_date, end_date, extension_id) "
-							+ "VALUES (?, ?, ?, ?, ?)");
+					.prepareStatement("INSERT INTO " + "Book(item_id, member_id, start_date, end_date"
+							+ ((book.getExtension() != null) ? ", extension_id) " : ") ") + "VALUES (?, ?, ?, ?"
+							+ ((book.getExtension() != null) ? ", ?)" : ")"));
 			psInsert.setInt(1, book.getItem().getItemID());
 			psInsert.setInt(2, book.getMember().getMemberID());
-			psInsert.setDate(3, new java.sql.Date(book.getStartDate()
-					.getTime()));
-			psInsert.setDate(4, new java.sql.Date(book.getEndDate()
-					.getTime()));
-			psInsert.setInt(5, (book.getExtension() != null) ? book.getExtension().getExtensionID() : -1);
-			// RQendre la colonne extgension nullable
+			psInsert.setDate(3, new java.sql.Date(book.getStartDate().getTime()));
+			psInsert.setDate(4, new java.sql.Date(book.getEndDate().getTime()));
+			if (book.getExtension() != null) {
+				psInsert.setInt(5, book.getExtension().getExtensionID());
+			}
 
 			psInsert.executeUpdate();
-
-			super.disconnect();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
-	 * Modifie une réservation donnée en paramètre.
-	 * 
-	 * @param book
-	 *            un réservation.
-	 * @return une réservation modifiée.
-	 */
-	public boolean edit(Book book) {
-		try {
-			super.connect();
-
-			PreparedStatement psEdit = connection
-					.prepareStatement("UPDATE BOOK "
-							+ "SET end_date = ?, extension_id = ? "
-							+ "WHERE item_id = ? AND member_id = ? AND start_date = ?");
-			psEdit.setDate(1, new java.sql.Date(book.getEndDate()
-					.getTime()));
-			psEdit.setInt(2, book.getExtension().getExtensionID());
-			psEdit.setInt(3, book.getItem().getItemID());
-			psEdit.setInt(4, book.getMember().getMemberID());
-			psEdit.setInt(5, book.getExtension().getExtensionID());
-			psEdit.setDate(7, new java.sql.Date(book.getStartDate()
-					.getTime()));
-
-			psEdit.executeUpdate();
-			psEdit.closeOnCompletion();
 
 			super.disconnect();
 			return true;
@@ -133,10 +97,8 @@ public class BookDAO extends DAO {
 			String request = "SELECT BOOK.start_date AS B_start_date, BOOK.end_date AS B_end_date, "
 					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
 					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
-					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name "
-					+ "FROM BOOK "
-					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id "
-					+ "JOIN ITEM ON BOOK.item_id = ITEM.id "
+					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " + "FROM BOOK "
+					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " + "JOIN ITEM ON BOOK.item_id = ITEM.id "
 					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id";
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
@@ -145,25 +107,16 @@ public class BookDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 			Book book = null;
 			if (resultSet.next()) {
-				Item item = new Item(resultSet.getInt("I_id"),
-						resultSet.getString("I_comments"));
-				Member member = new Member(resultSet.getInt("M_id"),
-						resultSet.getString("M_first_name"),
-						resultSet.getString("M_last_name"),
-						resultSet.getString("M_pseudo"),
-						resultSet.getString("M_password"),
-						resultSet.getBoolean("M_is_admin"),
-						resultSet.getDate("M_birth_date"),
-						resultSet.getString("M_phone_number"),
-						resultSet.getString("M_email_address"),
-						resultSet.getString("M_street_address"),
-						resultSet.getString("M_postal_code"),
-						resultSet.getString("M_city"));
-				Extension extension = new Extension(resultSet.getInt("E_id"),
-						resultSet.getString("E_name"));
-				book = new Book(item, member,
-						resultSet.getDate("B_start_date"),
-						resultSet.getDate("B_end_date"), extension);
+				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
+				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				book = new Book(item, member, resultSet.getDate("B_start_date"), resultSet.getDate("B_end_date"),
+						extension);
 			}
 			super.disconnect();
 			return book;
@@ -193,16 +146,15 @@ public class BookDAO extends DAO {
 			String request = "SELECT BOOK.start_date AS B_start_date, BOOK.end_date AS B_end_date, "
 					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
 					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
-					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name "
-					+ "FROM BOOK "
-					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id "
-					+ "JOIN ITEM ON BOOK.item_id = ITEM.id "
+					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " + "FROM BOOK "
+					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " + "JOIN ITEM ON BOOK.item_id = ITEM.id "
 					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id ";
-			
-			if (userID != -1) { // Filtrer sur l'utilisateur si l'identifiant n'est pas -1
+
+			if (userID != -1) { // Filtrer sur l'utilisateur si l'identifiant
+								// n'est pas -1
 				request += "WHERE BOOK.member_id = " + userID;
 			}
-			
+
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -210,25 +162,16 @@ public class BookDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 
 			while (resultSet.next()) {
-				Item item = new Item(resultSet.getInt("I_id"),
-						resultSet.getString("I_comments"));
-				Member member = new Member(resultSet.getInt("M_id"),
-						resultSet.getString("M_first_name"),
-						resultSet.getString("M_last_name"),
-						resultSet.getString("M_pseudo"),
-						resultSet.getString("M_password"),
-						resultSet.getBoolean("M_is_admin"),
-						resultSet.getDate("M_birth_date"),
-						resultSet.getString("M_phone_number"),
-						resultSet.getString("M_email_address"),
-						resultSet.getString("M_street_address"),
-						resultSet.getString("M_postal_code"),
-						resultSet.getString("M_city"));
-				Extension extension = new Extension(resultSet.getInt("E_id"),
-						resultSet.getString("E_name"));
-				Book book = new Book(item, member,
-						resultSet.getDate("B_start_date"),
-						resultSet.getDate("B_end_date"), extension);
+				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
+				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				Book book = new Book(item, member, resultSet.getDate("B_start_date"), resultSet.getDate("B_end_date"),
+						extension);
 				books.add(book);
 			}
 
@@ -240,11 +183,11 @@ public class BookDAO extends DAO {
 		}
 
 	}
-	
+
 	public boolean getIfExists(int idItem) {
-		boolean result=false;
+		boolean result = false;
 		try {
-			
+
 			super.connect();
 
 			// Utilisation des "AS" à cause des jointures.
@@ -254,38 +197,35 @@ public class BookDAO extends DAO {
 			// base de données, donc qu'une seule requête à la fois (contrainte
 			// du SGBD Derby)
 
-			PreparedStatement psSelect = connection .prepareStatement("SELECT count( item_id ) FROM BOOK WHERE book.item_id = ?");
-			
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT count( item_id ) FROM BOOK WHERE book.item_id = ?");
+
 			psSelect.setInt(1, idItem);
 
-			
-			
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 
 			if (resultSet.next()) {
-				int itemNb =resultSet.getInt(1);
-				if (itemNb>=0)
+				int itemNb = resultSet.getInt(1);
+				if (itemNb > 0)
 					return true;
-			
+
 			}
-			
-			
 
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
+
 		}
-return result;
+		return result;
 	}
-	
+
 	public boolean getIfExtensionExists(int idExtension) {
-		boolean result=false;
+		boolean result = false;
 		try {
-			
+
 			super.connect();
 
 			// Utilisation des "AS" à cause des jointures.
@@ -295,31 +235,65 @@ return result;
 			// base de données, donc qu'une seule requête à la fois (contrainte
 			// du SGBD Derby)
 
-			PreparedStatement psSelect = connection .prepareStatement("SELECT count( extension_id ) FROM BOOK WHERE book.extension_id = ?");
-			
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT count( extension_id ) FROM BOOK WHERE book.extension_id = ?");
+
 			psSelect.setInt(1, idExtension);
 
-			
-			
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 
 			if (resultSet.next()) {
-				int itemNb =resultSet.getInt(1);
-				if (itemNb>=0)
+				int itemNb = resultSet.getInt(1);
+				if (itemNb >= 0)
 					return true;
-			
+
 			}
-			
-			
 
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
+
 		}
-return result;
+		return result;
+	}
+
+	public int getBooksNb(int idMember) {
+		try {
+
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT count(member_id) FROM BOOK WHERE member_id = ?");
+
+			psSelect.setInt(1, idMember);
+
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				int booksNb = resultSet.getInt(1);
+
+				return booksNb;
+
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+		return 0;
 	}
 }

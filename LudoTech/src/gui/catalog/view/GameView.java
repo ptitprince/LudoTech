@@ -39,6 +39,7 @@ public class GameView extends JDialog {
 
 	private JTextField nameField;
 	private JTextField idField;
+	private JCheckBox availabilityCheckBox;
 	private JComboBox<String> categoryComboBox;
 	private JComboBox<String> editorComboBox;
 	private JTextField publishingYearField;
@@ -141,10 +142,10 @@ public class GameView extends JDialog {
 		// Disponibilité (5ème et 6ème colonnes)
 		JLabel availableLabel = new JLabel(TextView.get("gameAvailable"));
 		mainInfosPanel.add(availableLabel);
-		JCheckBox availableCheckBox = new JCheckBox();
-		availableCheckBox.setEnabled(false);
-		availableLabel.setLabelFor(availableCheckBox);
-		mainInfosPanel.add(availableCheckBox);
+		this.availabilityCheckBox = new JCheckBox();
+		availabilityCheckBox.setEnabled(false);
+		availableLabel.setLabelFor(availabilityCheckBox);
+		mainInfosPanel.add(availabilityCheckBox);
 
 		// 2ème ligne
 
@@ -152,6 +153,7 @@ public class GameView extends JDialog {
 		JLabel categoryLabel = new JLabel(TextView.get("gameCategory"));
 		mainInfosPanel.add(categoryLabel);
 		this.categoryComboBox = new JComboBox<String>();
+		this.categoryComboBox.setEditable(true);
 		this.categoryComboBox.setModel(new PostLoadableComboBoxModel());
 		this.categoryComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
 		categoryLabel.setLabelFor(this.categoryComboBox);
@@ -161,6 +163,7 @@ public class GameView extends JDialog {
 		JLabel editorLabel = new JLabel(TextView.get("gameEditor"));
 		mainInfosPanel.add(editorLabel);
 		this.editorComboBox = new JComboBox<String>();
+		this.editorComboBox.setEditable(true);
 		this.editorComboBox.setModel(new PostLoadableComboBoxModel());
 		this.editorComboBox.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
 		editorLabel.setLabelFor(this.editorComboBox);
@@ -308,13 +311,14 @@ public class GameView extends JDialog {
 		this.descriptionBox.setEditable(false);
 	}
 
-	public void load(String name, int gameID, String category, String editor, int publishingYear, int minPlayers,
+	public void load(String name, int gameID, boolean isAvailable, String category, String editor, int publishingYear, int minPlayers,
 			int maxPlayers, int minAge, String description, int nbItems) {
 		this.nameField.setText(name);
 		this.creatingGame = (gameID == -1);
 		this.idField.setText((gameID == -1) ? "" : "" + gameID);
-		this.categoryComboBox.setSelectedItem(category);
-		this.editorComboBox.setSelectedItem(editor);
+		this.availabilityCheckBox.setSelected(isAvailable);
+		this.categoryComboBox.setSelectedItem(TextView.makeFirstLetterUpper(category));
+		this.editorComboBox.setSelectedItem(TextView.makeFirstLetterUpper(editor));
 		this.publishingYearField.setText("" + publishingYear);
 		this.nbPlayersStartRangeField.setText("" + minPlayers);
 		this.nbPlayersEndRangeField.setText("" + maxPlayers);
@@ -341,11 +345,13 @@ public class GameView extends JDialog {
 	}
 
 	public String getCategory() {
-		return this.categoryComboBox.getItemAt(this.categoryComboBox.getSelectedIndex());
+		String category = (String) this.categoryComboBox.getSelectedItem();
+		return (category != null) ? category : "";
 	}
 
 	public String getEditor() {
-		return this.editorComboBox.getItemAt(this.editorComboBox.getSelectedIndex());
+		String editor = (String) this.editorComboBox.getSelectedItem();
+		return (editor != null) ? editor : "";
 	}
 
 	public int getPublishingYearStartRange() throws NotValidNumberFieldException {

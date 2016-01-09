@@ -1,11 +1,21 @@
 package model.services;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import model.DAOs.BookDAO;
 import model.DAOs.BorrowDAO;
 import model.DAOs.ItemDAO;
+import model.POJOs.Book;
+import model.POJOs.Extension;
 import model.POJOs.Item;
+import model.POJOs.Member;
 
 /**
  * Propose des fonctionnalités de traitement sur des exemplaires de jeu
@@ -97,9 +107,7 @@ public class ItemServices {
 		
 	}
 	
-	
-	
-	
+
 	
 	
 }
