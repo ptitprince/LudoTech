@@ -44,6 +44,8 @@ public class MemberListView extends JPanel {
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
 
 		JPanel actionsPanel = new JPanel();
+		JLabel editGameTip = new JLabel(TextView.get("editLineTip"));
+		actionsPanel.add(editGameTip);
 		this.addMemberButton = new JButton(TextView.get("add"));
 		actionsPanel.add(this.addMemberButton);
 		this.deleteMemberButton = new JButton(TextView.get("delete"));
