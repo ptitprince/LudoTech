@@ -295,7 +295,7 @@ public class BorrowDAO extends DAO {
 
 			if (resultSet.next()) {
 				int itemNb =resultSet.getInt(1);
-				if (itemNb>=0)
+				if (itemNb>0)
 					return true;
 			
 			}

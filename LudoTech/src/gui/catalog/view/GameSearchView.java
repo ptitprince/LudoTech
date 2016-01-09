@@ -175,8 +175,8 @@ public class GameSearchView extends JPanel {
 		return this.minAgeField.getText();
 	}
 
-	public JCheckBox getAvailableCheckBox() {
-		return availableCheckBox;
+	public boolean getAvailableCheckBoxValue() {
+		return this.availableCheckBox.isSelected();
 	}
 
 	public JButton getSearchButton() {

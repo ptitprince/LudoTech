@@ -68,7 +68,7 @@ public class BookServices {
 				}
 			}
 			
-			Item item = this.gamesServices.getItem(game.getGameID());
+			Item item = this.gamesServices.getOneAvailableItem(game.getGameID());
 			
 			if (item != null) {
 				Book book = new Book(item, member, beginningDate, endingDate,extension);

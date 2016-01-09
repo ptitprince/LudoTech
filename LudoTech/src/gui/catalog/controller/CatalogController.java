@@ -86,7 +86,7 @@ public class CatalogController extends JPanel {
 					Game game = gameServices.getGame(gameID);
 					int nbItems = itemServices.countItemsOfGame(gameID);
 					refreshExtensionList(gameID);
-					gameView.load(game.getName(), gameID, game.getCategory(), game.getEditor(),
+					gameView.load(game.getName(), gameID, gameServices.isAvailable(gameID), game.getCategory(), game.getEditor(),
 							game.getPublishingYear(), game.getMinimumPlayers(), game.getMaximumPlayers(),
 							game.getMinimumAge(), game.getDescription(), nbItems);
 					gameView.setVisible(true);
@@ -106,7 +106,7 @@ public class CatalogController extends JPanel {
 			// Clic sur le bouton "ajouter un jeu" de la liste des jeux
 			this.gameListView.getAddGameButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					gameView.load("", -1, "", "", Calendar.getInstance().get(Calendar.YEAR), 1, 2, 3, "", 0);
+					gameView.load("", -1, false, "", "", Calendar.getInstance().get(Calendar.YEAR), 1, 2, 3, "", 0);
 					gameView.setVisible(true);
 				}
 			});
@@ -227,6 +227,7 @@ public class CatalogController extends JPanel {
 					filter.put("publishing_year", gameSearchView.getPublishingYearValue().trim());
 					filter.put("nb_players", gameSearchView.getNbPlayersValue().trim());
 					filter.put("minimum_age", gameSearchView.getMinAgeValue().trim());
+					filter.put("is_available", gameSearchView.getAvailableCheckBoxValue()+"");
 					gameListModel.refresh(filter);
 				} catch (NotValidNumberFieldException exception) {
 					showInvalidFieldsException(exception);

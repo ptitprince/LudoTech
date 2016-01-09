@@ -15,7 +15,7 @@ public class GameListModel extends AbstractTableModel {
 
 	private final String[] HEADERS = { TextView.get("gameID"), TextView.get("gameName"), TextView.get("gameCategory"),
 			TextView.get("gameEditor"), TextView.get("gamePublishingYear"), TextView.get("gameMinAge"),
-			TextView.get("gamePlayers"), TextView.get("gameAvailable") };
+			TextView.get("gamePlayers") };
 
 	private GameServices gameServices;
 
@@ -67,8 +67,6 @@ public class GameListModel extends AbstractTableModel {
 			} else {
 				return minPlayers + " - " + maxPlayers;
 			}
-		case 7:
-			return true;
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -86,8 +84,6 @@ public class GameListModel extends AbstractTableModel {
 			return String.class;
 		case 0:
 			return Integer.class;
-		case 7:
-			return Boolean.class;
 		default:
 			return Object.class;
 		}

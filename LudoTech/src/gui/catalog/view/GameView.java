@@ -39,6 +39,7 @@ public class GameView extends JDialog {
 
 	private JTextField nameField;
 	private JTextField idField;
+	private JCheckBox availabilityCheckBox;
 	private JComboBox<String> categoryComboBox;
 	private JComboBox<String> editorComboBox;
 	private JTextField publishingYearField;
@@ -141,10 +142,10 @@ public class GameView extends JDialog {
 		// Disponibilité (5ème et 6ème colonnes)
 		JLabel availableLabel = new JLabel(TextView.get("gameAvailable"));
 		mainInfosPanel.add(availableLabel);
-		JCheckBox availableCheckBox = new JCheckBox();
-		availableCheckBox.setEnabled(false);
-		availableLabel.setLabelFor(availableCheckBox);
-		mainInfosPanel.add(availableCheckBox);
+		this.availabilityCheckBox = new JCheckBox();
+		availabilityCheckBox.setEnabled(false);
+		availableLabel.setLabelFor(availabilityCheckBox);
+		mainInfosPanel.add(availabilityCheckBox);
 
 		// 2ème ligne
 
@@ -310,11 +311,12 @@ public class GameView extends JDialog {
 		this.descriptionBox.setEditable(false);
 	}
 
-	public void load(String name, int gameID, String category, String editor, int publishingYear, int minPlayers,
+	public void load(String name, int gameID, boolean isAvailable, String category, String editor, int publishingYear, int minPlayers,
 			int maxPlayers, int minAge, String description, int nbItems) {
 		this.nameField.setText(name);
 		this.creatingGame = (gameID == -1);
 		this.idField.setText((gameID == -1) ? "" : "" + gameID);
+		this.availabilityCheckBox.setSelected(isAvailable);
 		this.categoryComboBox.setSelectedItem(TextView.makeFirstLetterUpper(category));
 		this.editorComboBox.setSelectedItem(TextView.makeFirstLetterUpper(editor));
 		this.publishingYearField.setText("" + publishingYear);
