@@ -1,6 +1,5 @@
 package model.services;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -32,126 +31,170 @@ public class BorrowServices {
 		this.memberServices = new MemberServices();
 	}
 
+	/**
+	 * Méthode pour avoir tous les emprunts existants.
+	 * 
+	 * @return une liste d'emprunts, qui sont de type Borrow.
+	 */
 	public List<Borrow> getAll() {
 		return this.borrowDAO.getBorrows(-1);
 	}
 
-	public List<Borrow> getAllAccordingToUserID(int userID) {
-		return this.borrowDAO.getBorrows(userID);
+	/**
+	 * Méthode pour avoir tous les emprunts d'un membre.
+	 * 
+	 * @param memberID
+	 *            l'identifiant du membre.
+	 * @return une Liste d'emprunts.
+	 */
+	public List<Borrow> getAllAccordingToUserID(int memberID) {
+		return this.borrowDAO.getBorrows(memberID);
 	}
 
 	/**
-	 * TODO Ajout d'un nouveau prêt dans la base de données Il est nécessaire
-	 * d'effecuter des vérifications avant de l'ajouter Non fonctionnel, à
-	 * revoir.
+	 * Méthode pour ajouter un emprunt, en vérifiant toutes les conditions.
+	 * 
+	 * @param game
+	 *            le jeu que l'on souhaite emprunter.
+	 * @param member
+	 *            le membre qui est concerné.
+	 * @param beginningDate
+	 *            la date prévue de début d'emprunt.
+	 * @param endingDate
+	 *            la date de fin prévue pour l'emprunt.
+	 * @param extension
+	 *            une éventuelle extension.
+	 * @return un emprunt de type Borrow, ou null si une condition n'est pas
+	 *         réalisée.
 	 */
 	@SuppressWarnings("deprecation")
 	public Borrow addBorrow(Game game, Member member, Date beginningDate, Date endingDate, Extension extension) {
-		/*
-		 * - vérifier si l'adhénent n'a pas dépassé le quota d'emprunts possible
-		 * (utiliser ParametersServices avec une fonction en + pour recup
-		 * "nbBorrowings" se calquer sur celle déjà faite et voir le
-		 * fichierres/preferences.properties - ajouter le borrow en base de
-		 * données, le retourner - si une vérification n'est pas effectuée,
-		 * retourner null
-		 */
 		if (this.memberContextServices.getCanBook(member.getMemberContextID())) {
-			// if(this.parametersServices) TODO
-			if (endingDate.before(beginningDate)) {
-				return null; // renvoi de l'erreur.
-			} else if (endingDate.getMonth() == beginningDate.getMonth()) {
-				// endingDate >= beginningDate
-				if ((endingDate.getDate()
-						- beginningDate.getDate() == parametersServices.getDurationOfBorrowingsInWeeks() * 7)) {
-					// Durée de prêt bien égale ici.
-					if (endingDate.getDay() == 0) {
-						// dimanche, on reporte au lundi
-						endingDate.setDate(endingDate.getDate() + 1);
+			// le membre a le droit d'emprunter.
+			List<Borrow> borrows = getAllAccordingToUserID(member.getMemberID());
 
-					} else if (endingDate.getDay() == 6) {
-						// Samedi, on reporte au lundi
-						endingDate.setDate(endingDate.getDate() + 2);
-					}
+			if (borrows.size() < this.parametersServices.getNumberOfBorrowings()) {
+				// le membre n'a pas dépassé sa taille d'emprunt limite.
+				if (endingDate.before(beginningDate)) {
+					return null; // renvoi de l'erreur.
+				} else if (endingDate.getMonth() == beginningDate.getMonth()) {
+					// endingDate >= beginningDate
 
-				} else {
-					return null;
-				}
-			} else {
-				int ecartDate = 0;
-				if (beginningDate.getMonth() == 0 || beginningDate.getMonth() == 2 || beginningDate.getMonth() == 4
-						|| beginningDate.getMonth() == 6 || beginningDate.getMonth() == 7
-						|| beginningDate.getMonth() == 9 || beginningDate.getMonth() == 11) {
-					// le mois avec 31 est repéré
-					int newDate = beginningDate.getDate() % 31;
-					ecartDate = newDate + endingDate.getDate();
-				} else {
-					int newDate = beginningDate.getDate() % 30;
-					ecartDate = newDate + endingDate.getDate();
-				}
-				if (ecartDate == parametersServices.getDurationOfBorrowingsInWeeks() * 7) {
-					if (endingDate.getDay() == 0) {
-						// dimanche, on reporte au lundi
-						endingDate.setDate(endingDate.getDate() + 1);
+					if ((endingDate.getDate()
+							- beginningDate.getDate() == parametersServices.getDurationOfBorrowingsInWeeks() * 7)) {
+						// Durée de prêt bien égale ici.
 
-					} else if (endingDate.getDay() == 6) {
-						// Samedi, on reporte au lundi
-						endingDate.setDate(endingDate.getDate() + 2);
+						if (endingDate.getDay() == 0) {
+							// dimanche, on reporte au lundi
+							endingDate.setDate(endingDate.getDate() + 1);
+
+						} else if (endingDate.getDay() == 6) {
+							// Samedi, on reporte au lundi
+							endingDate.setDate(endingDate.getDate() + 2);
+						}
+
+					} else {
+						return null;
 					}
 				} else {
-					return null;
-				}
-			}
+					// on recommence ici pour ceux qui ne sont pas dans le même
+					// mois.
+					int ecartDate = 0;
 
-			if (this.itemServices.countItemsOfGame(game.getGameID()) > 0) {
-				// S'il reste des items du jeu
-				List<Item> items = this.itemDAO.getAllHavingGameID(game.getGameID());
-				boolean atLeastOneGood = false;
-				int i = 0;
-				// On vérifie qu'au moins un des items ne fasse pas partie
-				// d'un prêt.
-				while (!(atLeastOneGood) && i < items.size()) {
-					atLeastOneGood = this.borrowDAO.getIfExists(items.get(i).getItemID());
-					i++;
+					if (beginningDate.getMonth() == 0 || beginningDate.getMonth() == 2 || beginningDate.getMonth() == 4
+							|| beginningDate.getMonth() == 6 || beginningDate.getMonth() == 7
+							|| beginningDate.getMonth() == 9 || beginningDate.getMonth() == 11) {
+						// le mois avec 31 jours est repéré
+						int newDate = beginningDate.getDate() % 31;
+						ecartDate = newDate + endingDate.getDate();
+					} else {
+						int newDate = beginningDate.getDate() % 30;
+						ecartDate = newDate + endingDate.getDate();
+					}
+
+					if (ecartDate == parametersServices.getDurationOfBorrowingsInWeeks() * 7) {
+						// L'écart de dates correspond bien à la durée
+						// autorisée.
+						if (endingDate.getDay() == 0) {
+							// L'emprunt se termine un dimanche, on reporte au
+							// lundi.
+							endingDate.setDate(endingDate.getDate() + 1);
+
+						} else if (endingDate.getDay() == 6) {
+							// pareill pour samedi, on reporte au lundi.
+							endingDate.setDate(endingDate.getDate() + 2);
+						}
+					} else {
+						return null;
+					}
 				}
 
-				if (atLeastOneGood) {
-					this.itemDAO.remove(items.get(i - 1).getItemID());
-					if (extension != null) {
-						if (this.extensionServices.countExtensions(game.getGameID()) > 0) {
-							// On vérifie si le jeu a des extensions.
-							atLeastOneGood = this.borrowDAO.getIfExtensionExists(extension.getExtensionID());
-							if (atLeastOneGood) {
-								this.extensionServices.deleteExtension(extension.getExtensionID());
-								Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate,
-										extension);
-								this.borrowDAO.add(borrow);
-								return borrow;
+				if (this.itemServices.countItemsOfGame(game.getGameID()) > 0) {
+					// S'il reste des items du jeu :
+					List<Item> items = this.itemDAO.getAllHavingGameID(game.getGameID());
+					boolean atLeastOneGood = false;
+					int i = 0;
+					// On vérifie qu'au moins un des items ne fasse pas partie
+					// d'un prêt.
+					while (!(atLeastOneGood) && i < items.size()) {
+						atLeastOneGood = this.borrowDAO.getIfExists(items.get(i).getItemID());
+						i++;
+					}
+
+					if (atLeastOneGood) {
+
+						if (extension != null) {
+
+							if (this.extensionServices.countExtensions(game.getGameID()) > 0) {
+								// On vérifie si le jeu a des extensions.
+								atLeastOneGood = this.borrowDAO.getIfExtensionExists(extension.getExtensionID());
+
+								if (atLeastOneGood) {
+									// Tout est bon, nous pouvons créer un
+									// emprunt avec une extension.
+									Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate,
+											extension);
+									this.borrowDAO.add(borrow);
+									return borrow;
+								} else {
+									return null;
+								}
 							} else {
 								return null;
 							}
 						} else {
-							return null;
+							// Tout est bon, nous pouvons créer un emprunt.
+							Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate, extension);
+							this.borrowDAO.add(borrow);
+							return borrow;
 						}
-					} else {
-						Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate, extension);
-						this.borrowDAO.add(borrow);
-						return borrow;
-					}
 
+					} else {
+						return null;
+					}
 				} else {
 					return null;
 				}
 			} else {
 				return null;
 			}
-
 		} else {
 			return null;
 		}
 	}
 
 	/**
-	 * FONCTIONNE \o/
+	 * Méthode pour supprimer un emprunt.
+	 * 
+	 * @param itemID
+	 *            l'identifiant de l'item.
+	 * @param memberID
+	 *            l'identifiant du membre.
+	 * @param beginningDate
+	 *            la date de début du prêt.
+	 * @param endingDate
+	 *            la date de fin du prêt.
+	 * @return un booléen, confirmant si la suppression a été effectuée ou non.
 	 */
 	public boolean removeBorrow(int itemID, int memberID, Date beginningDate, Date endingDate) {
 

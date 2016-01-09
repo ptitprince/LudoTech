@@ -28,16 +28,12 @@ public class BorrowDAO extends DAO {
 		try {
 			super.connect();
 
-			PreparedStatement psInsert = connection
-					.prepareStatement("INSERT INTO "
-							+ "Borrow(item_id, member_id, start_date, end_date, extension_id) "
-							+ "VALUES (?, ?, ?, ?, ?)");
+			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
+					+ "Borrow(item_id, member_id, start_date, end_date, extension_id) " + "VALUES (?, ?, ?, ?, ?)");
 			psInsert.setInt(1, borrow.getItem().getItemID());
 			psInsert.setInt(2, borrow.getMember().getMemberID());
-			psInsert.setDate(3, new java.sql.Date(borrow.getBeginningDate()
-					.getTime()));
-			psInsert.setDate(4, new java.sql.Date(borrow.getEndingDate()
-					.getTime()));
+			psInsert.setDate(3, new java.sql.Date(borrow.getBeginningDate().getTime()));
+			psInsert.setDate(4, new java.sql.Date(borrow.getEndingDate().getTime()));
 			psInsert.setInt(5, borrow.getExtension().getExtensionID());
 
 			psInsert.executeUpdate();
@@ -61,18 +57,14 @@ public class BorrowDAO extends DAO {
 		try {
 			super.connect();
 
-			PreparedStatement psEdit = connection
-					.prepareStatement("UPDATE BORROW "
-							+ "SET end_date = ?, extension_id = ? "
-							+ "WHERE item_id = ? AND member_id = ? AND start_date = ?");
-			psEdit.setDate(1, new java.sql.Date(borrow.getEndingDate()
-					.getTime()));
+			PreparedStatement psEdit = connection.prepareStatement("UPDATE BORROW "
+					+ "SET end_date = ?, extension_id = ? " + "WHERE item_id = ? AND member_id = ? AND start_date = ?");
+			psEdit.setDate(1, new java.sql.Date(borrow.getEndingDate().getTime()));
 			psEdit.setInt(2, borrow.getExtension().getExtensionID());
 			psEdit.setInt(3, borrow.getItem().getItemID());
 			psEdit.setInt(4, borrow.getMember().getMemberID());
 			psEdit.setInt(5, borrow.getExtension().getExtensionID());
-			psEdit.setDate(7, new java.sql.Date(borrow.getBeginningDate()
-					.getTime()));
+			psEdit.setDate(7, new java.sql.Date(borrow.getBeginningDate().getTime()));
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();
@@ -111,6 +103,7 @@ public class BorrowDAO extends DAO {
 			return false;
 		}
 	}
+
 	/**
 	 * retourne un emprunt.
 	 * 
@@ -131,10 +124,8 @@ public class BorrowDAO extends DAO {
 			String request = "SELECT BORROW.start_date AS B_start_date, BORROW.end_date AS B_end_date, "
 					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
 					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
-					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name "
-					+ "FROM BORROW "
-					+ "JOIN MEMBER ON BORROW.member_id = MEMBER.id "
-					+ "JOIN ITEM ON BORROW.item_id = ITEM.id "
+					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " + "FROM BORROW "
+					+ "JOIN MEMBER ON BORROW.member_id = MEMBER.id " + "JOIN ITEM ON BORROW.item_id = ITEM.id "
 					+ "LEFT JOIN EXTENSION ON BORROW.extension_id = EXTENSION.id";
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
@@ -143,25 +134,16 @@ public class BorrowDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 			Borrow borrow = null;
 			if (resultSet.next()) {
-				Item item = new Item(resultSet.getInt("I_id"),
-						resultSet.getString("I_comments"));
-				Member member = new Member(resultSet.getInt("M_id"),
-						resultSet.getString("M_first_name"),
-						resultSet.getString("M_last_name"),
-						resultSet.getString("M_pseudo"),
-						resultSet.getString("M_password"),
-						resultSet.getBoolean("M_is_admin"),
-						resultSet.getDate("M_birth_date"),
-						resultSet.getString("M_phone_number"),
-						resultSet.getString("M_email_address"),
-						resultSet.getString("M_street_address"),
-						resultSet.getString("M_postal_code"),
-						resultSet.getString("M_city"));
-				Extension extension = new Extension(resultSet.getInt("E_id"),
-						resultSet.getString("E_name"));
-				borrow = new Borrow(item, member,
-						resultSet.getDate("B_start_date"),
-						resultSet.getDate("B_end_date"), extension);
+				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
+				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				borrow = new Borrow(item, member, resultSet.getDate("B_start_date"), resultSet.getDate("B_end_date"),
+						extension);
 			}
 			super.disconnect();
 			return borrow;
@@ -191,16 +173,15 @@ public class BorrowDAO extends DAO {
 			String request = "SELECT BORROW.start_date AS B_start_date, BORROW.end_date AS B_end_date, "
 					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
 					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
-					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name "
-					+ "FROM BORROW "
-					+ "JOIN MEMBER ON BORROW.member_id = MEMBER.id "
-					+ "JOIN ITEM ON BORROW.item_id = ITEM.id "
+					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " + "FROM BORROW "
+					+ "JOIN MEMBER ON BORROW.member_id = MEMBER.id " + "JOIN ITEM ON BORROW.item_id = ITEM.id "
 					+ "LEFT JOIN EXTENSION ON BORROW.extension_id = EXTENSION.id ";
-			
-			if (userID != -1) { // Filtrer sur l'utilisateur si l'identifiant n'est pas -1
+
+			if (userID != -1) { // Filtrer sur l'utilisateur si l'identifiant
+								// n'est pas -1
 				request += "WHERE BORROW.member_id = " + userID;
 			}
-			
+
 			PreparedStatement psSelect = connection.prepareStatement(request);
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -208,24 +189,15 @@ public class BorrowDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 
 			while (resultSet.next()) {
-				Item item = new Item(resultSet.getInt("I_id"),
-						resultSet.getString("I_comments"));
-				Member member = new Member(resultSet.getInt("M_id"),
-						resultSet.getString("M_first_name"),
-						resultSet.getString("M_last_name"),
-						resultSet.getString("M_pseudo"),
-						resultSet.getString("M_password"),
-						resultSet.getBoolean("M_is_admin"),
-						resultSet.getDate("M_birth_date"),
-						resultSet.getString("M_phone_number"),
-						resultSet.getString("M_email_address"),
-						resultSet.getString("M_street_address"),
-						resultSet.getString("M_postal_code"),
-						resultSet.getString("M_city"));
-				Extension extension = new Extension(resultSet.getInt("E_id"),
-						resultSet.getString("E_name"));
-				Borrow borrow = new Borrow(item, member,
-						resultSet.getDate("B_start_date"),
+				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
+				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				Borrow borrow = new Borrow(item, member, resultSet.getDate("B_start_date"),
 						resultSet.getDate("B_end_date"), extension);
 				borrows.add(borrow);
 			}
@@ -238,27 +210,36 @@ public class BorrowDAO extends DAO {
 		}
 
 	}
-	
+
+	/**
+	 * Méthode du DAO pour obtenir l'identifiant d'une extension.
+	 * 
+	 * @param itemId
+	 *            l'identifiant de l'exemplaire.
+	 * @param memberId
+	 *            l'identifiant du membre.
+	 * @param beginningDate
+	 *            la date de début du prêt.
+	 * @return un entier, l'identifiant de l'extension, ou 0 s'il n'y en a pas.
+	 */
 	public int getExtension(int itemId, int memberId, Date beginningDate) {
-		
-		
+
 		try {
 			super.connect();
 
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM BORROW WHERE item_id = ? AND member_id = ? AND start_date = ?");
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT * FROM BORROW WHERE item_id = ? AND member_id = ? AND start_date = ?");
 			psSelect.setInt(1, itemId);
 			psSelect.setInt(2, memberId);
 			psSelect.setDate(3, new java.sql.Date(beginningDate.getTime()));
 
-
-			
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 			int answer = 0;
 			if (resultSet.next()) { // Positionnement sur le premier résultat
-					answer =	resultSet.getInt("extension_id");
+				answer = resultSet.getInt("extension_id");
 			}
 			super.disconnect();
 			return answer;
@@ -267,12 +248,20 @@ public class BorrowDAO extends DAO {
 			return 0;
 		}
 	}
-	
-	
+
+	/**
+	 * Méthode pour vérifier s'il existe au moins un exemplaire valide que l'on
+	 * peut utiliser pour un emprunt.
+	 * 
+	 * @param idItem
+	 *            l'identifiant de l'exemplaire.
+	 * @return un booléen, qui indique si oui ou non on a un exemplaire valide
+	 *         disponible.
+	 */
 	public boolean getIfExists(int idItem) {
-		boolean result=false;
+		boolean result = false;
 		try {
-			
+
 			super.connect();
 
 			// Utilisation des "AS" à cause des jointures.
@@ -282,40 +271,43 @@ public class BorrowDAO extends DAO {
 			// base de données, donc qu'une seule requête à la fois (contrainte
 			// du SGBD Derby)
 
-			PreparedStatement psSelect = connection .prepareStatement("SELECT count( item_id ) FROM BORROW WHERE borrow.item_id = ?");
-			
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT count( item_id ) FROM BORROW WHERE borrow.item_id = ?");
+
 			psSelect.setInt(1, idItem);
 
-			
-			
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 
 			if (resultSet.next()) {
-				int itemNb =resultSet.getInt(1);
-				if (itemNb>=0)
+				int itemNb = resultSet.getInt(1);
+				if (itemNb >= 0)
 					return true;
-			
+
 			}
-			
-			
 
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
+
 		}
-return result;
+		return result;
 	}
-	
-	
-	
+
+	/**
+	 * Méthode pour savoir si une extension est valide ou non.
+	 * 
+	 * @param idExtension
+	 *            l'identifiant de l'extension.
+	 * @return un booléen, confirmant si oui ou non une extension est valide à
+	 *         l'emprunt.
+	 */
 	public boolean getIfExtensionExists(int idExtension) {
-		boolean result=false;
+		boolean result = false;
 		try {
-			
+
 			super.connect();
 
 			// Utilisation des "AS" à cause des jointures.
@@ -325,37 +317,29 @@ return result;
 			// base de données, donc qu'une seule requête à la fois (contrainte
 			// du SGBD Derby)
 
-			PreparedStatement psSelect = connection .prepareStatement("SELECT count( extension_id ) FROM BORROW WHERE borrow.extension_id = ?");
-			
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT count( extension_id ) FROM BORROW WHERE borrow.extension_id = ?");
+
 			psSelect.setInt(1, idExtension);
 
-			
-			
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
 			ResultSet resultSet = psSelect.getResultSet();
 
 			if (resultSet.next()) {
-				int itemNb =resultSet.getInt(1);
-				if (itemNb>=0)
+				int itemNb = resultSet.getInt(1);
+				if (itemNb >= 0)
 					return true;
-			
+
 			}
-			
-			
 
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
+
 		}
-return result;
+		return result;
 	}
-	
-	
-	
-	
-	
 
 }
