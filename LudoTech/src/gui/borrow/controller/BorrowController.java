@@ -71,91 +71,73 @@ public class BorrowController extends JPanel {
 
 	public void makeListeners() {
 		if (memberServices.isAdmin(this.currentMemberID)) {
-			this.borrowListView.getAddBorrowButton().addActionListener(
-					new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							borrowView.setVisible(true);
-							borrowView.clear();
-						}
-					});
+			this.borrowListView.getAddBorrowButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					borrowView.setVisible(true);
+					borrowView.clear();
+				}
+			});
 
 			// Clic sur le bouton "Retour d'un emprunt" de la liste des prêts
-			this.borrowListView.getReceiveBorrowButton().addActionListener(
-					new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							JTable table = borrowListView.getTable();
-							int selectedRowIndex = table.getSelectedRow();
-							if (selectedRowIndex > -1) {
-								if (showDeleteBorrowConfirmation()) { // True si
-																		// la
-																		// suppression
-																		// a été
-																		// confirmée
-																		// par
-																		// l'utilisateur
-									try {
-										int itemID = (Integer) table
-												.getModel()
-												.getValueAt(selectedRowIndex, 0);
-										int memberID = (Integer) table
-												.getModel().getValueAt(
-														selectedRowIndex, 1);
-										SimpleDateFormat sdf = new SimpleDateFormat(
-												"dd/MM/yyyy");
-										Date startDate = sdf
-												.parse((String) table
-														.getModel()
-														.getValueAt(
-																selectedRowIndex,
-																5));
-										Date endDate = sdf.parse((String) table
-												.getModel().getValueAt(
-														selectedRowIndex, 6));
-										borrowServices.removeBorrow(itemID,
-												memberID, startDate, endDate);
-										refreshBorrowList();
-									} catch (ParseException e1) {
-										showInvalidDatesException();
-									}
-								}
-							}
-						}
-					});
-			this.borrowView.getGameComboBox().addActionListener(
-					new ActionListener() {
-
-						public void actionPerformed(ActionEvent e) {
-							loadExtensionListAccordingToGame();
-						}
-					});
-			this.borrowView.getValidateButton().addActionListener(
-					new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
+			this.borrowListView.getReceiveBorrowButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JTable table = borrowListView.getTable();
+					int selectedRowIndex = table.getSelectedRow();
+					if (selectedRowIndex > -1) {
+						if (showDeleteBorrowConfirmation()) { // True si
+																// la
+																// suppression
+																// a été
+																// confirmée
+																// par
+																// l'utilisateur
 							try {
-								Game selectedGame = borrowView
-										.getSelectedGame();
-								Member selectedMember = borrowView
-										.getSelectedMember();
-								Date startDate = borrowView.getStartDate();
-								Date endDate = borrowView.getEndDate();
-								Extension selectedExtension = borrowView
-										.getSelectedExtension();
-								borrowServices.addBorrow(selectedGame,
-										selectedMember, startDate, endDate,
-										selectedExtension);
-								borrowView.setVisible(false);
+								int itemID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
+								int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 1);
+								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+								Date startDate = sdf.parse((String) table.getModel().getValueAt(selectedRowIndex, 5));
+								Date endDate = sdf.parse((String) table.getModel().getValueAt(selectedRowIndex, 6));
+								borrowServices.removeBorrow(itemID, memberID, startDate, endDate);
 								refreshBorrowList();
 							} catch (ParseException e1) {
 								showInvalidDatesException();
 							}
 						}
-					});
-			this.borrowView.getCancelButton().addActionListener(
-					new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
+					}
+				}
+			});
+			this.borrowView.getGameComboBox().addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					loadExtensionListAccordingToGame();
+				}
+			});
+			this.borrowView.getValidateButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Game selectedGame = borrowView.getSelectedGame();
+					Member selectedMember = borrowView.getSelectedMember();
+					if (selectedGame == null || selectedMember == null) {
+						JOptionPane.showMessageDialog(null, TextView.get("borrowNoGameOrMemberSelectedException"));
+					} else {
+						try {
+							Date startDate = borrowView.getStartDate();
+							Date endDate = borrowView.getEndDate();
+							Extension selectedExtension = borrowView.getSelectedExtension();
+							borrowServices.addBorrow(selectedGame, selectedMember, startDate, endDate,
+									selectedExtension);
 							borrowView.setVisible(false);
+							refreshBorrowList();
+						} catch (ParseException e1) {
+							showInvalidDatesException();
 						}
-					});
+					}
+				}
+			});
+			this.borrowView.getCancelButton().addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					borrowView.setVisible(false);
+				}
+			});
 		}
 
 	}

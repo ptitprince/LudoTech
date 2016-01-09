@@ -84,9 +84,10 @@ public class MembersController extends JPanel {
 					int memberID = (Integer) table.getModel().getValueAt(table.getSelectedRow(), 0);
 					Member member = memberServices.getMember(memberID);
 					MemberContext context = member.getMemberContext();
-					memberView.getProfileView().load(memberID, context.getId(), member.getFirstName(), member.getLastName(), member.getPseudo(),
-							member.getPassword(), member.getIsAdmin(), member.getBirthDate(), member.getPhoneNumber(),
-							member.getEmail(), member.getStreetAddress(), member.getPostalCode(), member.getCity(),
+					memberView.getProfileView().load(memberID, context.getId(), member.getFirstName(),
+							member.getLastName(), member.getPseudo(), member.getPassword(), member.getIsAdmin(),
+							member.getBirthDate(), member.getPhoneNumber(), member.getEmail(),
+							member.getStreetAddress(), member.getPostalCode(), member.getCity(),
 							context.getNbFakeBookings(), context.getNbDelays(), context.canBorrow(), context.canBook(),
 							context.getLastSubscriptionDate());
 					memberView.setVisible(true);
@@ -94,52 +95,40 @@ public class MembersController extends JPanel {
 			}
 		});
 
-		this.memberListView.getAddMemberButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				memberView.getProfileView().load(-1, -1, "", "", "", "", false, Calendar.getInstance().getTime(), "", "", "",
-						"", "", 0, 0, false, false, Calendar.getInstance().getTime());
-				memberView.getProfileView().setVisible(true);
-			}
-		});
-
-		this.memberListView.getDeleteMemberButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTable table = memberListView.getTable();
-				int selectedRowIndex = table.getSelectedRow();
-				if (selectedRowIndex > -1) {
-					int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
-					memberServices.removeMember(memberID);
-					refreshMemberList();
-				}
-			}
-		});
+	
 
 		this.memberView.getProfileView().getValidateButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					ProfileView profileView = memberView.getProfileView();
-					if (profileView.isCreatingMember()) {
-						memberServices.addMember(profileView.getFirstName(), profileView.getLastName(),
-								profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(),
-								profileView.getBirthDate(), profileView.getPhoneNumber(), profileView.getEmail(),
-								profileView.getStreetAddress(), profileView.getPostalCode(), profileView.getCity(), 
-								profileView.getNbDelays(), profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(),
-								profileView.getCanBorrow(), profileView.getCanBook());
-						JOptionPane.showMessageDialog(null, TextView.get("profileAddMemberConfirmation"));
+					if (profileView.getFirstName().equals("") || profileView.getLastName().equals("")
+							|| profileView.getPseudo().equals("") || profileView.getPassword().equals("")) {
+						JOptionPane.showMessageDialog(null, TextView.get("profileMemberEmptyFieldsException"));
 					} else {
-						memberContextServices.editMemberContext(profileView.getMemberContextID(), profileView.getNbDelays(),
-								profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(),
-								profileView.getCanBorrow(), profileView.getCanBook());
-						memberServices.saveMember(profileView.getMemberID(), profileView.getFirstName(), profileView.getLastName(),
-								profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(),
-								profileView.getBirthDate(), profileView.getPhoneNumber(), profileView.getEmail(),
-								profileView.getStreetAddress(), profileView.getPostalCode(), profileView.getCity());
-						JOptionPane.showMessageDialog(null, TextView.get("profileEditMemberConfirmation"));
+						if (profileView.isCreatingMember()) {
+							memberServices.addMember(profileView.getFirstName(), profileView.getLastName(),
+									profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(),
+									profileView.getBirthDate(), profileView.getPhoneNumber(), profileView.getEmail(),
+									profileView.getStreetAddress(), profileView.getPostalCode(), profileView.getCity(),
+									profileView.getNbDelays(), profileView.getNbFakeBookings(),
+									profileView.getLastSubscriptionDate(), profileView.getCanBorrow(),
+									profileView.getCanBook());
+							JOptionPane.showMessageDialog(null, TextView.get("profileAddMemberConfirmation"));
+						} else {
+							memberContextServices.editMemberContext(profileView.getMemberContextID(),
+									profileView.getNbDelays(), profileView.getNbFakeBookings(),
+									profileView.getLastSubscriptionDate(), profileView.getCanBorrow(),
+									profileView.getCanBook());
+							memberServices.saveMember(profileView.getMemberID(), profileView.getFirstName(),
+									profileView.getLastName(), profileView.getPseudo(), profileView.getPassword(),
+									profileView.getIsAdmin(), profileView.getBirthDate(), profileView.getPhoneNumber(),
+									profileView.getEmail(), profileView.getStreetAddress(), profileView.getPostalCode(),
+									profileView.getCity());
+							JOptionPane.showMessageDialog(null, TextView.get("profileEditMemberConfirmation"));
+						}
+						memberView.setVisible(false);
+						refreshMemberList();
 					}
-					
-					
-					memberView.setVisible(false);
-					refreshMemberList();
 				} catch (NotValidNumberFieldException exception) {
 					showInvalidFieldsException(exception);
 				}
@@ -153,29 +142,30 @@ public class MembersController extends JPanel {
 			}
 		});
 
-	this.memberListView.getAddMemberButton().addActionListener(new ActionListener() {
+		this.memberListView.getAddMemberButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				memberView.getProfileView().load(-1, -1, "", "", "", "", false, Calendar.getInstance().getTime(), "", "", "", "", "", 0, 0, true, true, Calendar.getInstance().getTime());
+				memberView.getProfileView().load(-1, -1, "", "", "", "", false, Calendar.getInstance().getTime(), "",
+						"", "", "", "", 0, 0, true, true, Calendar.getInstance().getTime());
 				memberView.setVisible(true);
 			}
-	});
-	
-	this.memberListView.getDeleteMemberButton().addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			JTable table = memberListView.getTable();
-			int selectedRowIndex = table.getSelectedRow();
-			if (selectedRowIndex > -1) {
-				int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
-				
-					int contextID = memberServices.getMember(memberID).getMemberContextID();
-					memberServices.removeMember(memberID);
-					memberContextServices.removeMemberContext(contextID);
-					refreshMemberList();
+		});
+
+		this.memberListView.getDeleteMemberButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (showDeleteMemberConfirmation()) {
+					JTable table = memberListView.getTable();
+					int selectedRowIndex = table.getSelectedRow();
+					if (selectedRowIndex > -1) {
+						int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
+						int contextID = memberServices.getMember(memberID).getMemberContextID();
+						memberServices.removeMember(memberID);
+						memberContextServices.removeMemberContext(contextID);
+						refreshMemberList();
+					}
+				}
 			}
-		}
-	});
+		});
 	}
-	
 
 	public void refreshMemberList() {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -190,7 +180,7 @@ public class MembersController extends JPanel {
 		});
 
 	}
-	
+
 	public void showInvalidFieldsException(NotValidNumberFieldException exception) {
 		String text = TextView.get("invalidField") + "\"" + exception.getFieldName() + "\"" + ".\n"
 				+ TextView.get("valueInInvalidField")
@@ -201,5 +191,11 @@ public class MembersController extends JPanel {
 				+ ".";
 		JOptionPane.showMessageDialog(null, text);
 	}
-	
+
+	public boolean showDeleteMemberConfirmation() {
+		String text = TextView.get("memberConfirmDeleting");
+		int result = JOptionPane.showConfirmDialog(null, text, "", JOptionPane.YES_OPTION);
+		return (result == 0);
+	}
+
 }

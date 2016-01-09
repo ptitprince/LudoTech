@@ -19,7 +19,7 @@ import model.services.MemberServices;
 public class ProfileController extends JPanel {
 
 	private int currentMemberID;
-	
+
 	private MemberServices memberServices;
 	private MemberContextServices memberContextServices;
 
@@ -43,29 +43,36 @@ public class ProfileController extends JPanel {
 	}
 
 	private void makeListeners() {
-		this.profileView.getValidateButton().addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						try {
-							memberServices.saveMember(profileView.getMemberID(), profileView.getFirstName(),
-								profileView.getLastName(),profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(), profileView.getBirthDate(), profileView.getPhoneNumber(),
-								profileView.getEmail(),profileView.getStreetAddress(),profileView.getPostalCode(),
+		this.profileView.getValidateButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (profileView.getFirstName().equals("") || profileView.getLastName().equals("")
+							|| profileView.getPseudo().equals("") || profileView.getPassword().equals("")) {
+						JOptionPane.showMessageDialog(null, TextView.get("profileMemberEmptyFieldsException"));
+					} else {
+						memberServices.saveMember(profileView.getMemberID(), profileView.getFirstName(),
+								profileView.getLastName(), profileView.getPseudo(), profileView.getPassword(),
+								profileView.getIsAdmin(), profileView.getBirthDate(), profileView.getPhoneNumber(),
+								profileView.getEmail(), profileView.getStreetAddress(), profileView.getPostalCode(),
 								profileView.getCity());
-							memberContextServices.editMemberContext(profileView.getMemberContextID(), profileView.getNbDelays(), profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(), profileView.getCanBorrow(), profileView.getCanBook());
-							JOptionPane.showMessageDialog(null, TextView.get("profileEditMemberConfirmation"));		
-						} catch (NotValidNumberFieldException exception) {
-							showInvalidFieldsException(exception);
-						}
-						
+						memberContextServices.editMemberContext(profileView.getMemberContextID(),
+								profileView.getNbDelays(), profileView.getNbFakeBookings(),
+								profileView.getLastSubscriptionDate(), profileView.getCanBorrow(),
+								profileView.getCanBook());
+						JOptionPane.showMessageDialog(null, TextView.get("profileEditMemberConfirmation"));
 					}
-				});
-		
-		this.profileView.getCancelButton().addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						loadMember();
-					}
-				});
+				} catch (NotValidNumberFieldException exception) {
+					showInvalidFieldsException(exception);
+				}
+
+			}
+		});
+
+		this.profileView.getCancelButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadMember();
+			}
+		});
 	}
 
 	private void loadMember() {
@@ -73,9 +80,11 @@ public class ProfileController extends JPanel {
 			public void run() {
 				Member member = memberServices.getMember(currentMemberID);
 				profileView.load(member.getMemberID(), member.getMemberContext().getId(), member.getFirstName(),
-						member.getLastName(),member.getPseudo(), member.getPassword(), member.getIsAdmin(), member.getBirthDate(), member.getPhoneNumber(),
-						member.getEmail(),member.getStreetAddress(),member.getPostalCode(),
-						member.getCity(), member.getMemberContext().getNbFakeBookings(), member.getMemberContext().getNbDelays(), member.getMemberContext().canBorrow(), member.getMemberContext().canBook(), member.getMemberContext().getLastSubscriptionDate());
+						member.getLastName(), member.getPseudo(), member.getPassword(), member.getIsAdmin(),
+						member.getBirthDate(), member.getPhoneNumber(), member.getEmail(), member.getStreetAddress(),
+						member.getPostalCode(), member.getCity(), member.getMemberContext().getNbFakeBookings(),
+						member.getMemberContext().getNbDelays(), member.getMemberContext().canBorrow(),
+						member.getMemberContext().canBook(), member.getMemberContext().getLastSubscriptionDate());
 
 			}
 		});
@@ -86,7 +95,7 @@ public class ProfileController extends JPanel {
 		String text = TextView.get("profileEditMemberDateFormatException");
 		JOptionPane.showMessageDialog(null, text);
 	}
-	
+
 	public void showInvalidFieldsException(NotValidNumberFieldException exception) {
 		String text = TextView.get("invalidField") + "\"" + exception.getFieldName() + "\"" + ".\n"
 				+ TextView.get("valueInInvalidField")
@@ -101,7 +110,5 @@ public class ProfileController extends JPanel {
 	public void refreshData() {
 		this.loadMember();
 	}
-	
+
 }
-
-

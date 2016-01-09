@@ -86,9 +86,9 @@ public class CatalogController extends JPanel {
 					Game game = gameServices.getGame(gameID);
 					int nbItems = itemServices.countItemsOfGame(gameID);
 					refreshExtensionList(gameID);
-					gameView.load(game.getName(), gameID, gameServices.isAvailable(gameID), game.getCategory(), game.getEditor(),
-							game.getPublishingYear(), game.getMinimumPlayers(), game.getMaximumPlayers(),
-							game.getMinimumAge(), game.getDescription(), nbItems);
+					gameView.load(game.getName(), gameID, gameServices.isAvailable(gameID), game.getCategory(),
+							game.getEditor(), game.getPublishingYear(), game.getMinimumPlayers(),
+							game.getMaximumPlayers(), game.getMinimumAge(), game.getDescription(), nbItems);
 					gameView.setVisible(true);
 				}
 			}
@@ -117,20 +117,22 @@ public class CatalogController extends JPanel {
 					JTable table = gameListView.getTable();
 					int selectedRowIndex = table.getSelectedRow();
 					if (selectedRowIndex > -1) {
-						int gameID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
-						int nbExtensions = extensionServices.countExtensions(gameID);
-						int nbItems = itemServices.countItemsOfGame(gameID);
-						if (nbExtensions > 0) {
-							String text = TextView.get("catalogDeleteGameNbExtensionsException") + "\n"
-									+ TextView.get("catalogGameNbExtensions") + " : " + nbExtensions;
-							JOptionPane.showMessageDialog(null, text);
-						} else if (nbItems > 0) {
-							String text = TextView.get("catalogDeleteGameNbItemsException") + "\n"
-									+ TextView.get("catalogGameNbItems") + " : " + nbItems;
-							JOptionPane.showMessageDialog(null, text);
-						} else {
-							gameServices.removeGame(gameID);
-							refreshGameList();
+						if (showDeleteGameConfirmation()) {
+							int gameID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
+							int nbExtensions = extensionServices.countExtensions(gameID);
+							int nbItems = itemServices.countItemsOfGame(gameID);
+							if (nbExtensions > 0) {
+								String text = TextView.get("catalogDeleteGameNbExtensionsException") + "\n"
+										+ TextView.get("catalogGameNbExtensions") + " " + nbExtensions;
+								JOptionPane.showMessageDialog(null, text);
+							} else if (nbItems > 0) {
+								String text = TextView.get("catalogDeleteGameNbItemsException") + "\n"
+										+ TextView.get("catalogGameNbItems") + " " + nbItems;
+								JOptionPane.showMessageDialog(null, text);
+							} else {
+								gameServices.removeGame(gameID);
+								refreshGameList();
+							}
 						}
 					}
 				}
@@ -140,21 +142,25 @@ public class CatalogController extends JPanel {
 			this.gameView.getValidateButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						if (gameView.isCreatingGame()) {
-							Game newGame = gameServices.addGame(gameView.getName(), gameView.getDescription(),
-									gameView.getPublishingYearStartRange(), gameView.getMinAge(),
-									gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
-									gameView.getCategory(), gameView.getEditor());
-							itemServices.setItemsNumberOfGame(newGame.getGameID(), gameView.getNbItems());
+						if (gameView.getName().equals("")) {
+							JOptionPane.showMessageDialog(null, TextView.get("catalogGameEmptyFieldsException"));
 						} else {
-							gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
-									gameView.getPublishingYearStartRange(), gameView.getMinAge(),
-									gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
-									gameView.getCategory(), gameView.getEditor());
-							itemServices.setItemsNumberOfGame(gameView.getId(), gameView.getNbItems());
+							if (gameView.isCreatingGame()) {
+								Game newGame = gameServices.addGame(gameView.getName(), gameView.getDescription(),
+										gameView.getPublishingYearStartRange(), gameView.getMinAge(),
+										gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
+										gameView.getCategory(), gameView.getEditor());
+								itemServices.setItemsNumberOfGame(newGame.getGameID(), gameView.getNbItems());
+							} else {
+								gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
+										gameView.getPublishingYearStartRange(), gameView.getMinAge(),
+										gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
+										gameView.getCategory(), gameView.getEditor());
+								itemServices.setItemsNumberOfGame(gameView.getId(), gameView.getNbItems());
+							}
+							gameView.setVisible(false);
+							refreshGameList();
 						}
-						gameView.setVisible(false);
-						refreshGameList();
 					} catch (NotValidNumberFieldException exception) {
 						showInvalidFieldsException(exception);
 					}
@@ -227,7 +233,7 @@ public class CatalogController extends JPanel {
 					filter.put("publishing_year", gameSearchView.getPublishingYearValue().trim());
 					filter.put("nb_players", gameSearchView.getNbPlayersValue().trim());
 					filter.put("minimum_age", gameSearchView.getMinAgeValue().trim());
-					filter.put("is_available", gameSearchView.getAvailableCheckBoxValue()+"");
+					filter.put("is_available", gameSearchView.getAvailableCheckBoxValue() + "");
 					gameListModel.refresh(filter);
 				} catch (NotValidNumberFieldException exception) {
 					showInvalidFieldsException(exception);
@@ -253,5 +259,11 @@ public class CatalogController extends JPanel {
 				+ ((exception.getFieldValue().equals("")) ? TextView.get("notEmptyValue") : exception.getFieldType())
 				+ ".";
 		JOptionPane.showMessageDialog(null, text);
+	}
+
+	public boolean showDeleteGameConfirmation() {
+		String text = TextView.get("gameConfirmDeleting");
+		int result = JOptionPane.showConfirmDialog(null, text, "", JOptionPane.YES_OPTION);
+		return (result == 0);
 	}
 }

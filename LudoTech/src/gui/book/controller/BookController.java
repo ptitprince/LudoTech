@@ -105,10 +105,9 @@ public class BookController extends JPanel {
 		this.bookView.getValidateButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Game selectedGame = bookView.getSelectedGame();
-				
 				Member selectedMember = bookView.getSelectedMember();
 				if (selectedGame == null || selectedMember == null) {
-					showNoGameOrMemberSelectedException();
+					JOptionPane.showMessageDialog(null, TextView.get("bookNoGameOrMemberSelectedException"));
 				} else {
 					try {
 						Date startDate = bookView.getStartDate();
@@ -206,12 +205,7 @@ public class BookController extends JPanel {
 			}
 		});
 	}
-
-	public void showNoGameOrMemberSelectedException() {
-		String text = TextView.get("bookNoGameOrMemberSelectedException");
-		JOptionPane.showMessageDialog(null, text);
-	}
-
+	
 	public void showInvalidDatesException() {
 		String text = TextView.get("bookDatesFormatException");
 		JOptionPane.showMessageDialog(null, text);

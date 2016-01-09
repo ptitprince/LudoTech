@@ -2,17 +2,23 @@ package gui.profile.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.MaskFormatter;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -112,7 +118,11 @@ public class ProfileView extends JPanel {
 
 		JLabel phoneNumberLabel = new JLabel(TextView.get("phoneNumber"));
 		memberPanel.add(phoneNumberLabel);
-		this.phoneNumber = new JTextField();
+		MaskFormatter phoneNumberFormatter = null;
+		try { phoneNumberFormatter = new MaskFormatter("##########"); } catch (ParseException e) {};
+		this.phoneNumber = new JFormattedTextField(phoneNumberFormatter);
+		Action phoneNumberBeep = phoneNumber.getActionMap().get(DefaultEditorKit.deletePrevCharAction);
+		phoneNumberBeep.setEnabled(false);
 		this.phoneNumber.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 		phoneNumberLabel.setLabelFor(this.phoneNumber);
 		memberPanel.add(this.phoneNumber);
@@ -133,7 +143,11 @@ public class ProfileView extends JPanel {
 
 		JLabel postalCodeLabel = new JLabel(TextView.get("postalCode"));
 		memberPanel.add(postalCodeLabel);
-		this.postalCode = new JTextField();
+		MaskFormatter postalCodeFormatter = null;
+		try { postalCodeFormatter = new MaskFormatter("#####"); } catch (ParseException e) {};
+		this.postalCode = new JFormattedTextField(postalCodeFormatter);
+		Action postalCodeBeep = postalCode.getActionMap().get(DefaultEditorKit.deletePrevCharAction);
+		postalCodeBeep.setEnabled(false);
 		this.postalCode.setPreferredSize(new Dimension(LudoTechApplication.WINDOW_WIDTH / 5, 20));
 		postalCodeLabel.setLabelFor(this.postalCode);
 		memberPanel.add(this.postalCode);
