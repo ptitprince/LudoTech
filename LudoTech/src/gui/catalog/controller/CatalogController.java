@@ -67,7 +67,7 @@ public class CatalogController extends JPanel {
 		this.gameListView = new GameListView(this.gameListModel, currentMemberIsAdmin);
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, this.gameSearchView,
 				this.gameListView);
-		splitPane.setDividerLocation(LudoTechApplication.WINDOW_WIDTH / 4);
+		splitPane.setDividerLocation(LudoTechApplication.WINDOW_WIDTH / 3);
 		this.add(splitPane, BorderLayout.CENTER);
 
 		this.gameView = new GameView(this.extensionListModel, currentMemberIsAdmin);

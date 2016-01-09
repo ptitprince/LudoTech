@@ -84,10 +84,10 @@ public class MembersController extends JPanel {
 					int memberID = (Integer) table.getModel().getValueAt(table.getSelectedRow(), 0);
 					Member member = memberServices.getMember(memberID);
 					MemberContext context = member.getMemberContext();
-					memberView.getProfileView().load(member.getFirstName(), member.getLastName(), member.getPseudo(),
+					memberView.getProfileView().load(memberID, context.getId(), member.getFirstName(), member.getLastName(), member.getPseudo(),
 							member.getPassword(), member.getIsAdmin(), member.getBirthDate(), member.getPhoneNumber(),
 							member.getEmail(), member.getStreetAddress(), member.getPostalCode(), member.getCity(),
-							context.getNbFakeBookings(), context.getNbDelays(), context.canBook(), context.canBorrow(),
+							context.getNbFakeBookings(), context.getNbDelays(), context.canBorrow(), context.canBook(),
 							context.getLastSubscriptionDate());
 					memberView.setVisible(true);
 				}
@@ -96,7 +96,7 @@ public class MembersController extends JPanel {
 
 		this.memberListView.getAddMemberButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				memberView.getProfileView().load("", "", "", "", false, Calendar.getInstance().getTime(), "", "", "",
+				memberView.getProfileView().load(-1, -1, "", "", "", "", false, Calendar.getInstance().getTime(), "", "", "",
 						"", "", 0, 0, false, false, Calendar.getInstance().getTime());
 				memberView.getProfileView().setVisible(true);
 			}
@@ -117,26 +117,29 @@ public class MembersController extends JPanel {
 		this.memberView.getProfileView().getValidateButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					// Dans le cas de l'enregistrement depuis la liste des
-					// adhérents il ne faut pas utiliser l'id de l'utilisateur
-					// actuel
-					JTable table = memberListView.getTable();
-					int selectedRowIndex = table.getSelectedRow();
 					ProfileView profileView = memberView.getProfileView();
-					memberServices.saveMember((Integer) table.getModel().getValueAt(selectedRowIndex, 0), profileView.getFirstName(), profileView.getLastName(),
-							profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(),
-							profileView.getBirthDate(), profileView.getPhoneNumber(), profileView.getEmail(),
-							profileView.getStreetAddress(), profileView.getPostalCode(), profileView.getCity());
-					memberContextServices.editMemberContext((Integer) table.getModel().getValueAt(selectedRowIndex, 0), profileView.getNbDelays(),
-							profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(),
-							profileView.getCanBorrow(), profileView.getCanBook());
-					String text = TextView.get("profileEditMemberConfirmation");
-					String title = TextView.get("profileEditMemberException");
-					JOptionPane.showMessageDialog(null, text, title, JOptionPane.INFORMATION_MESSAGE);
+					if (profileView.isCreatingMember()) {
+						memberServices.addMember(profileView.getFirstName(), profileView.getLastName(),
+								profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(),
+								profileView.getBirthDate(), profileView.getPhoneNumber(), profileView.getEmail(),
+								profileView.getStreetAddress(), profileView.getPostalCode(), profileView.getCity(), 
+								profileView.getNbDelays(), profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(),
+								profileView.getCanBorrow(), profileView.getCanBook());
+						JOptionPane.showMessageDialog(null, TextView.get("profileAddMemberConfirmation"));
+					} else {
+						memberContextServices.editMemberContext(profileView.getMemberContextID(), profileView.getNbDelays(),
+								profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(),
+								profileView.getCanBorrow(), profileView.getCanBook());
+						memberServices.saveMember(profileView.getMemberID(), profileView.getFirstName(), profileView.getLastName(),
+								profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(),
+								profileView.getBirthDate(), profileView.getPhoneNumber(), profileView.getEmail(),
+								profileView.getStreetAddress(), profileView.getPostalCode(), profileView.getCity());
+						JOptionPane.showMessageDialog(null, TextView.get("profileEditMemberConfirmation"));
+					}
+					
+					
 					memberView.setVisible(false);
 					refreshMemberList();
-				} catch (ParseException e1) {
-					showInvalidDateException();
 				} catch (NotValidNumberFieldException exception) {
 					showInvalidFieldsException(exception);
 				}
@@ -152,7 +155,7 @@ public class MembersController extends JPanel {
 
 	this.memberListView.getAddMemberButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				memberView.getProfileView().load("", "", "", "", false, Calendar.getInstance().getTime(), "", "", "", "", "", 0, 0, true, true, Calendar.getInstance().getTime());
+				memberView.getProfileView().load(-1, -1, "", "", "", "", false, Calendar.getInstance().getTime(), "", "", "", "", "", 0, 0, true, true, Calendar.getInstance().getTime());
 				memberView.setVisible(true);
 			}
 	});
@@ -166,7 +169,7 @@ public class MembersController extends JPanel {
 				
 					int contextID = memberServices.getMember(memberID).getMemberContextID();
 					memberServices.removeMember(memberID);
-					memberContextServices.removeMemberContext(contextID); // ca bug, ca ne supprime pas le contexte
+					memberContextServices.removeMemberContext(contextID);
 					refreshMemberList();
 			}
 		}
@@ -186,11 +189,6 @@ public class MembersController extends JPanel {
 			}
 		});
 
-	}
-	
-	public void showInvalidDateException() {
-		String text = TextView.get("membersEditMemberDateFormatException");
-		JOptionPane.showMessageDialog(null, text);
 	}
 	
 	public void showInvalidFieldsException(NotValidNumberFieldException exception) {

@@ -40,20 +40,20 @@ public class MemberDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psInsert = connection.prepareStatement("INSERT INTO "
-					+ "MEMBER(first_name, last_name, pseudo,password, is_admin, birth_date, phone_number, email_address, street_address, postal_code, city, context_id) "
+					+ "MEMBER(first_name, last_name, pseudo, password, is_admin, birth_date, phone_number, email_address, street_address, postal_code, city, context_id) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", new String[] { "ID" });
 			psInsert.setString(1, member.getFirstName());
 			psInsert.setString(2, member.getLastName());
 			psInsert.setString(3, member.getPseudo());
-			psInsert.setString(3, member.getPassword());
-			psInsert.setBoolean(3, member.getIsAdmin());
-			psInsert.setDate(4, new java.sql.Date(member.getBirthDate().getTime()));
-			psInsert.setString(5, member.getPhoneNumber());
-			psInsert.setString(6, member.getEmail());
-			psInsert.setString(7, member.getStreetAddress());
-			psInsert.setString(8, member.getPostalCode());
-			psInsert.setString(9, member.getCity());
-			psInsert.setInt(10, memberContextID);
+			psInsert.setString(4, member.getPassword());
+			psInsert.setBoolean(5, member.getIsAdmin());
+			psInsert.setDate(6, new java.sql.Date(member.getBirthDate().getTime()));
+			psInsert.setString(7, member.getPhoneNumber());
+			psInsert.setString(8, member.getEmail());
+			psInsert.setString(9, member.getStreetAddress());
+			psInsert.setString(10, member.getPostalCode());
+			psInsert.setString(11, member.getCity());
+			psInsert.setInt(12, memberContextID);
 
 			psInsert.executeUpdate();
 

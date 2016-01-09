@@ -71,6 +71,9 @@ public class MainController extends JTabbedPane implements LoginObserver {
 				case 2 :
 					bookController.refreshBookList();
 					break;
+				case 3 :
+					profileController.refreshData();
+					break;
 				case 4 :
 					membersController.refreshMemberList();
 					break;

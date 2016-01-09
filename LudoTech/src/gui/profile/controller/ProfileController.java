@@ -47,14 +47,12 @@ public class ProfileController extends JPanel {
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
-							memberServices.saveMember(currentMemberID, profileView.getFirstName(),
+							memberServices.saveMember(profileView.getMemberID(), profileView.getFirstName(),
 								profileView.getLastName(),profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(), profileView.getBirthDate(), profileView.getPhoneNumber(),
 								profileView.getEmail(),profileView.getStreetAddress(),profileView.getPostalCode(),
 								profileView.getCity());
-							memberContextServices.editMemberContext(currentMemberID, profileView.getNbDelays(), profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(), profileView.getCanBorrow(), profileView.getCanBook());
-							JOptionPane.showMessageDialog(null, TextView.get("profileEditMemberConfirmation"));	
-						} catch (ParseException e1) {
-							showInvalidDateException();	
+							memberContextServices.editMemberContext(profileView.getMemberContextID(), profileView.getNbDelays(), profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(), profileView.getCanBorrow(), profileView.getCanBook());
+							JOptionPane.showMessageDialog(null, TextView.get("profileEditMemberConfirmation"));		
 						} catch (NotValidNumberFieldException exception) {
 							showInvalidFieldsException(exception);
 						}
@@ -74,10 +72,10 @@ public class ProfileController extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				Member member = memberServices.getMember(currentMemberID);
-				profileView.load(member.getFirstName(),
+				profileView.load(member.getMemberID(), member.getMemberContext().getId(), member.getFirstName(),
 						member.getLastName(),member.getPseudo(), member.getPassword(), member.getIsAdmin(), member.getBirthDate(), member.getPhoneNumber(),
 						member.getEmail(),member.getStreetAddress(),member.getPostalCode(),
-						member.getCity(), member.getMemberContext().getNbFakeBookings(), member.getMemberContext().getNbDelays(), member.getMemberContext().canBook(), member.getMemberContext().canBorrow(), member.getMemberContext().getLastSubscriptionDate());
+						member.getCity(), member.getMemberContext().getNbFakeBookings(), member.getMemberContext().getNbDelays(), member.getMemberContext().canBorrow(), member.getMemberContext().canBook(), member.getMemberContext().getLastSubscriptionDate());
 
 			}
 		});
@@ -98,6 +96,10 @@ public class ProfileController extends JPanel {
 				+ ((exception.getFieldValue().equals("")) ? TextView.get("notEmptyValue") : exception.getFieldType())
 				+ ".";
 		JOptionPane.showMessageDialog(null, text);
+	}
+
+	public void refreshData() {
+		this.loadMember();
 	}
 	
 }

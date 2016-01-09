@@ -39,7 +39,7 @@ public class GameListView extends JPanel {
 		// Autoriser le tri sur le tableau
 		this.table.setAutoCreateRowSorter(true);
 		// Cacher la colonne des identifiants
-		this.table.removeColumn(table.getColumnModel().getColumn(0)); 
+		this.table.removeColumn(table.getColumnModel().getColumn(0));
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
 
 		JPanel actionsPanel = new JPanel();

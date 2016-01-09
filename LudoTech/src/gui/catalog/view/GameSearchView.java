@@ -2,13 +2,14 @@ package gui.catalog.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.text.NumberFormat;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -76,7 +77,7 @@ public class GameSearchView extends JPanel {
 		// Année d'édition
 		JLabel publishingYearRangeLabel = new JLabel(TextView.get("gamePublishingYear"));
 		searchPropertiesPanel.add(publishingYearRangeLabel);
-		this.publishingYearField = new JTextField();
+		this.publishingYearField = new JFormattedTextField(NumberFormat.getNumberInstance());
 		this.publishingYearField.setMaximumSize(new Dimension(35, 20));
 		publishingYearRangeLabel.setLabelFor(this.publishingYearField);
 		searchPropertiesPanel.add(this.publishingYearField);
@@ -84,7 +85,7 @@ public class GameSearchView extends JPanel {
 		// Nombre de joueurs
 		JLabel nbPlayersRangeLabel = new JLabel(TextView.get("gamePlayers"));
 		searchPropertiesPanel.add(nbPlayersRangeLabel);
-		this.nbPlayersField = new JTextField();
+		this.nbPlayersField = new JFormattedTextField(NumberFormat.getNumberInstance());
 		this.nbPlayersField.setMaximumSize(new Dimension(35, 20));
 		nbPlayersRangeLabel.setLabelFor(this.nbPlayersField);
 		searchPropertiesPanel.add(this.nbPlayersField);
@@ -92,15 +93,10 @@ public class GameSearchView extends JPanel {
 		// Age minimum recommandé
 		JLabel minAgeLabel = new JLabel(TextView.get("gameMinAge"));
 		searchPropertiesPanel.add(minAgeLabel);
-		JPanel minAgePanel = new JPanel(new FlowLayout());
-		minAgePanel.setMaximumSize(new Dimension(LudoTechApplication.WINDOW_WIDTH, 20));
-		this.minAgeField = new JTextField();
-		this.minAgeField.setPreferredSize(new Dimension(35, 20));
-		minAgePanel.add(this.minAgeField);
-		JLabel minAgePostLabel = new JLabel(TextView.get("years"));
-		minAgePanel.add(minAgePostLabel);
-		minAgeLabel.setLabelFor(minAgePanel);
-		searchPropertiesPanel.add(minAgePanel);
+		this.minAgeField = new JFormattedTextField(NumberFormat.getNumberInstance());
+		this.minAgeField.setMaximumSize(new Dimension(35, 20));
+		minAgeLabel.setLabelFor(this.minAgeField);
+		searchPropertiesPanel.add(this.minAgeField);
 
 		// Disponibilité
 		JLabel availableLabel = new JLabel(TextView.get("gameAvailable"));
