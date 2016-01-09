@@ -120,12 +120,14 @@ public class MembersController extends JPanel {
 					// Dans le cas de l'enregistrement depuis la liste des
 					// adhérents il ne faut pas utiliser l'id de l'utilisateur
 					// actuel
+					JTable table = memberListView.getTable();
+					int selectedRowIndex = table.getSelectedRow();
 					ProfileView profileView = memberView.getProfileView();
-					memberServices.saveMember(currentMemberID, profileView.getFirstName(), profileView.getLastName(),
+					memberServices.saveMember((Integer) table.getModel().getValueAt(selectedRowIndex, 0), profileView.getFirstName(), profileView.getLastName(),
 							profileView.getPseudo(), profileView.getPassword(), profileView.getIsAdmin(),
 							profileView.getBirthDate(), profileView.getPhoneNumber(), profileView.getEmail(),
 							profileView.getStreetAddress(), profileView.getPostalCode(), profileView.getCity());
-					memberContextServices.editMemberContext(currentMemberID, profileView.getNbDelays(),
+					memberContextServices.editMemberContext((Integer) table.getModel().getValueAt(selectedRowIndex, 0), profileView.getNbDelays(),
 							profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(),
 							profileView.getCanBorrow(), profileView.getCanBook());
 					String text = TextView.get("profileEditMemberConfirmation");
@@ -147,7 +149,29 @@ public class MembersController extends JPanel {
 			}
 		});
 
+	this.memberListView.getAddMemberButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				memberView.getProfileView().load("", "", "", "", false, Calendar.getInstance().getTime(), "", "", "", "", "", 0, 0, true, true, Calendar.getInstance().getTime());
+				memberView.setVisible(true);
+			}
+	});
+	
+	this.memberListView.getDeleteMemberButton().addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			JTable table = memberListView.getTable();
+			int selectedRowIndex = table.getSelectedRow();
+			if (selectedRowIndex > -1) {
+				int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
+				
+					int contextID = memberServices.getMember(memberID).getMemberContextID();
+					memberServices.removeMember(memberID);
+					memberContextServices.removeMemberContext(contextID); // ca bug, ca ne supprime pas le contexte
+					refreshMemberList();
+			}
+		}
+	});
 	}
+	
 
 	public void refreshMemberList() {
 		SwingUtilities.invokeLater(new Runnable() {

@@ -115,7 +115,7 @@ public class Member {
 	}
 	
 	public int getMemberContextID() {
-		return memberContextID;
+		return memberContext.getId();
 	}
 
 	public void setMemberContextID(int id) {
