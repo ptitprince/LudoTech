@@ -153,4 +153,41 @@ public class ItemDAO extends DAO {
 		return itemNames;
 	}
 
+	
+	public Item get(int itemID) {
+		try {
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			String request = "SELECT comments FROM ITEM WHERE id=?";
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.setInt(1, itemID);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			Item item = null;
+			if (resultSet.next()) {
+				resultSet.getString("comments")	;
+				
+						
+					
+				item = new Item(itemID,resultSet.getString("comments"));
+			}
+			super.disconnect();
+			return item;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+
 }

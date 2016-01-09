@@ -134,6 +134,7 @@ public class MembersController extends JPanel {
 					String title = TextView.get("profileEditMemberException");
 					JOptionPane.showMessageDialog(null, text, title, JOptionPane.INFORMATION_MESSAGE);
 					memberView.setVisible(false);
+					refreshMemberList();
 				} catch (ParseException e1) {
 					showInvalidDateException();
 				} catch (NotValidNumberFieldException exception) {

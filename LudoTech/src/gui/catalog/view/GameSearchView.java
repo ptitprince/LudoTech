@@ -130,11 +130,13 @@ public class GameSearchView extends JPanel {
 	}
 
 	public String getCategoryValue() {
-		return (String) this.categoryComboBox.getSelectedItem();
+		String category = (String) this.categoryComboBox.getSelectedItem();
+		return (category != null) ? category : "";
 	}
 
 	public String getEditorValue() {
-		return (String) this.editorComboBox.getSelectedItem();
+		String editor = (String) this.editorComboBox.getSelectedItem();
+		return (editor != null) ? editor : "";
 	}
 
 	public String getPublishingYearValue() throws NotValidNumberFieldException {
@@ -173,8 +175,8 @@ public class GameSearchView extends JPanel {
 		return this.minAgeField.getText();
 	}
 
-	public JCheckBox getAvailableCheckBox() {
-		return availableCheckBox;
+	public boolean getAvailableCheckBoxValue() {
+		return this.availableCheckBox.isSelected();
 	}
 
 	public JButton getSearchButton() {

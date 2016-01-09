@@ -42,14 +42,16 @@ public class GameListView extends JPanel {
 		this.table.removeColumn(table.getColumnModel().getColumn(0)); 
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
 
+		JPanel actionsPanel = new JPanel();
+		JLabel editGameTip = new JLabel(TextView.get("editLineTip"));
+		actionsPanel.add(editGameTip);
 		if (this.currentMemberIsAdmin) {
-			JPanel actionsPanel = new JPanel();
 			this.addGameButton = new JButton(TextView.get("add"));
 			actionsPanel.add(this.addGameButton);
 			this.deleteGameButton = new JButton(TextView.get("delete"));
 			actionsPanel.add(this.deleteGameButton);
-			this.add(actionsPanel, BorderLayout.SOUTH);
 		}
+		this.add(actionsPanel, BorderLayout.SOUTH);
 	}
 
 	public JTable getTable() {

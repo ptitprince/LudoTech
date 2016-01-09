@@ -4,8 +4,6 @@ package gui.profile.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
-import java.util.Date;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -54,9 +52,7 @@ public class ProfileController extends JPanel {
 								profileView.getEmail(),profileView.getStreetAddress(),profileView.getPostalCode(),
 								profileView.getCity());
 							memberContextServices.editMemberContext(currentMemberID, profileView.getNbDelays(), profileView.getNbFakeBookings(), profileView.getLastSubscriptionDate(), profileView.getCanBorrow(), profileView.getCanBook());
-							String text = TextView.get("profileEditMemberConfirmation");
-							String title = TextView.get("profileEditMemberException");
-							JOptionPane.showMessageDialog(null, text, title, JOptionPane.INFORMATION_MESSAGE);	
+							JOptionPane.showMessageDialog(null, TextView.get("profileEditMemberConfirmation"));	
 						} catch (ParseException e1) {
 							showInvalidDateException();	
 						} catch (NotValidNumberFieldException exception) {
