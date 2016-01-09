@@ -1,6 +1,5 @@
 package model.services;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -102,7 +101,7 @@ public class BorrowServices {
 				}
 			}
 
-			if (this.itemServices.countItemsOfGame(game.getGameID()) > 0) {
+			if (this.itemServices.countItemsOfGame(game.getGameID()) > 1) {
 				// S'il reste des items du jeu
 				List<Item> items = this.itemDAO.getAllHavingGameID(game.getGameID());
 				boolean atLeastOneGood = false;
@@ -110,12 +109,11 @@ public class BorrowServices {
 				// On vérifie qu'au moins un des items ne fasse pas partie
 				// d'un prêt.
 				while (!(atLeastOneGood) && i < items.size()) {
-					atLeastOneGood = this.borrowDAO.getIfExists(items.get(i).getItemID());
+					atLeastOneGood = !this.borrowDAO.getIfExists(items.get(i).getItemID());
 					i++;
 				}
 
 				if (atLeastOneGood) {
-					this.itemDAO.remove(items.get(i - 1).getItemID());
 					if (extension != null) {
 						if (this.extensionServices.countExtensions(game.getGameID()) > 0) {
 							// On vérifie si le jeu a des extensions.

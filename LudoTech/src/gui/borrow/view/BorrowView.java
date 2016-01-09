@@ -12,7 +12,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-import org.jdatepicker.DateModel;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
@@ -165,17 +163,11 @@ public class BorrowView extends JDialog {
 	}
 
 	public Date getStartDate() throws ParseException {
-		DateModel<?> model = this.startDatePicker.getModel();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		String dateInString = "" + model.getDay() + "/" + model.getMonth() + "/" + model.getYear();
-		return sdf.parse(dateInString);
+		return (Date) this.startDatePicker.getModel().getValue();
 	}
 
 	public Date getEndDate() throws ParseException {
-		DateModel<?> model = this.endDatePicker.getModel();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		String dateInString = "" + model.getDay() + "/" + model.getMonth() + "/" + model.getYear();
-		return sdf.parse(dateInString);
+		return (Date) this.endDatePicker.getModel().getValue();
 	}
 
 	public Extension getSelectedExtension() {
@@ -198,15 +190,9 @@ public class BorrowView extends JDialog {
 	}
 
 	public void clearDates() {
-		Date currentDate = Calendar.getInstance().getTime();
-		SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
-		SimpleDateFormat sdfMonth = new SimpleDateFormat("MM");
-		SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
-		int year = Integer.parseInt(sdfYear.format(currentDate));
-		int month = Integer.parseInt(sdfMonth.format(currentDate)) - 1;
-		int day = Integer.parseInt(sdfDay.format(currentDate));
-		this.startDatePicker.getModel().setDate(year, month, day);
-		this.endDatePicker.getModel().setDate(year, month, day);
+		Calendar calendar = Calendar.getInstance();
+		this.startDatePicker.getModel().setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+		this.endDatePicker.getModel().setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 		this.endDatePicker.getModel().addDay(7 * this.durationOfBorrowingsInWeeks);
 	}
 

@@ -29,16 +29,16 @@ public class BorrowDAO extends DAO {
 			super.connect();
 
 			PreparedStatement psInsert = connection
-					.prepareStatement("INSERT INTO "
-							+ "Borrow(item_id, member_id, start_date, end_date, extension_id) "
-							+ "VALUES (?, ?, ?, ?, ?)");
+					.prepareStatement("INSERT INTO " + "Borrow(item_id, member_id, start_date, end_date"
+							+ ((borrow.getExtension() != null) ? ", extension_id) " : ") ") + "VALUES (?, ?, ?, ?"
+							+ ((borrow.getExtension() != null) ? ", ?)" : ")"));
 			psInsert.setInt(1, borrow.getItem().getItemID());
 			psInsert.setInt(2, borrow.getMember().getMemberID());
-			psInsert.setDate(3, new java.sql.Date(borrow.getBeginningDate()
-					.getTime()));
-			psInsert.setDate(4, new java.sql.Date(borrow.getEndingDate()
-					.getTime()));
-			psInsert.setInt(5, borrow.getExtension().getExtensionID());
+			psInsert.setDate(3, new java.sql.Date(borrow.getBeginningDate().getTime()));
+			psInsert.setDate(4, new java.sql.Date(borrow.getEndingDate().getTime()));
+			if (borrow.getExtension() != null) {
+				psInsert.setInt(5, borrow.getExtension().getExtensionID());
+			}
 
 			psInsert.executeUpdate();
 

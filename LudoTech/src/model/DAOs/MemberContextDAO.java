@@ -179,7 +179,7 @@ public class MemberContextDAO extends DAO {
 			return 0;
 		}
 	}
-	public boolean editNbFakeBook(int memberContextId,int NbFakeBookings) {
+	public boolean editNbFakeBook(int memberContextId,int nbFakeBookings) {
 		try {
 			super.connect();
 
@@ -187,8 +187,8 @@ public class MemberContextDAO extends DAO {
 					+ "SET nb_fake_bookings = ?"
 					+ "WHERE id = ?");
 			
-			psEdit.setInt(2, NbFakeBookings);
-			psEdit.setInt(3, memberContextId);
+			psEdit.setInt(1, nbFakeBookings);
+			psEdit.setInt(2, memberContextId);
 
 			psEdit.executeUpdate();
 			psEdit.closeOnCompletion();

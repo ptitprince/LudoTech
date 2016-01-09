@@ -59,7 +59,7 @@ public class BookServices {
 		long diffValue = endingDate.getTime() - beginningDate.getTime();
 		long diffDays = TimeUnit.DAYS.convert(diffValue, TimeUnit.MILLISECONDS);
 
-		if ((diffDays >= 0) &&(bookDAO.getBooksNb(member.getMemberID())<=this.parametersServices.getNumberOfBookings()) &&(diffDays <= 7 * this.parametersServices.getDurationOfBorrowingsInWeeks()) && (diffDays <= 7 * this.parametersServices.getDurationBetweenBookingandBorrowingInWeeks()) && (itemServices.countItemsOfGame(game.getGameID()) >= 1) && (memberContextServices.getCanBook(member.getMemberID()))) {
+		if ((diffDays >= 0) &&(bookDAO.getBooksNb(member.getMemberID())<=this.parametersServices.getNumberOfBookings()) &&(diffDays <= 7 * this.parametersServices.getDurationOfBorrowingsInWeeks()) && (diffDays <= 7 * this.parametersServices.getDurationBetweenBookingandBorrowingInWeeks()) && (itemServices.countItemsOfGame(game.getGameID()) > 1) && (memberContextServices.getCanBook(member.getMemberID()))) {
 			if ((extension != null)	&& (!borrowDAO.getIfExtensionExists(extension.getExtensionID())) && (!bookDAO.getIfExtensionExists(extension.getExtensionID()))) {
 				if (endingDate.getDay() == 0) {
 					endingDate.setDate(endingDate.getDate() + 1);
