@@ -79,11 +79,9 @@ public class BorrowServices {
 					return null; // renvoi de l'erreur.
 				} else if (endingDate.getMonth() == beginningDate.getMonth()) {
 					// endingDate >= beginningDate
-
 					if ((endingDate.getDate()
 							- beginningDate.getDate() == parametersServices.getDurationOfBorrowingsInWeeks() * 7)) {
 						// Durée de prêt bien égale ici.
-
 						if (endingDate.getDay() == 0) {
 							// dimanche, on reporte au lundi
 							endingDate.setDate(endingDate.getDate() + 1);
@@ -126,59 +124,56 @@ public class BorrowServices {
 					} else {
 						return null;
 					}
-					if (this.itemServices.countItemsOfGame(game.getGameID()) > 1) {
-						// S'il reste des items du jeu
-						List<Item> items = this.itemDAO.getAllHavingGameID(game.getGameID());
-						boolean atLeastOneGood = false;
-						int i = 0;
-						// On vérifie qu'au moins un des items ne fasse pas
-						// partie
-						// d'un prêt.
-						while (!(atLeastOneGood) && i < items.size()) {
-							atLeastOneGood = !this.borrowDAO.getIfExists(items.get(i).getItemID());
-							i++;
-						}
+				}
+				if (this.itemServices.countItemsOfGame(game.getGameID()) > 0) {
+					// S'il reste des items du jeu
+					List<Item> items = this.itemDAO.getAllHavingGameID(game.getGameID());
+					boolean atLeastOneGood = false;
+					int i = 0;
+					// On vérifie qu'au moins un des items ne fasse pas
+					// partie
+					// d'un prêt.
+					while (!(atLeastOneGood) && i < items.size()) {
+						atLeastOneGood = !this.borrowDAO.getIfExists(items.get(i).getItemID());
+						i++;
+					}
 
-						if (atLeastOneGood) {
-							if (extension != null) {
-								if (this.extensionServices.countExtensions(game.getGameID()) > 0) {
-									// On vérifie si le jeu a des extensions.
-									atLeastOneGood = this.borrowDAO.getIfExtensionExists(extension.getExtensionID());
-									if (atLeastOneGood) {
-										this.extensionServices.deleteExtension(extension.getExtensionID());
-										Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate,
-												extension);
-										this.borrowDAO.add(borrow);
-										return borrow;
-									} else {
-										return null;
-									}
-								} else {
-									// Tout est bon, nous pouvons créer un
-									// emprunt.
+					if (atLeastOneGood) {
+						if (extension != null) {
+							if (this.extensionServices.countExtensions(game.getGameID()) > 0) {
+								// On vérifie si le jeu a des extensions.
+								atLeastOneGood = this.borrowDAO.getIfExtensionExists(extension.getExtensionID());
+								if (atLeastOneGood) {
+									this.extensionServices.deleteExtension(extension.getExtensionID());
 									Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate,
 											extension);
 									this.borrowDAO.add(borrow);
 									return borrow;
+								} else {
+									return null;
 								}
-
 							} else {
+								// Tout est bon, nous pouvons créer un
+								// emprunt.
 								Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate,
 										extension);
 								this.borrowDAO.add(borrow);
 								return borrow;
-								// TODO cas à vérifier, où il n'y a pas
-								// d'extensions.
 							}
+
 						} else {
-							return null;
+							Borrow borrow = new Borrow(items.get(i - 1), member, beginningDate, endingDate, extension);
+							this.borrowDAO.add(borrow);
+							return borrow;
+							// TODO cas à vérifier, où il n'y a pas
+							// d'extensions.
 						}
 					} else {
 						return null;
 					}
+				} else {
+					return null;
 				}
-			} else {
-				return null;
 			}
 		} else {
 			return null;
