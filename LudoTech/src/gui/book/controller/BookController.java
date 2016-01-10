@@ -4,6 +4,7 @@ import gui.book.model.BookListModel;
 import gui.book.view.BookListView;
 import gui.book.view.BookView;
 import gui.utils.TextView;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +23,17 @@ import model.POJOs.Book;
 import model.POJOs.Extension;
 import model.POJOs.Game;
 import model.POJOs.Member;
+import model.exceptions.BookAlreadyExistException;
+import model.exceptions.BorrowAlreadyExistException;
+import model.exceptions.DatesOrderException;
+import model.exceptions.ExtensionNotAvailableException;
+import model.exceptions.IntervalBetweenNowAndStartDateException;
+import model.exceptions.IntervalBetweenStartDateAndEndDateException;
+import model.exceptions.MemberCantBookException;
+import model.exceptions.MemberCantBorrowException;
+import model.exceptions.MemberNbBooksException;
+import model.exceptions.MemberNbBorrowsException;
+import model.exceptions.NoneItemAvailableException;
 import model.services.BookServices;
 import model.services.ExtensionServices;
 import model.services.GameServices;
@@ -120,9 +132,25 @@ public class BookController extends JPanel {
 						}
 						bookView.setVisible(false);
 						refreshBookList();
-					} catch (ParseException e1) {
+					} catch (ParseException parseException) {
 						showInvalidDatesException();
-					}
+					} catch (MemberCantBookException e1) {
+						e1.show();
+					} catch (MemberNbBooksException e2) {
+						e2.show();
+					} catch (DatesOrderException e3) {
+						e3.show();
+					} catch (IntervalBetweenNowAndStartDateException e4) {
+						e4.show();
+					} catch (IntervalBetweenStartDateAndEndDateException e5) {
+						e5.show();
+					} catch (NoneItemAvailableException e6) {
+						e6.show();
+					} catch (ExtensionNotAvailableException e7) {
+						e7.show();
+					} catch (BookAlreadyExistException e8) {
+						e8.show();
+					} 
 				}
 			}
 		});
@@ -158,6 +186,18 @@ public class BookController extends JPanel {
 								refreshBookList();
 							} catch (ParseException e1) {
 								showInvalidDatesException();
+							} catch (MemberCantBorrowException e1) {
+								e1.show();
+							} catch (MemberNbBorrowsException e2) {
+								e2.show();
+							} catch (DatesOrderException e3) {
+								e3.show();
+							} catch (IntervalBetweenStartDateAndEndDateException e4) {
+								e4.show();
+							} catch (ExtensionNotAvailableException e5) {
+								e5.show();
+							} catch (BorrowAlreadyExistException e6) {
+								e6.show();
 							}
 						}
 					}

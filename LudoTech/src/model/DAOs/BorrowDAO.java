@@ -145,7 +145,10 @@ public class BorrowDAO extends DAO {
 						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
 						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
 						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
-				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				Extension extension = null;
+				if (resultSet.getInt("E_id") > 0) {
+					extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				}
 				borrow = new Borrow(item, member, resultSet.getDate("B_start_date"), resultSet.getDate("B_end_date"),
 						extension);
 			}

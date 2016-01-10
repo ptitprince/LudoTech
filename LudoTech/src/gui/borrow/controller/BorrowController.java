@@ -22,6 +22,13 @@ import model.POJOs.Borrow;
 import model.POJOs.Extension;
 import model.POJOs.Game;
 import model.POJOs.Member;
+import model.exceptions.BorrowAlreadyExistException;
+import model.exceptions.DatesOrderException;
+import model.exceptions.ExtensionNotAvailableException;
+import model.exceptions.IntervalBetweenStartDateAndEndDateException;
+import model.exceptions.MemberCantBorrowException;
+import model.exceptions.MemberNbBorrowsException;
+import model.exceptions.NoneItemAvailableException;
 import model.services.BorrowServices;
 import model.services.ExtensionServices;
 import model.services.GameServices;
@@ -131,8 +138,22 @@ public class BorrowController extends JPanel {
 							}
 							borrowView.setVisible(false);
 							refreshBorrowList();
-						} catch (ParseException e1) {
+						} catch (ParseException parseException) {
 							showInvalidDatesException();
+						} catch (NoneItemAvailableException noneItemAvailableException) {
+							noneItemAvailableException.show();
+						} catch (MemberCantBorrowException e1) {
+							e1.show();
+						} catch (MemberNbBorrowsException e2) {
+							e2.show();
+						} catch (DatesOrderException e3) {
+							e3.show();
+						} catch (IntervalBetweenStartDateAndEndDateException e4) {
+							e4.show();
+						} catch (ExtensionNotAvailableException e5) {
+							e5.show();
+						} catch (BorrowAlreadyExistException e6) {
+							e6.show();
 						}
 					}
 				}
