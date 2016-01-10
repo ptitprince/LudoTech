@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
+import model.POJOs.Book;
 import model.POJOs.Extension;
 import model.POJOs.Game;
 import model.POJOs.Member;
@@ -65,7 +66,7 @@ public class BookController extends JPanel {
 		this.bookListView = new BookListView(this.bookListModel, this.memberServices.isAdmin(currentMemberID));
 		this.add(bookListView, BorderLayout.CENTER);
 
-		this.bookView = new BookView(this.parametersServices.getDurationOfBorrowingsInWeeks());
+		this.bookView = new BookView(this.parametersServices.getDurationOfBorrowingsInWeeks(), this.parametersServices.getDurationBetweenBookingAndBorrowingInWeeks());
 		this.bookView.setLocationRelativeTo(this);
 	}
 
@@ -113,7 +114,10 @@ public class BookController extends JPanel {
 						Date startDate = bookView.getStartDate();
 						Date endDate = bookView.getEndDate();
 						Extension selectedExtension = bookView.getSelectedExtension();
-						bookServices.addBook(selectedGame, selectedMember, startDate, endDate, selectedExtension);
+						Book book = bookServices.addBook(selectedGame, selectedMember, startDate, endDate, selectedExtension);
+						if (book == null) {
+							JOptionPane.showMessageDialog(null, TextView.get("bookErrorDuringCreation"));
+						}
 						bookView.setVisible(false);
 						refreshBookList();
 					} catch (ParseException e1) {
@@ -146,8 +150,11 @@ public class BookController extends JPanel {
 								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 								Date startDate = sdf.parse((String) table.getModel().getValueAt(selectedRowIndex, 5));
 								Date endDate = sdf.parse((String) table.getModel().getValueAt(selectedRowIndex, 6));
-								int extensionID = (Integer) table.getModel().getValueAt(selectedRowIndex, 2);
-								bookServices.convertBookIntoBorrow(itemID, memberID, startDate, endDate, extensionID);
+								Integer extensionID = (Integer) table.getModel().getValueAt(selectedRowIndex, 2);
+								boolean created = bookServices.convertBookIntoBorrow(itemID, memberID, startDate, endDate, extensionID);
+								if (!created) {
+									JOptionPane.showMessageDialog(null, TextView.get("borrowErrorDuringCreation"));
+								}
 								refreshBookList();
 							} catch (ParseException e1) {
 								showInvalidDatesException();

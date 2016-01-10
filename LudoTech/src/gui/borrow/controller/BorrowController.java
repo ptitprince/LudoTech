@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
+import model.POJOs.Borrow;
 import model.POJOs.Extension;
 import model.POJOs.Game;
 import model.POJOs.Member;
@@ -65,7 +66,7 @@ public class BorrowController extends JPanel {
 		this.borrowListView = new BorrowListView(this.borrowListModel, this.memberServices.isAdmin(currentMemberID));
 		this.add(borrowListView, BorderLayout.CENTER);
 
-		this.borrowView = new BorrowView(this.parametersServices.getDurationOfBorrowingsInWeeks());
+		this.borrowView = new BorrowView(this.parametersServices.getDurationOfBorrowingsInWeeks(), this.parametersServices.getDurationBetweenBookingAndBorrowingInWeeks());
 		this.borrowView.setLocationRelativeTo(this);
 	}
 
@@ -123,8 +124,11 @@ public class BorrowController extends JPanel {
 							Date startDate = borrowView.getStartDate();
 							Date endDate = borrowView.getEndDate();
 							Extension selectedExtension = borrowView.getSelectedExtension();
-							borrowServices.addBorrow(selectedGame, selectedMember, startDate, endDate,
+							Borrow borrow = borrowServices.addBorrow(selectedGame, selectedMember, startDate, endDate,
 									selectedExtension);
+							if (borrow == null) {
+								JOptionPane.showMessageDialog(null, TextView.get("borrowErrorDuringCreation"));
+							}
 							borrowView.setVisible(false);
 							refreshBorrowList();
 						} catch (ParseException e1) {

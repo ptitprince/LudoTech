@@ -56,7 +56,7 @@ public class ParametersServices {
 		return Integer.parseInt(this.getAllParameters().getProperty("nbBorrowings", 0+""));
 	}
 
-	public int getDurationBetweenBookingandBorrowingInWeeks() {
+	public int getDurationBetweenBookingAndBorrowingInWeeks() {
 		return Integer.parseInt(this.getAllParameters().getProperty("durationBetweenBookingandBorrowingInWeeks", 0+""));
 	}
 

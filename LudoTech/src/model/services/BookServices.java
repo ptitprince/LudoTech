@@ -1,5 +1,6 @@
 package model.services;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -17,18 +18,18 @@ import model.POJOs.Item;
 import model.POJOs.Member;
 
 public class BookServices {
-	private final BorrowDAO borrowDAO;
 	private final BookDAO bookDAO;
+	private final BorrowDAO borrowDAO;
 	private final ItemDAO itemDAO;
 	private final MemberDAO memberDAO;
 	private final ExtensionDAO extensionDAO;
 	private final ParametersServices parametersServices;
 	private final GameServices gamesServices;
-	private final ItemServices itemServices;
-	
+	private final BorrowServices borrowServices;
+
 	private final MemberContextServices memberContextServices;
+
 	public BookServices() {
-		super();
 		this.gamesServices = new GameServices();
 		this.borrowDAO = new BorrowDAO();
 		this.memberDAO = new MemberDAO();
@@ -36,9 +37,8 @@ public class BookServices {
 		this.bookDAO = new BookDAO();
 		this.itemDAO = new ItemDAO();
 		this.parametersServices = new ParametersServices();
-		this.itemServices = new ItemServices();
-		new ExtensionServices();
 		this.memberContextServices = new MemberContextServices();
+		this.borrowServices = new BorrowServices();
 	}
 
 	public List<Book> getAll() {
@@ -49,113 +49,70 @@ public class BookServices {
 		return this.bookDAO.getBooks(userID);
 	}
 
-	/**
-	 * TODO Ajouter une nouvelle réservation
-	 */
-	@SuppressWarnings("deprecation")
-	public Book addBook(Game game, Member member, Date beginningDate,
-			Date endingDate, Extension extension) {
-
-		long diffValue = endingDate.getTime() - beginningDate.getTime();
-		long diffDays = TimeUnit.DAYS.convert(diffValue, TimeUnit.MILLISECONDS);
-
-		if ((diffDays >= 0) &&(bookDAO.getBooksNb(member.getMemberID())<=this.parametersServices.getNumberOfBookings()) &&(diffDays <= 7 * this.parametersServices.getDurationOfBorrowingsInWeeks()) && (diffDays <= 7 * this.parametersServices.getDurationBetweenBookingandBorrowingInWeeks()) && (itemServices.countItemsOfGame(game.getGameID()) > 1) && (memberContextServices.getCanBook(member.getMemberID()))) {
-			if ((extension != null)	&& (!borrowDAO.getIfExtensionExists(extension.getExtensionID())) && (!bookDAO.getIfExtensionExists(extension.getExtensionID()))) {
-				if (endingDate.getDay() == 0) {
-					endingDate.setDate(endingDate.getDate() + 1);
-				} else if (endingDate.getDay() == 6) {
-					endingDate.setDate(endingDate.getDate() - 5);
-				}
-			}
-			
-			Item item = this.gamesServices.getOneAvailableItem(game.getGameID());
-			
-			if (item != null) {
-				Book book = new Book(item, member, beginningDate, endingDate,extension);
-				
-				bookDAO.add(book);
-
-				return book;
-			} else {
-				return null;
-			}
-			
-
+	public Book addBook(Game game, Member member, Date beginningDate, Date endingDate, Extension extension) {
+		boolean canAddBook = true;
+		canAddBook &= (member.getMemberContext().canBook());
+		canAddBook &= (canAddBook) && (bookDAO.getBooksNb(member.getMemberID()) < parametersServices.getNumberOfBookings());
+		canAddBook &= (canAddBook) && (beginningDate.after(getTodayDateWithoutTime()) && beginningDate.before(endingDate));
+		canAddBook &= (canAddBook) && (checkIntervalBetweenNowAndStartDateIsValid(beginningDate));
+		canAddBook &= (canAddBook) && (checkIntervalBetweenStartDateAndEndDateIsValid(beginningDate, endingDate));
+		Item potentialItem = gamesServices.getOneAvailableItem(game.getGameID(), beginningDate, endingDate);
+		canAddBook &= (canAddBook) && (potentialItem != null);
+		if (extension != null) {
+			canAddBook &= (canAddBook) 
+				&& (!bookDAO.extensionUsedDuringPeriod(extension.getExtensionID(), beginningDate, endingDate))
+				&& (!borrowDAO.extensionUsedDuringPeriod(extension.getExtensionID(), beginningDate, endingDate));
+		}
+		if (canAddBook && this.bookDAO.get(potentialItem.getItemID(), member.getMemberID(), beginningDate) == null) {
+			Book acceptedBook = new Book(potentialItem, member, beginningDate, endingDate, extension);
+			this.bookDAO.add(acceptedBook);
+			return acceptedBook;
 		} else {
 			return null;
 		}
-	}
+	}	
 
-	/*
-	 * game et member ne peuvent pas être null, - vérifier si la date de fin est
-	 * > à la date de début - vérifier que l'écart entre aujourd
-	 * "hui et la date de début soit >= à la valeur de la constante des paramètres (utiliser ParametersServices avec une fonction en + pour recup "
-	 * durationBetweenBookingandBorrowingInWeeks", se calquer sur celle déjà
-	 * faite et voir le fichier res/preferences.properties) - vérifier si
-	 * l'écart entre les dates correspond au paramètre de durée de pret
-	 * (utiliser ParametersServices avec une fonction en + pour recup
-	 * "durationOfBorrowingsInWeeks", se calquer sur celle déjà faite et voir le
-	 * fichier res/preferences.properties) - si la date de retour tombe un
-	 * week-end (samedi ou dimanche), la reporter au lundi suivant - vérifier si
-	 * le game à un item disponible (en comptant qu'il en faut au moins 1 en
-	 * stock) (qui ne fais pas partie d'un Borrow ou Book qui se superpose sur
-	 * les dates indiquées -> utiliser/créer une fonction dans BorrowDAO et
-	 * BookDAO), si oui en récupérer un - vérifier si l'extension est dispo pour
-	 * ces dates (encore BorrowDAO et BookDAO) - vérifier si l'adhérent à le
-	 * droit de réserver (booléen de permission dans le contexte) - vérifier si
-	 * l'adhénent n'a pas dépassé le quota de réservation possible (utiliser
-	 * ParametersServices avec une fonction en + pour recup "nbBookings", se
-	 * calquer sur celle déjà faite et voir le fichier
-	 * res/preferences.properties - ajouter le book en base de données, le
-	 * retourner - si une vérification n'est pas effectuée, retourner null
-	 */
-
-	// }
-
-	/**
-	 * TODO Annulation d'une réservation, mettre en malus à l'adhérent à cause
-	 * de cette fausse réservation et supprimer la réservation
-	 */
 	public boolean cancelBook(int itemID, int memberID, Date beginningDate) {
-
-		memberContextServices.oneMoreNbFakeBooking(memberID);
-
-	/*J'incremente le nombre de fausses reservations a revoir */
-
-		bookDAO.remove(itemID, memberID, beginningDate);
-
-		/*
-		 * - Utiliser (créer) une fonction dans MemberContextServices pour
-		 * incrémenter le compteur de nbFakeBookings de l'adhérent - Supprimer
-		 * le book en base de données avec le couple des 3 clés primaires
-		 * (itemID, memberID, beginningDate) et retourner le résultat booléen
-		 */
-		return true;
+		memberContextServices.oneMoreNbFakeBooking(memberDAO.getMemberContextID(memberID));
+		return bookDAO.remove(itemID, memberID, beginningDate);
 	}
 
-	/**
-	 * TODO Un adhérent vient chercher le jeu, la réservation est supprimée et
-	 * devient un emprunt (qui lui ajouté)
-	 */
-	public boolean convertBookIntoBorrow(int itemID, int memberID,
-			Date beginningDate, Date endingDate, int extensionID) {
-		/*
-		 * - Supprimer le book de la base de données (avec BookDAO et le couple
-		 * {itemID, memberID, beginningDate}) - Construire un nouvel objet
-		 * Borrow et l'enregistrer dans la base de données avec BorrowDAO et
-		 * retourner le résultat booléen
-		 */
-		
-		
-		bookDAO.remove(itemID, memberID, beginningDate);
-	
-		
-		Borrow borrow= new Borrow (itemDAO.get(itemID), memberDAO.get(memberID), beginningDate, endingDate, extensionDAO.get(extensionID));
-	
-		
-		borrowDAO.add(borrow);
-		
-		return true;
-	}
+	public boolean convertBookIntoBorrow(int itemID, int memberID, Date beginningDate, Date endingDate,
+			Integer extensionID) {
 
+		bookDAO.remove(itemID, memberID, beginningDate);
+		
+		Extension extension = null;
+		if (extensionID != null) {
+			extension = extensionDAO.get(extensionID);
+		}
+		
+		Borrow createdBorrow = borrowServices.addBorrowKnowingItem(itemDAO.get(itemID), memberDAO.get(memberID), beginningDate, endingDate, extension);
+
+		return (createdBorrow != null);
+	}
+	
+	private boolean checkIntervalBetweenNowAndStartDateIsValid(Date startDate) {
+		long diffValue = startDate.getTime() - new Date().getTime();
+		long diffDays = TimeUnit.DAYS.convert(diffValue, TimeUnit.MILLISECONDS) + 1;
+		int minIntervalBetweenNowAndStartDateInDays = 7*this.parametersServices.getDurationBetweenBookingAndBorrowingInWeeks();
+		return (diffDays >= minIntervalBetweenNowAndStartDateInDays);
+	}
+	
+	private boolean checkIntervalBetweenStartDateAndEndDateIsValid(Date startDate, Date endDate) {
+		long diffValue = endDate.getTime() - startDate.getTime();
+		long diffDays = TimeUnit.DAYS.convert(diffValue, TimeUnit.MILLISECONDS);
+		int expectedIntervalBetweenStartDateAndEndDateInDays = 7*this.parametersServices.getDurationOfBorrowingsInWeeks();
+		return (diffDays == expectedIntervalBetweenStartDateAndEndDateInDays);
+	}
+	
+	private Date getTodayDateWithoutTime() {
+		Calendar calendar = Calendar.getInstance();
+	    calendar.set(Calendar.HOUR_OF_DAY, 0);
+	    calendar.set(Calendar.MINUTE, 0);
+	    calendar.set(Calendar.SECOND, 0);
+	    calendar.set(Calendar.MILLISECOND, 0);
+	    return calendar.getTime();
+	}
+	
 }

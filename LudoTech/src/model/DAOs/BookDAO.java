@@ -97,10 +97,16 @@ public class BookDAO extends DAO {
 			String request = "SELECT BOOK.start_date AS B_start_date, BOOK.end_date AS B_end_date, "
 					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
 					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
-					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " + "FROM BOOK "
-					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " + "JOIN ITEM ON BOOK.item_id = ITEM.id "
-					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id";
+					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " 
+					+ "FROM BOOK "
+					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " 
+					+ "JOIN ITEM ON BOOK.item_id = ITEM.id "
+					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id "
+					+ "WHERE BOOK.item_id = ? AND BOOK.member_id = ? AND BOOK.start_date = ?";
 			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.setInt(1, itemID);
+			psSelect.setInt(2, memberID);
+			psSelect.setDate(3, new java.sql.Date(beginningDate.getTime()));
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
@@ -184,7 +190,7 @@ public class BookDAO extends DAO {
 
 	}
 
-	public boolean getIfExists(int idItem) {
+	public boolean itemUsedDuringPeriod(int itemID, Date startDate, Date endDate) {
 		boolean result = false;
 		try {
 
@@ -197,10 +203,18 @@ public class BookDAO extends DAO {
 			// base de données, donc qu'une seule requête à la fois (contrainte
 			// du SGBD Derby)
 
-			PreparedStatement psSelect = connection
-					.prepareStatement("SELECT count( item_id ) FROM BOOK WHERE book.item_id = ?");
-
-			psSelect.setInt(1, idItem);
+			PreparedStatement psSelect = connection.prepareStatement(
+					"SELECT count(*) "
+						+ "FROM BOOK "
+						+ "WHERE item_id = ? "
+						+ "AND (start_date <= ? OR start_date <= ?) "
+						+ "AND (end_date >= ? OR end_date >= ?)");
+			
+			psSelect.setInt(1, itemID);
+			psSelect.setDate(2, new java.sql.Date(startDate.getTime()));
+			psSelect.setDate(3, new java.sql.Date(endDate.getTime()));
+			psSelect.setDate(4, new java.sql.Date(startDate.getTime()));
+			psSelect.setDate(5, new java.sql.Date(endDate.getTime()));
 
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -208,10 +222,7 @@ public class BookDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 
 			if (resultSet.next()) {
-				int itemNb = resultSet.getInt(1);
-				if (itemNb > 0)
-					return true;
-
+				result = (resultSet.getInt(1) > 0);
 			}
 
 			super.disconnect();
@@ -222,7 +233,7 @@ public class BookDAO extends DAO {
 		return result;
 	}
 
-	public boolean getIfExtensionExists(int idExtension) {
+	public boolean extensionUsedDuringPeriod(int extensionID, Date startDate, Date endDate) {
 		boolean result = false;
 		try {
 
@@ -235,10 +246,18 @@ public class BookDAO extends DAO {
 			// base de données, donc qu'une seule requête à la fois (contrainte
 			// du SGBD Derby)
 
-			PreparedStatement psSelect = connection
-					.prepareStatement("SELECT count( extension_id ) FROM BOOK WHERE book.extension_id = ?");
-
-			psSelect.setInt(1, idExtension);
+			PreparedStatement psSelect = connection.prepareStatement(
+					"SELECT count(*) "
+						+ "FROM BOOK "
+						+ "WHERE extension_id = ? "
+						+ "AND (start_date <= ? OR start_date <= ?) "
+						+ "AND (end_date >= ? OR end_date >= ?)");
+			
+			psSelect.setInt(1, extensionID);
+			psSelect.setDate(2, new java.sql.Date(startDate.getTime()));
+			psSelect.setDate(3, new java.sql.Date(endDate.getTime()));
+			psSelect.setDate(4, new java.sql.Date(startDate.getTime()));
+			psSelect.setDate(5, new java.sql.Date(endDate.getTime()));
 
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -246,10 +265,7 @@ public class BookDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 
 			if (resultSet.next()) {
-				int itemNb = resultSet.getInt(1);
-				if (itemNb >= 0)
-					return true;
-
+				result = (resultSet.getInt(1) > 0);
 			}
 
 			super.disconnect();
@@ -260,7 +276,8 @@ public class BookDAO extends DAO {
 		return result;
 	}
 
-	public int getBooksNb(int idMember) {
+	public int getBooksNb(int memberID) {
+		int result = 0;
 		try {
 
 			super.connect();
@@ -275,7 +292,7 @@ public class BookDAO extends DAO {
 			PreparedStatement psSelect = connection
 					.prepareStatement("SELECT count(member_id) FROM BOOK WHERE member_id = ?");
 
-			psSelect.setInt(1, idMember);
+			psSelect.setInt(1, memberID);
 
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -283,17 +300,14 @@ public class BookDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 
 			if (resultSet.next()) {
-				int booksNb = resultSet.getInt(1);
-
-				return booksNb;
-
+				result = resultSet.getInt(1);
 			}
 
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		}
-		return 0;
+		
+		return result;
 	}
 }

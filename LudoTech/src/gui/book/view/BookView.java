@@ -37,7 +37,8 @@ public class BookView extends JDialog {
 
 	private static final double WINDOW_RATIO = 1.5;
 
-	private int durationOfBookingsInWeeks;
+	private int durationOfBorrowingsInWeeks;
+	private int durationBetweenBookingandBorrowingInWeeks;
 
 	private JComboBox<Game> gameComboBox;
 	private JComboBox<Member> memberComboBox;
@@ -48,8 +49,9 @@ public class BookView extends JDialog {
 	private JButton validateButton;
 	private JButton cancelButton;
 
-	public BookView(int durationOfBookingsInWeeks) {
-		this.durationOfBookingsInWeeks = durationOfBookingsInWeeks;
+	public BookView(int durationOfBookingsInWeeks, int durationBetweenBookingandBorrowingInWeeks) {
+		this.durationOfBorrowingsInWeeks = durationOfBookingsInWeeks;
+		this.durationBetweenBookingandBorrowingInWeeks = durationBetweenBookingandBorrowingInWeeks;
 		this.setSize((int) (LudoTechApplication.WINDOW_WIDTH / WINDOW_RATIO),
 				(int) (LudoTechApplication.WINDOW_HEIGHT / WINDOW_RATIO));
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -90,6 +92,7 @@ public class BookView extends JDialog {
 		bookPanel.add(beginningDateLabel);
 		UtilDateModel startDateModel = new UtilDateModel();
 		startDateModel.setSelected(true);
+		startDateModel.addDay(7 * durationBetweenBookingandBorrowingInWeeks);
 		Properties startDateProperties = new Properties();
 		startDateProperties.put("text.today", "Today");
 		startDateProperties.put("text.month", "Month");
@@ -104,9 +107,7 @@ public class BookView extends JDialog {
 		bookPanel.add(endingDateLabel);
 		UtilDateModel endDateModel = new UtilDateModel();
 		endDateModel.setSelected(true);
-		endDateModel.addDay(7 * durationOfBookingsInWeeks); // 7 jours fois le
-																// nombre de
-																// semaines
+		endDateModel.addDay(7 * (durationBetweenBookingandBorrowingInWeeks + durationOfBorrowingsInWeeks));
 		Properties endDateProperties = new Properties();
 		endDateProperties.put("text.today", "Today");
 		endDateProperties.put("text.month", "Month");
@@ -192,8 +193,9 @@ public class BookView extends JDialog {
 	public void clearDates() {
 		Calendar calendar = Calendar.getInstance();
 		this.startDatePicker.getModel().setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+		this.startDatePicker.getModel().addDay(7 * durationBetweenBookingandBorrowingInWeeks);
 		this.endDatePicker.getModel().setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-		this.endDatePicker.getModel().addDay(7 * this.durationOfBookingsInWeeks);
+		this.endDatePicker.getModel().addDay(7 * (durationBetweenBookingandBorrowingInWeeks + durationOfBorrowingsInWeeks));
 	}
 
 	public void clearExtensions() {

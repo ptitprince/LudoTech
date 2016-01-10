@@ -86,7 +86,7 @@ public class CatalogController extends JPanel {
 					Game game = gameServices.getGame(gameID);
 					int nbItems = itemServices.countItemsOfGame(gameID);
 					refreshExtensionList(gameID);
-					gameView.load(game.getName(), gameID, gameServices.isAvailable(gameID), game.getCategory(),
+					gameView.load(game.getName(), gameID, gameServices.isAvailableNow(gameID), game.getCategory(),
 							game.getEditor(), game.getPublishingYear(), game.getMinimumPlayers(),
 							game.getMaximumPlayers(), game.getMinimumAge(), game.getDescription(), nbItems);
 					gameView.setVisible(true);

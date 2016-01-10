@@ -253,16 +253,7 @@ public class BorrowDAO extends DAO {
 		}
 	}
 
-	/**
-	 * Méthode pour vérifier s'il existe au moins un exemplaire valide que l'on
-	 * peut utiliser pour un emprunt.
-	 * 
-	 * @param idItem
-	 *            l'identifiant de l'exemplaire.
-	 * @return un booléen, qui indique si oui ou non on a un exemplaire valide
-	 *         disponible.
-	 */
-	public boolean getIfExists(int idItem) {
+	public boolean itemUsedDuringPeriod(int itemID, Date startDate, Date endDate) {
 		boolean result = false;
 		try {
 
@@ -275,10 +266,18 @@ public class BorrowDAO extends DAO {
 			// base de données, donc qu'une seule requête à la fois (contrainte
 			// du SGBD Derby)
 
-			PreparedStatement psSelect = connection
-					.prepareStatement("SELECT count( item_id ) FROM BORROW WHERE borrow.item_id = ?");
-
-			psSelect.setInt(1, idItem);
+			PreparedStatement psSelect = connection.prepareStatement(
+					"SELECT count(*) "
+						+ "FROM BORROW "
+						+ "WHERE item_id = ? "
+						+ "AND (start_date <= ? OR start_date <= ?) "
+						+ "AND (end_date >= ? OR end_date >= ?)");
+			
+			psSelect.setInt(1, itemID);
+			psSelect.setDate(2, new java.sql.Date(startDate.getTime()));
+			psSelect.setDate(3, new java.sql.Date(endDate.getTime()));
+			psSelect.setDate(4, new java.sql.Date(startDate.getTime()));
+			psSelect.setDate(5, new java.sql.Date(endDate.getTime()));
 
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -286,11 +285,7 @@ public class BorrowDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 
 			if (resultSet.next()) {
-				int itemNb = resultSet.getInt(1);
-				if (itemNb > 0) {
-					return true;
-				}
-
+				result = (resultSet.getInt(1) > 0);
 			}
 
 			super.disconnect();
@@ -301,15 +296,7 @@ public class BorrowDAO extends DAO {
 		return result;
 	}
 
-	/**
-	 * Méthode pour savoir si une extension est valide ou non.
-	 * 
-	 * @param idExtension
-	 *            l'identifiant de l'extension.
-	 * @return un booléen, confirmant si oui ou non une extension est valide à
-	 *         l'emprunt.
-	 */
-	public boolean getIfExtensionExists(int idExtension) {
+	public boolean extensionUsedDuringPeriod(int extensionID, Date startDate, Date endDate) {
 		boolean result = false;
 		try {
 
@@ -322,10 +309,18 @@ public class BorrowDAO extends DAO {
 			// base de données, donc qu'une seule requête à la fois (contrainte
 			// du SGBD Derby)
 
-			PreparedStatement psSelect = connection
-					.prepareStatement("SELECT count( extension_id ) FROM BORROW WHERE borrow.extension_id = ?");
-
-			psSelect.setInt(1, idExtension);
+			PreparedStatement psSelect = connection.prepareStatement(
+					"SELECT count(*) "
+						+ "FROM APP.BORROW "
+						+ "WHERE extension_id = ? "
+						+ "AND (start_date <= ? OR start_date <= ?) "
+						+ "AND (end_date >= ? OR end_date >= ?)");
+			
+			psSelect.setInt(1, extensionID);
+			psSelect.setDate(2, new java.sql.Date(startDate.getTime()));
+			psSelect.setDate(3, new java.sql.Date(endDate.getTime()));
+			psSelect.setDate(4, new java.sql.Date(startDate.getTime()));
+			psSelect.setDate(5, new java.sql.Date(endDate.getTime()));
 
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -333,10 +328,7 @@ public class BorrowDAO extends DAO {
 			ResultSet resultSet = psSelect.getResultSet();
 
 			if (resultSet.next()) {
-				int itemNb = resultSet.getInt(1);
-				if (itemNb >= 0)
-					return true;
-
+				result = (resultSet.getInt(1) > 0);
 			}
 
 			super.disconnect();

@@ -61,10 +61,7 @@ public class MemberContextServices {
 	
 	public void oneMoreNbFakeBooking(int idMemberContext)
 	{
-		
-		
 		memberContextDAO.editNbFakeBook(idMemberContext, (memberContextDAO.getNbFakeBooks(idMemberContext)+1));
-	 
 	}
 	
 	

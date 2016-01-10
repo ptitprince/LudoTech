@@ -1,6 +1,8 @@
 package model.services;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class GameServices {
 	 * Objet d'accés aux données de type GameCategory (catégories de jeux)
 	 */
 	private final GameCategoryDAO gameCategoryDAO;
-
+	
 	/**
 	 * Objet d'accés aux données de type GameEditor (éditeur de jeux)
 	 */
@@ -35,7 +37,9 @@ public class GameServices {
 	private final BookDAO bookDAO;
 	private final BorrowDAO borrowDAO;
 	private final ItemDAO itemDAO;
-
+	
+	private ParametersServices parametersServices;
+	
 	/**
 	 * Construit un nouveau service pour les jeux
 	 */
@@ -46,6 +50,7 @@ public class GameServices {
 		this.itemDAO = new ItemDAO();
 		this.borrowDAO = new BorrowDAO();
 		this.bookDAO = new BookDAO();
+		this.parametersServices = new ParametersServices();
 	}
 
 	/**
@@ -154,7 +159,7 @@ public class GameServices {
 		if (filter.containsKey("is_available") && Boolean.parseBoolean(filter.get("is_available"))) {
 			List<Game> availableGames = new ArrayList<Game>();
 			for (Game game : games) {
-				if (this.isAvailable(game.getGameID())) {
+				if (this.isAvailableNow(game.getGameID())) {
 					availableGames.add(game);
 				}
 			}
@@ -185,36 +190,38 @@ public class GameServices {
 	public List<String> getGameEditors(boolean sorted) {
 		return this.gameEditorDAO.list(sorted);
 	}
-	
+
 	/**
-	 * Détermine si le jeu est disponible 
-	 * (S'il a au moins deux exemplaires disponibles : un en stock + un disponible pour le prêt/réservation)
+	 * Détermine si le jeu est disponible (S'il a au moins deux exemplaires
+	 * disponibles : un en stock + un disponible pour le prêt/réservation)
+	 * 
 	 * @param gameId
 	 * @return
 	 */
-	public boolean isAvailable(int gameId) {
-		int nbAvailableItems = 0;
-		for (Item item : itemDAO.getAllHavingGameID(gameId)) {
-			if (!bookDAO.getIfExists(item.getItemID()) && (!borrowDAO.getIfExists(item.getItemID()))) {
-				nbAvailableItems++;
-			}
-		}
-		return (nbAvailableItems >= 2);
+	public boolean isAvailableNow(int gameId) {
+		Calendar calendar = Calendar.getInstance();
+		Date startDate = calendar.getTime();
+		calendar.add(Calendar.DAY_OF_MONTH, 7*parametersServices.getDurationOfBorrowingsInWeeks());
+		Date endDate = calendar.getTime();
+		return (getOneAvailableItem(gameId, startDate, endDate) != null);
 	}
 
-	public Item getOneAvailableItem(int gameId) {
+	public Item getOneAvailableItem(int gameId, Date startDate, Date endDate) {
 		int i = 0;
 		List<Item> itemsOfGame = itemDAO.getAllHavingGameID(gameId);
-		Item availableItem = null;
-		while (i < itemsOfGame.size()) {
-			if (!bookDAO.getIfExists(itemsOfGame.get(i).getItemID()) && (!borrowDAO.getIfExists(itemsOfGame.get(i).getItemID()))) {
-				availableItem = itemsOfGame.get(i);
-				break;
-			} else {
-				i++;
+		List<Item> availableItems = new ArrayList<Item>();		
+		while ((i < itemsOfGame.size()) && (availableItems.size() <= 1)) { // Il est nécessaire d'avoir au moins 2 exemplaires dispos
+			if (!bookDAO.itemUsedDuringPeriod(itemsOfGame.get(i).getItemID(), startDate, endDate)
+					&& (!borrowDAO.itemUsedDuringPeriod(itemsOfGame.get(i).getItemID(), startDate, endDate))) {
+				availableItems.add(itemsOfGame.get(i));
 			}
+			i++;
 		}
-		return availableItem;
+		if (availableItems.size() > 1) { // Un exemplaire en stock + au moins un exemplaire utilisable
+			return availableItems.get(0);
+		} else {
+			return null;
+		}
 	}
-	
+
 }
