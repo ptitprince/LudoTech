@@ -53,36 +53,7 @@ public class GameEditorDAO extends DAO {
 		return idFound;
 	}
 
-	/**
-	 * Trouve le nom d'un éditeur de jeu dans la base de données
-	 * 
-	 * @param editorID
-	 *            L'identifiant de l'éditeur à trouver
-	 * @return Le nom de l'éditeur identifié par "id" ou null si aucun ne
-	 *         correspond en base de données
-	 */
-	public String getName(int editorID) {
-		try {
-			super.connect();
-
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM GAME_EDITOR WHERE id = ?");
-			psSelect.setInt(1, editorID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			String editor = null;
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				editor = resultSet.getString("name");
-			}
-			super.disconnect();
-			return editor;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
+	
 	/**
 	 * Liste tous les éditeurs de jeu existants
 	 * @param sorted Vrai si la liste doit être triée par ordre alphabétique

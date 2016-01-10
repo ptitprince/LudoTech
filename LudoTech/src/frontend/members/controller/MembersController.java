@@ -33,8 +33,6 @@ public class MembersController extends JPanel {
 	private MemberListView memberListView;
 	private MemberSearchView memberSearchView;
 
-	private int currentMemberID;
-
 	private MemberServices memberServices;
 	private MemberContextServices memberContextServices;
 
@@ -42,8 +40,6 @@ public class MembersController extends JPanel {
 	private MemberView memberView;
 
 	public MembersController(int currentMemberID) {
-
-		this.currentMemberID = currentMemberID;
 		this.memberServices = new MemberServices();
 		this.memberContextServices = new MemberContextServices();
 		this.memberListModel = new MemberListModel(this.memberServices);
@@ -52,10 +48,9 @@ public class MembersController extends JPanel {
 		this.makeListeners();
 	}
 
-	public void makeGUI() {
-		boolean currentMemberIsAdmin = this.memberServices.isAdmin(this.currentMemberID);
+	private void makeGUI() {
 		this.memberSearchView = new MemberSearchView();
-		this.memberListView = new MemberListView(this.memberListModel, currentMemberIsAdmin);
+		this.memberListView = new MemberListView(this.memberListModel);
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, this.memberSearchView,
 				this.memberListView);
 		splitPane.setDividerLocation(LudoTechApplication.WINDOW_WIDTH / 4);
@@ -184,7 +179,7 @@ public class MembersController extends JPanel {
 
 	}
 
-	public void showInvalidFieldsException(NotValidNumberFieldException exception) {
+	private void showInvalidFieldsException(NotValidNumberFieldException exception) {
 		String text = TextView.get("invalidField") + "\"" + exception.getFieldName() + "\"" + ".\n"
 				+ TextView.get("valueInInvalidField")
 				+ ((exception.getFieldValue().equals("")) ? TextView.get("emptyValue")
@@ -195,7 +190,7 @@ public class MembersController extends JPanel {
 		JOptionPane.showMessageDialog(null, text);
 	}
 
-	public boolean showDeleteMemberConfirmation() {
+	private boolean showDeleteMemberConfirmation() {
 		String text = TextView.get("memberConfirmDeleting");
 		int result = JOptionPane.showConfirmDialog(null, text, "", JOptionPane.YES_OPTION);
 		return (result == 0);

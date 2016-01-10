@@ -234,13 +234,6 @@ public class Member {
 	 * La ville de l'adresse.
 	 */
 	private String city;
-	
-	
-	/**
-	 * L'identifiant de la table MemberContext
-	 */
-	private int memberContextID;
-
 
 
 	public void setId(int ID) {

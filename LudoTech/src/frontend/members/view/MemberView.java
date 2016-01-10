@@ -8,6 +8,7 @@ import frontend.LudoTechApplication;
 import frontend.profile.view.ProfileView;
 import frontend.utils.gui.TextView;
 
+@SuppressWarnings("serial")
 public class MemberView extends JDialog {
 	
 	private static final double WINDOW_RATIO = 1.10;

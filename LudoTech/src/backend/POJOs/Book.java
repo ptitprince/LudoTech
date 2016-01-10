@@ -10,7 +10,7 @@ public class Book {
 	/**
 	 * Identifiant de book
 	 */
-	int bookId;
+	private int bookId;
 	
 	/** L'exemplaire a reserver
 	 *  */
@@ -31,16 +31,6 @@ public class Book {
 	 * 
 	 */
 	private	Extension extension;
-	
-	public Book(int bookID, Item item, Member member, Date startDate, Date endDate,
-			Extension extension) {
-		this.bookId = bookID;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.member = member;
-		this.item = item;
-		this.extension = extension;
-	}
 	
 	public Book(Item item, Member member, Date startDate, Date endDate,
 			Extension extension) {		

@@ -25,7 +25,6 @@ public class ParametersView extends JPanel {
 	private JTextField durationOfCotisation;
 	private JButton validateButton;
 	private JButton cancelButton;
-	private Object getnbBorrowingsField;
 
 	public ParametersView() {
 		this.setLayout(new BorderLayout());

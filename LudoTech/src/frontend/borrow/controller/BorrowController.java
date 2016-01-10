@@ -69,7 +69,7 @@ public class BorrowController extends JPanel {
 		this.loadLists();
 	}
 
-	public void makeGUI() {
+	private void makeGUI() {
 		this.borrowListView = new BorrowListView(this.borrowListModel, this.memberServices.isAdmin(currentMemberID));
 		this.add(borrowListView, BorderLayout.CENTER);
 
@@ -77,7 +77,7 @@ public class BorrowController extends JPanel {
 		this.borrowView.setLocationRelativeTo(this);
 	}
 
-	public void makeListeners() {
+	private void makeListeners() {
 		if (memberServices.isAdmin(this.currentMemberID)) {
 			this.borrowListView.getAddBorrowButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -206,12 +206,12 @@ public class BorrowController extends JPanel {
 		});
 	}
 
-	public void showInvalidDatesException() {
+	private void showInvalidDatesException() {
 		String text = TextView.get("borrowDatesFormatException");
 		JOptionPane.showMessageDialog(null, text);
 	}
 
-	public boolean showDeleteBorrowConfirmation() {
+	private boolean showDeleteBorrowConfirmation() {
 		String text = TextView.get("borrowConfirmDeleting");
 		int result = JOptionPane.showConfirmDialog(null, text, "", JOptionPane.YES_OPTION);
 		return (result == 0);

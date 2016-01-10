@@ -53,35 +53,7 @@ public class GameCategoryDAO extends DAO {
 		return idFound;
 	}
 
-	/**
-	 * Trouve le nom d'une categorie de jeu dans la base de données
-	 * 
-	 * @param categoryID
-	 *            L'identifiant de la catégorie à trouver
-	 * @return Le nom de la catégorie identifié par "id" ou null si aucune ne
-	 *         correspond en base de données
-	 */
-	public String getName(int categoryID) {
-		try {
-			super.connect();
-
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM GAME_CATEGORY WHERE id = ?");
-			psSelect.setInt(1, categoryID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			String category = null;
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				category = resultSet.getString("category");
-			}
-			super.disconnect();
-			return category;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+	
 
 	/**
 	 * Liste toutes les catégories de jeu existantes

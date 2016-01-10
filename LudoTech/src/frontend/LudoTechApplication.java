@@ -30,7 +30,7 @@ public class LudoTechApplication extends JFrame {
 		this.setVisible(true);
 	}
 
-	public void makeGUI() {
+	private void makeGUI() {
 		this.getContentPane().add(this.mainController, BorderLayout.CENTER);
 	}
 

@@ -107,7 +107,7 @@ public class GameView extends JDialog {
 		}
 	}
 
-	public void makeInfosPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
+	private void makeInfosPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 
 		JPanel infosPanel = new JPanel();
 		TitledBorder infosBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameInfosTitle"));
@@ -229,7 +229,7 @@ public class GameView extends JDialog {
 		boxesPanel.add(infosPanel, boxesConstraints);
 	}
 
-	public void makeDescriptionPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
+	private void makeDescriptionPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 		JPanel descriptionPanel = new JPanel(new BorderLayout());
 		TitledBorder extensionsBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameDescriptionTitle"));
 		extensionsBorder.setTitleJustification(TitledBorder.LEFT);
@@ -246,7 +246,7 @@ public class GameView extends JDialog {
 		boxesPanel.add(descriptionPanel, boxesConstraints);
 	}
 
-	public void makeExtensionsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints,
+	private void makeExtensionsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints,
 			ExtensionListModel extensionListModel) {
 		JPanel extensionsPanel = new JPanel(new BorderLayout());
 		TitledBorder extensionsBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameExtensionsTitle"));
@@ -277,7 +277,7 @@ public class GameView extends JDialog {
 		boxesPanel.add(extensionsPanel, boxesConstraints);
 	}
 
-	public void makeItemsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
+	private void makeItemsPanel(JPanel boxesPanel, GridBagConstraints boxesConstraints) {
 		JPanel itemsPanel = new JPanel(new FlowLayout());
 		TitledBorder itemsBorder = BorderFactory.createTitledBorder(TextView.get("catalogGameItemsTitle"));
 		itemsBorder.setTitleJustification(TitledBorder.LEFT);

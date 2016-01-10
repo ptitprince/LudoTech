@@ -3,7 +3,6 @@ package frontend.profile.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -36,7 +35,7 @@ public class ProfileController extends JPanel {
 
 	}
 
-	public void makeGUI() {
+	private void makeGUI() {
 		this.profileView = new ProfileView(memberServices.isAdmin(currentMemberID));
 		this.add(this.profileView);
 
@@ -91,12 +90,7 @@ public class ProfileController extends JPanel {
 
 	}
 
-	public void showInvalidDateException() {
-		String text = TextView.get("profileEditMemberDateFormatException");
-		JOptionPane.showMessageDialog(null, text);
-	}
-
-	public void showInvalidFieldsException(NotValidNumberFieldException exception) {
+	private void showInvalidFieldsException(NotValidNumberFieldException exception) {
 		String text = TextView.get("invalidField") + "\"" + exception.getFieldName() + "\"" + ".\n"
 				+ TextView.get("valueInInvalidField")
 				+ ((exception.getFieldValue().equals("")) ? TextView.get("emptyValue")

@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 
 import frontend.utils.gui.TextView;
 
+@SuppressWarnings("serial")
 public class ExtensionNotAvailableException extends Exception {
 
 	private String extentionName;

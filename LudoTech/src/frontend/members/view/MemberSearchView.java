@@ -2,22 +2,15 @@ package frontend.members.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import org.jdatepicker.impl.JDatePickerImpl;
-
 import frontend.LudoTechApplication;
-import frontend.utils.gui.PostLoadableComboBoxModel;
 import frontend.utils.gui.SpringUtilities;
 import frontend.utils.gui.TextView;
 
@@ -27,8 +20,6 @@ public class MemberSearchView extends JPanel {
 	private JTextField firstName;
 	private JTextField lastName;
 	private JTextField pseudo;
-	private JButton validateButton;
-	private JButton cancelButton;
 
 	private JButton searchButton;
 
@@ -94,9 +85,4 @@ public class MemberSearchView extends JPanel {
 		return this.pseudo.getText();
 	}
 
-	public void resetFields() {
-		this.firstName.setText("");
-		this.lastName.setText("");
-		this.pseudo.setText("");
-	}
 }

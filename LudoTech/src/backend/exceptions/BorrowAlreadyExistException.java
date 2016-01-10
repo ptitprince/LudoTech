@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import backend.POJOs.Borrow;
 import frontend.utils.gui.TextView;
 
+@SuppressWarnings("serial")
 public class BorrowAlreadyExistException extends Exception {
 
 	private Borrow borrow;

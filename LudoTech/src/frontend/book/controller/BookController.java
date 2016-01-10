@@ -73,7 +73,7 @@ public class BookController extends JPanel {
 		this.loadLists();
 	}
 
-	public void makeGUI() {
+	private void makeGUI() {
 		this.bookListView = new BookListView(this.bookListModel, this.memberServices.isAdmin(currentMemberID));
 		this.add(bookListView, BorderLayout.CENTER);
 
@@ -81,7 +81,7 @@ public class BookController extends JPanel {
 		this.bookView.setLocationRelativeTo(this);
 	}
 
-	public void makeListeners() {
+	private void makeListeners() {
 
 		this.bookListView.getAddBookButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -252,12 +252,12 @@ public class BookController extends JPanel {
 		});
 	}
 	
-	public void showInvalidDatesException() {
+	private void showInvalidDatesException() {
 		String text = TextView.get("bookDatesFormatException");
 		JOptionPane.showMessageDialog(null, text);
 	}
 	
-	public boolean showCancelBookConfirmation() {
+	private boolean showCancelBookConfirmation() {
 		String text = TextView.get("bookConfirmCancel") + "\n";
 		if (this.memberServices.isAdmin(this.currentMemberID)) {
 			text += TextView.get("bookConfirmCancelAdvertAdmin");
@@ -268,7 +268,7 @@ public class BookController extends JPanel {
 		return (result == 0);
 	}
 
-	public boolean showComeGetGameConfirmation() {
+	private boolean showComeGetGameConfirmation() {
 		String text = TextView.get("bookConfirmComeGet");
 		int result = JOptionPane.showConfirmDialog(null, text, "", JOptionPane.YES_OPTION);
 		return (result == 0);

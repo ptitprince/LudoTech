@@ -28,7 +28,7 @@ public class ParametersController extends JPanel {
 
 	}
 
-	public void makeGUI() {
+	private void makeGUI() {
 		this.parametersView = new ParametersView();
 		this.add(this.parametersView);
 
@@ -83,13 +83,10 @@ public class ParametersController extends JPanel {
 
 	}
 
-	public void showInvalidFieldsException(
+	private void showInvalidFieldsException(
 			NotValidNumberFieldException exception) {
 		String text = TextView.get("invalidField")
-				+ "\""
-				+ exception.getFieldName()
-				+ "\""
-				+ ".\n"
+				+ "\"" + exception.getFieldName() + "\"" + ".\n"
 				+ TextView.get("valueInInvalidField")
 				+ ((exception.getFieldValue().equals("")) ? TextView
 						.get("emptyValue") : "\"" + exception.getFieldValue()

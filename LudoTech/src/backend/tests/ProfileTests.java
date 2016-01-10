@@ -2,15 +2,11 @@ package backend.tests;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import backend.POJOs.Member;
-import backend.POJOs.MemberContext;
 import backend.services.MemberServices;
 
 
@@ -85,8 +81,6 @@ public class ProfileTests extends Tests {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
 		try {
-			MemberContext mcontext1 = new MemberContext(0, 0, sdf.parse("02/05/2015"), true, true);
-			
 			Member editableMember = memberServices.addMember("TestEditMember1", "Nom de famille 1", "Pseudo admin", "mdpAdmin", true,
 					sdf.parse("29/03/1995"), "0770564632", "kikou@lol.fr", "02 rue du romarin", "34090", "Montpellier",  0, 0, sdf.parse("02/05/2015"), true, true);
 			Assert.assertNotNull(editableMember);
@@ -117,7 +111,6 @@ public class ProfileTests extends Tests {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
 		try {
-			MemberContext mcontext1 = new MemberContext(0, 0, sdf.parse("02/06/2015"), true, true);
 			Member gettableMember = memberServices.addMember("TestEditMember1", "Nom de famille 1", "Pseudo admin", "mdpAdmin", true,
 					sdf.parse("29/03/1995"), "0770564632", "kikou@lol.fr", "02 rue du romarin", "34090", "Montpellier", 0, 0, sdf.parse("02/06/2015"), true, true);
 			Assert.assertNotNull(gettableMember);

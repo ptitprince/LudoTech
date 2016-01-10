@@ -12,7 +12,6 @@ import frontend.login.view.LoginObserver;
 import frontend.members.controller.MembersController;
 import frontend.parameters.controller.ParametersController;
 import frontend.profile.controller.ProfileController;
-import frontend.utils.gui.EmptyPanel;
 import frontend.utils.gui.TextView;
 
 @SuppressWarnings("serial")

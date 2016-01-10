@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import frontend.catalog.model.GameListModel;
 import frontend.members.model.MemberListModel;
 import frontend.utils.gui.TextView;
 
@@ -21,10 +20,7 @@ public class MemberListView extends JPanel {
 	private JButton addMemberButton;
 	private JButton deleteMemberButton;
 
-	private boolean currentMemberIsAdmin;
-
-	public MemberListView(MemberListModel model, boolean currentMemberIsAdmin) {
-		this.currentMemberIsAdmin = currentMemberIsAdmin;
+	public MemberListView(MemberListModel model) {
 		this.setLayout(new BorderLayout());
 		this.makeGUI(model);
 	}

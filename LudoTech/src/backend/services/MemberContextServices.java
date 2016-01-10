@@ -17,47 +17,7 @@ public class MemberContextServices {
 	
 	public MemberContextServices() {
 		this.memberContextDAO = new MemberContextDAO();
-	}
-	
-	/**
-	 * Obtenir un contexte d'adhérent
-	 * @param id
-	 *            L'identifiant unique du contexte d'un membre
-	 * @return Le contexte d'adhérent identifier par "id"
-	 */
-	public MemberContext getMemberContext(int id) {
-		return memberContextDAO.get(id);
-	}
-	
-	/**
-	 * Ajouter un nouveau contexte d'adhérent à la base de données
-	 * @param nbDelays
-	 *            Le nombre de retards pour le retour de prêts
-	 * @param nbFakeBookings
-	 *            Le nombre de réservations annulées
-	 * @param date
-	 *            La date de la dernière cotisation
-	 * @param canBorrow
-	 *            A le droit d'emprunter des jeux
-	 * @param canBook
-	 *            A le droit de réserver des jeux
-	 * @return Le contexte d'adhérent qui vient d'être créé, avec un identifiant créé automatiquement à l'enregistrement
-	 */
-	public MemberContext addMemberContext(int nbDelays, int nbFakeBookings, Date date, boolean canBorrow, boolean canBook) {
-		MemberContext newMemberContext = new MemberContext(nbDelays, nbFakeBookings, date, canBorrow, canBook);
-		return this.memberContextDAO.add(newMemberContext) ? newMemberContext : null;
-	}
-	
-	
-	
-	public boolean getCanBook(int id)
-	{
-		boolean yesOrNo;
-		yesOrNo = memberContextDAO.getCanBOOK(id);
-		return yesOrNo;
-		
-		
-	}
+	}	
 	
 	public void oneMoreNbFakeBooking(int idMemberContext)
 	{

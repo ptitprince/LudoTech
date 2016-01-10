@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import frontend.utils.gui.TextView;
 
+@SuppressWarnings("serial")
 public class IntervalBetweenNowAndStartDateException extends Exception {
 
 	private Date startDate;

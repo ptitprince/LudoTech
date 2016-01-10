@@ -52,7 +52,7 @@ public class LoginController extends JPanel {
 
 	}
 	
-	public void sendLoginRequest() {
+	private void sendLoginRequest() {
 		String pseudo = loginView.getPseudoField().getText();
 		String password = loginView.getPasswordField().getText();
 		int[] memberData = memberServices.checkAccess(pseudo, password);
@@ -69,7 +69,7 @@ public class LoginController extends JPanel {
 		this.observers.add(observer);
 	}
 
-	public void displayLoginError() {
+	private void displayLoginError() {
 		JOptionPane.showMessageDialog(null, TextView.get("loginException"));
 	}
 

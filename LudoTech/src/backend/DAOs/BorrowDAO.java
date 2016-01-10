@@ -52,37 +52,6 @@ public class BorrowDAO extends DAO {
 	}
 
 	/**
-	 * Modifie un emprunt donné en paramètre.
-	 * 
-	 * @param borrow
-	 *            un emprunt.
-	 * @return un emprunt modifié.
-	 */
-	public boolean edit(Borrow borrow) {
-		try {
-			super.connect();
-
-			PreparedStatement psEdit = connection.prepareStatement("UPDATE BORROW "
-					+ "SET end_date = ?, extension_id = ? " + "WHERE item_id = ? AND member_id = ? AND start_date = ?");
-			psEdit.setDate(1, new java.sql.Date(borrow.getEndingDate().getTime()));
-			psEdit.setInt(2, borrow.getExtension().getExtensionID());
-			psEdit.setInt(3, borrow.getItem().getItemID());
-			psEdit.setInt(4, borrow.getMember().getMemberID());
-			psEdit.setInt(5, borrow.getExtension().getExtensionID());
-			psEdit.setDate(7, new java.sql.Date(borrow.getBeginningDate().getTime()));
-
-			psEdit.executeUpdate();
-			psEdit.closeOnCompletion();
-
-			super.disconnect();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
 	 * Enlève un borrow dans la base de données.
 	 * 
 	 * @param id
@@ -217,44 +186,6 @@ public class BorrowDAO extends DAO {
 			return null;
 		}
 
-	}
-
-	/**
-	 * Méthode du DAO pour obtenir l'identifiant d'une extension.
-	 * 
-	 * @param itemId
-	 *            l'identifiant de l'exemplaire.
-	 * @param memberId
-	 *            l'identifiant du membre.
-	 * @param beginningDate
-	 *            la date de début du prêt.
-	 * @return un entier, l'identifiant de l'extension, ou 0 s'il n'y en a pas.
-	 */
-	public int getExtension(int itemId, int memberId, Date beginningDate) {
-
-		try {
-			super.connect();
-
-			PreparedStatement psSelect = connection
-					.prepareStatement("SELECT * FROM BORROW WHERE item_id = ? AND member_id = ? AND start_date = ?");
-			psSelect.setInt(1, itemId);
-			psSelect.setInt(2, memberId);
-			psSelect.setDate(3, new java.sql.Date(beginningDate.getTime()));
-
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			int answer = 0;
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				answer = resultSet.getInt("extension_id");
-			}
-			super.disconnect();
-			return answer;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return 0;
-		}
 	}
 	
 	public boolean itemUsed(int itemID) {

@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import backend.POJOs.Book;
 import frontend.utils.gui.TextView;
 
+@SuppressWarnings("serial")
 public class BookAlreadyExistException extends Exception {
 
 	private Book book;

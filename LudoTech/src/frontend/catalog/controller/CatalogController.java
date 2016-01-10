@@ -61,7 +61,7 @@ public class CatalogController extends JPanel {
 		this.loadLists();
 	}
 
-	public void makeGUI() {
+	private void makeGUI() {
 		boolean currentMemberIsAdmin = this.memberServices.isAdmin(this.currentMemberID);
 		this.gameSearchView = new GameSearchView();
 		this.gameListView = new GameListView(this.gameListModel, currentMemberIsAdmin);
@@ -250,7 +250,7 @@ public class CatalogController extends JPanel {
 		});
 	}
 
-	public void refreshExtensionList(final int gameID) {
+	private void refreshExtensionList(final int gameID) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				extensionListModel.refresh(gameID);
@@ -258,7 +258,7 @@ public class CatalogController extends JPanel {
 		});
 	}
 
-	public void showInvalidFieldsException(NotValidNumberFieldException exception) {
+	private void showInvalidFieldsException(NotValidNumberFieldException exception) {
 		String text = TextView.get("invalidField") + "\"" + exception.getFieldName() + "\"" + ".\n"
 				+ TextView.get("valueInInvalidField")
 				+ ((exception.getFieldValue().equals("")) ? TextView.get("emptyValue")
@@ -269,7 +269,7 @@ public class CatalogController extends JPanel {
 		JOptionPane.showMessageDialog(null, text);
 	}
 
-	public boolean showDeleteGameConfirmation() {
+	private boolean showDeleteGameConfirmation() {
 		String text = TextView.get("gameConfirmDeleting");
 		int result = JOptionPane.showConfirmDialog(null, text, "", JOptionPane.YES_OPTION);
 		return (result == 0);

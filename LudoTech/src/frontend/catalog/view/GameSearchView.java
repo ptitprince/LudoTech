@@ -179,13 +179,4 @@ public class GameSearchView extends JPanel {
 		return this.searchButton;
 	}
 	
-	public void resetFields() {
-		this.nameField.setText("");
-		this.categoryComboBox.setSelectedIndex(-1);
-		this.editorComboBox.setSelectedIndex(-1);
-		this.publishingYearField.setText("");
-		this.nbPlayersField.setText("");
-		this.minAgeField.setText("");
-		this.availableCheckBox.setSelected(false);
-	}
 }

@@ -108,56 +108,6 @@ public class MemberContextDAO extends DAO {
 		}
 	}
 
-	/**
-	 * Trouve le contexte d'un adhérent en base de données
-	 * @param id L'identifiant du contexte à trouver
-	 * @return Le contexte du membre identifié par "id" ou null si aucun ne correspond en base de données
-	 */
-	public MemberContext get(int id) {
-		try {
-			super.connect();
-
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM MEMBER_CONTEXT WHERE id = ?");
-			psSelect.setInt(1, id);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			MemberContext memberContext = null;
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				memberContext = new MemberContext(id, resultSet.getInt("nb_delays"), resultSet.getInt("nb_fake_bookings"), resultSet.getDate("last_subscription_date"),
-						resultSet.getBoolean("can_borrow"), resultSet.getBoolean("can_book"));
-			}
-			super.disconnect();
-			return memberContext;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public boolean getCanBOOK(int id) {
-		try {
-			super.connect();
-
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM MEMBER_CONTEXT WHERE id = ?");
-			psSelect.setInt(1, id);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			boolean answer = true;
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-					answer =	resultSet.getBoolean("can_book");
-			}
-			super.disconnect();
-			return answer;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return true;
-		}
-	}
-	
 	public int getNbFakeBooks(int id) {
 		try {
 			super.connect();
