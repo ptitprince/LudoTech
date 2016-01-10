@@ -152,11 +152,15 @@ public class CatalogController extends JPanel {
 										gameView.getCategory(), gameView.getEditor());
 								itemServices.setItemsNumberOfGame(newGame.getGameID(), gameView.getNbItems());
 							} else {
-								gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
-										gameView.getPublishingYearStartRange(), gameView.getMinAge(),
-										gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
-										gameView.getCategory(), gameView.getEditor());
-								itemServices.setItemsNumberOfGame(gameView.getId(), gameView.getNbItems());
+								if (gameServices.canDecreaseItemAmount(gameView.getId(), gameView.getNbItems())) {
+									gameServices.editGame(gameView.getId(), gameView.getName(), gameView.getDescription(),
+											gameView.getPublishingYearStartRange(), gameView.getMinAge(),
+											gameView.getNbPlayersStartRange(), gameView.getNbPlayersEndRange(),
+											gameView.getCategory(), gameView.getEditor());
+									itemServices.setItemsNumberOfGame(gameView.getId(), gameView.getNbItems());
+								} else {
+									JOptionPane.showMessageDialog(null, TextView.get("catalogGameNeedAtLeastOneItemAvailable"));
+								}
 							}
 							gameView.setVisible(false);
 							refreshGameList();
@@ -192,15 +196,19 @@ public class CatalogController extends JPanel {
 				}
 			});
 
-			// Clic sur le bouton "suprimmer un exemplaire" de la pop-up de jeu
+			// Clic sur le bouton "suprimmer un extention" de la pop-up de jeu
 			this.gameView.getDeleteExtensionButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					JList list = gameView.getExtensionList();
 					int selectedIndex = list.getSelectedIndex();
 					if (selectedIndex > -1) {
 						int extensionID = ((ExtensionListModel) list.getModel()).getIDAt(selectedIndex);
-						extensionServices.deleteExtension(extensionID);
-						refreshExtensionList(gameView.getId());
+						if (gameServices.canRemoveExtension(extensionID)) {
+							extensionServices.deleteExtension(extensionID);
+							refreshExtensionList(gameView.getId());
+						} else {
+							JOptionPane.showMessageDialog(null, TextView.get("catalogGameCantDeleteExtension"));
+						}
 					}
 				}
 			});

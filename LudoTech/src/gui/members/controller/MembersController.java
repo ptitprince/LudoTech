@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -157,10 +156,14 @@ public class MembersController extends JPanel {
 					int selectedRowIndex = table.getSelectedRow();
 					if (selectedRowIndex > -1) {
 						int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
-						int contextID = memberServices.getMember(memberID).getMemberContextID();
-						memberServices.removeMember(memberID);
-						memberContextServices.removeMemberContext(contextID);
-						refreshMemberList();
+						if (memberServices.canDeleteMember(memberID)) {
+							int contextID = memberServices.getMember(memberID).getMemberContextID();
+							memberServices.removeMember(memberID);
+							memberContextServices.removeMemberContext(contextID);
+							refreshMemberList();
+						} else {
+							JOptionPane.showMessageDialog(null, TextView.get("memberCantBeDeletedException"));
+						}
 					}
 				}
 			}

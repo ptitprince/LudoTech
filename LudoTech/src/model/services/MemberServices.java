@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import model.DAOs.MemberDAO;
+import model.DAOs.BookDAO;
+import model.DAOs.BorrowDAO;
 import model.DAOs.MemberContextDAO;
 import model.POJOs.Member;
 import model.POJOs.MemberContext;
@@ -24,6 +26,9 @@ public class MemberServices {
 	 * Objet d'accés aux données de type MemberContext (adhérents)
 	 */
 	private MemberContextDAO memberContextDAO;
+	
+	private final BookDAO bookDAO;
+	private final BorrowDAO borrowDAO;
 
 	/**
 	 * Construit un nouveau service pour l'authentification
@@ -31,6 +36,8 @@ public class MemberServices {
 	public MemberServices() {
 		this.memberDAO = new MemberDAO();
 		this.memberContextDAO = new MemberContextDAO();
+		this.bookDAO = new BookDAO();
+		this.borrowDAO = new BorrowDAO();
 	}
 
 	/**
@@ -200,6 +207,10 @@ public class MemberServices {
 		int contextID = this.memberDAO.getMemberContextID(memberID);
 		return this.memberDAO.edit(member, contextID) ? member : null;
 		
+	}
+	
+	public boolean canDeleteMember(int memberID) {
+		return (!bookDAO.memberUsed(memberID) && !borrowDAO.memberUsed(memberID));
 	}
 	
 	

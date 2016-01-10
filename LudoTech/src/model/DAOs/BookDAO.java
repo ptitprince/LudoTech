@@ -193,6 +193,41 @@ public class BookDAO extends DAO {
 
 	}
 
+	public boolean itemUsed(int itemID) {
+		boolean result = false;
+		try {
+
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			PreparedStatement psSelect = connection.prepareStatement(
+					"SELECT count(*) FROM BOOK WHERE item_id = ?");
+			
+			psSelect.setInt(1, itemID);
+
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				result = (resultSet.getInt(1) > 0);
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+		return result;
+	}
+	
 	public boolean itemUsedDuringPeriod(int itemID, Date startDate, Date endDate) {
 		boolean result = false;
 		try {
@@ -218,6 +253,41 @@ public class BookDAO extends DAO {
 			psSelect.setDate(3, new java.sql.Date(endDate.getTime()));
 			psSelect.setDate(4, new java.sql.Date(startDate.getTime()));
 			psSelect.setDate(5, new java.sql.Date(endDate.getTime()));
+
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				result = (resultSet.getInt(1) > 0);
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+		return result;
+	}
+	
+	public boolean extensionUsed(int extensionID) {
+		boolean result = false;
+		try {
+
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			PreparedStatement psSelect = connection.prepareStatement(
+					"SELECT count(*) FROM BOOK WHERE extension_id = ?");
+			
+			psSelect.setInt(1, extensionID);
 
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -261,6 +331,41 @@ public class BookDAO extends DAO {
 			psSelect.setDate(3, new java.sql.Date(endDate.getTime()));
 			psSelect.setDate(4, new java.sql.Date(startDate.getTime()));
 			psSelect.setDate(5, new java.sql.Date(endDate.getTime()));
+
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				result = (resultSet.getInt(1) > 0);
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+		return result;
+	}
+	
+	public boolean memberUsed(int memberID) {
+		boolean result = false;
+		try {
+
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			// Il n'est pas possible
+			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
+			// une seule connection peut-être active à la fois pour toute la
+			// base de données, donc qu'une seule requête à la fois (contrainte
+			// du SGBD Derby)
+
+			PreparedStatement psSelect = connection.prepareStatement(
+					"SELECT count(*) FROM BOOK WHERE member_id = ?");
+			
+			psSelect.setInt(1, memberID);
 
 			psSelect.execute();
 			psSelect.closeOnCompletion();

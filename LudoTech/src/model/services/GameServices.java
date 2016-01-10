@@ -37,7 +37,6 @@ public class GameServices {
 	private final BookDAO bookDAO;
 	private final BorrowDAO borrowDAO;
 	private final ItemDAO itemDAO;
-	
 	private ParametersServices parametersServices;
 	
 	/**
@@ -222,6 +221,25 @@ public class GameServices {
 		} else {
 			return null;
 		}
+	}
+	
+	public boolean canDecreaseItemAmount(int gameID, int newItemAmount) {
+		List<Item> itemsOfGame = itemDAO.getAllHavingGameID(gameID);
+		List<Item> availableItems = new ArrayList<Item>();	
+		for (Item item : itemsOfGame) {
+			if (!bookDAO.itemUsed(item.getItemID()) && (!borrowDAO.itemUsed(item.getItemID()))) {
+				availableItems.add(item);
+			}
+		}
+		if (newItemAmount < itemsOfGame.size()) {
+			return (availableItems.size() - (itemsOfGame.size() - newItemAmount) >= 1);
+		} else {
+			return true;
+		}
+	}
+	
+	public boolean canRemoveExtension(int extensionID) {
+		return (!bookDAO.extensionUsed(extensionID) && !borrowDAO.extensionUsed(extensionID));
 	}
 
 }
