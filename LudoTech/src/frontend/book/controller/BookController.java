@@ -43,30 +43,30 @@ import frontend.utils.gui.TextView;
 @SuppressWarnings("serial")
 public class BookController extends JPanel {
 
+	private int currentMemberID;
+	
 	private BookServices bookServices;
-	private ItemServices itemServices;
-	private MemberServices memberServices;
 	private GameServices gameServices;
+	private ItemServices itemServices;
 	private ExtensionServices extensionServices;
+	private MemberServices memberServices;
 	private ParametersServices parametersServices;
 
 	private BookListModel bookListModel;
 
 	private BookListView bookListView;
-
 	private BookView bookView;
-
-	private int currentMemberID;
 
 	public BookController(int currentMemberID) {
 		this.currentMemberID = currentMemberID;
 		this.bookServices = new BookServices();
-		this.itemServices = new ItemServices();
-		this.memberServices = new MemberServices();
 		this.gameServices = new GameServices();
+		this.itemServices = new ItemServices();
 		this.extensionServices = new ExtensionServices();
+		this.memberServices = new MemberServices();
 		this.parametersServices = new ParametersServices();
 		this.bookListModel = new BookListModel(this.bookServices, this.itemServices);
+		
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 		this.makeListeners();
@@ -83,6 +83,7 @@ public class BookController extends JPanel {
 
 	private void makeListeners() {
 
+		// Clic sur le bouton "Ajouter une réservation" de la liste des réservations
 		this.bookListView.getAddBookButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				bookView.clear();
@@ -114,6 +115,7 @@ public class BookController extends JPanel {
 			}
 		});
 
+		// Clic sur le bouton "Valider" de la fenêtre de création de réservation
 		this.bookView.getValidateButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Game selectedGame = bookView.getSelectedGame();
@@ -154,6 +156,7 @@ public class BookController extends JPanel {
 			}
 		});
 
+		// Clic sur le bouton "Annuler" de la fenêtre de création de réservation
 		this.bookView.getCancelButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				bookView.setVisible(false);
@@ -203,6 +206,7 @@ public class BookController extends JPanel {
 				}
 			});
 
+			// Sélection d'un élément dans la liste des jeux de la fenêtre de création de réservartion
 			this.bookView.getGameComboBox().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					loadExtensionListAccordingToGame();
@@ -220,8 +224,8 @@ public class BookController extends JPanel {
 				List<Member> members = memberServices.getMemberList(new HashMap<String, String>());
 				bookView.loadGames(games);
 				bookView.loadMembers(members);
-				bookView.clear(); // Pour déselectionner le premier élément
-									// des deux listes déroulantes
+				// Pour déselectionner le premier élément des deux listes déroulantes
+				bookView.clear(); 
 			}
 		});
 	}
@@ -247,7 +251,6 @@ public class BookController extends JPanel {
 				} else {
 					bookListModel.refreshForSimpleUser(currentMemberID);
 				}
-
 			}
 		});
 	}

@@ -32,6 +32,8 @@ import frontend.utils.gui.TextView;
 
 @SuppressWarnings("serial")
 public class CatalogController extends JPanel {
+	
+	private int currentMemberID;
 
 	private GameServices gameServices;
 	private ItemServices itemServices;
@@ -45,16 +47,15 @@ public class CatalogController extends JPanel {
 	private GameListView gameListView;
 	private GameView gameView;
 
-	private int currentMemberID;
-
 	public CatalogController(int currentMemberID) {
+		this.currentMemberID = currentMemberID;
 		this.gameServices = new GameServices();
 		this.itemServices = new ItemServices();
 		this.extensionServices = new ExtensionServices();
 		this.memberServices = new MemberServices();
 		this.gameListModel = new GameListModel(this.gameServices);
 		this.extensionListModel = new ExtensionListModel(this.extensionServices);
-		this.currentMemberID = currentMemberID;
+		
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 		this.makeListeners();
@@ -94,7 +95,7 @@ public class CatalogController extends JPanel {
 			}
 		});
 
-		// Clic sur le bouton "chercher" sur la liste des jeux
+		// Clic sur le bouton "Chercher" sur la liste des jeux
 		this.gameSearchView.getSearchButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				refreshGameList();
@@ -103,7 +104,7 @@ public class CatalogController extends JPanel {
 
 		if (this.memberServices.isAdmin(this.currentMemberID)) {
 
-			// Clic sur le bouton "ajouter un jeu" de la liste des jeux
+			// Clic sur le bouton "Ajouter un jeu" de la liste des jeux
 			this.gameListView.getAddGameButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					gameView.load("", -1, false, "", "", Calendar.getInstance().get(Calendar.YEAR), 1, 2, 3, "", 0);
@@ -111,7 +112,7 @@ public class CatalogController extends JPanel {
 				}
 			});
 
-			// Clic sur le bouton "suprimmer un jeu" de la liste des jeux
+			// Clic sur le bouton "Suprimmer un jeu" de la liste des jeux
 			this.gameListView.getDeleteGameButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					JTable table = gameListView.getTable();
@@ -138,7 +139,7 @@ public class CatalogController extends JPanel {
 				}
 			});
 
-			// Clic sur le bouton "valider" de la pop-up de jeu
+			// Clic sur le bouton "Valider" de la pop-up de jeu
 			this.gameView.getValidateButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
@@ -171,14 +172,14 @@ public class CatalogController extends JPanel {
 				}
 			});
 
-			// Clic sur le bouton "annuler" de la pop-up de jeu
+			// Clic sur le bouton "Annuler" de la pop-up de jeu
 			this.gameView.getCancelButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					gameView.setVisible(false);
 				}
 			});
 
-			// Clic sur le bouton "ajouter un exemplaire" de la pop-up de jeu
+			// Clic sur le bouton "Ajouter un exemplaire" de la pop-up de jeu
 			this.gameView.getAddExtensionButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (gameView.isCreatingGame()) {
@@ -196,7 +197,7 @@ public class CatalogController extends JPanel {
 				}
 			});
 
-			// Clic sur le bouton "suprimmer un extention" de la pop-up de jeu
+			// Clic sur le bouton "Suprimmer un extention" de la pop-up de jeu
 			this.gameView.getDeleteExtensionButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					JList list = gameView.getExtensionList();

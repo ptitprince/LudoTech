@@ -20,7 +20,6 @@ public class LoginView extends JPanel {
 	
 	private JButton validateButton;
 	
-	
 	public LoginView() {
 		this.setLayout(new BoxLayout(this, 1));
 		this.makeGUI();

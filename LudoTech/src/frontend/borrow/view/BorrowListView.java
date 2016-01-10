@@ -15,17 +15,18 @@ import frontend.utils.gui.TextView;
 @SuppressWarnings("serial")
 public class BorrowListView extends JPanel{
 	
+	private boolean currentMemberIsAdmin;
+	
 	private JTable table;
+	
 	private JButton addBorrowButton;
 	private JButton receiveBorrowButton;
 	
-	private boolean currentMemberIsAdmin;
-	
 	public BorrowListView(BorrowListModel borrowModel, boolean currentMemberIsAdmin) {
-		this.setLayout(new BorderLayout());
 		this.currentMemberIsAdmin = currentMemberIsAdmin;
-		this.makeGUI(borrowModel);
 		
+		this.setLayout(new BorderLayout());
+		this.makeGUI(borrowModel);
 	}
 
 	private void makeGUI(BorrowListModel borrowModel) {

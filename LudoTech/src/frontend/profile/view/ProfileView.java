@@ -59,6 +59,7 @@ public class ProfileView extends JPanel {
 	public ProfileView(boolean currentMemberIsAdmin) {
 		this.memberID = -1;
 		this.memberContextID = -1;
+		
 		this.setLayout(new BorderLayout());
 		this.makeGUI(currentMemberIsAdmin);
 	}
@@ -265,9 +266,52 @@ public class ProfileView extends JPanel {
 
 	public String getLastName() {
 		return this.lastName.getText();
-
 	}
 
+	public String getPseudo() {
+		return this.pseudo.getText();
+	}
+	
+	public String getPassword() {
+		return this.password.getText();
+	}
+
+	public boolean getIsAdmin() {
+		return this.isAdmin.isSelected();
+	}
+
+	public Date getBirthDate() {
+		return (Date) this.datePicker.getModel().getValue();
+	}
+
+	public String getPhoneNumber() {
+		return this.phoneNumber.getText();
+	}
+
+	public String getEmail() {
+		return this.email.getText();
+	}
+
+	public String getStreetAddress() {
+		return this.streetAddress.getText();
+	}
+
+	public String getPostalCode() {
+		return this.postalCode.getText();
+	}
+
+	public String getCity() {
+		return this.city.getText();
+	}
+	
+	public boolean getCanBook() {
+		return this.canBook.isSelected();
+	}
+
+	public boolean getCanBorrow() {
+		return this.canBorrow.isSelected();
+	}
+	
 	public int getNbDelays() throws NotValidNumberFieldException {
 		int nbDelays = -1;
 		try {
@@ -289,59 +333,9 @@ public class ProfileView extends JPanel {
 		}
 		return nbFakeBookings;
 	}
-
-	public String getPseudo() {
-		return this.pseudo.getText();
-
-	}
-
-	public boolean getIsAdmin() {
-		return this.isAdmin.isSelected();
-
-	}
-
-	public boolean getCanBook() {
-		return this.canBook.isSelected();
-
-	}
-
-	public boolean getCanBorrow() {
-		return this.canBorrow.isSelected();
-
-	}
-
-	public Date getBirthDate() {
-		return (Date) this.datePicker.getModel().getValue();
-
-	}
-
+	
 	public Date getLastSubscriptionDate() {
 		return (Date) this.lastSubscriptionDatePicker.getModel().getValue();
-	}
-
-	public String getPhoneNumber() {
-		return this.phoneNumber.getText();
-
-	}
-
-	public String getEmail() {
-		return this.email.getText();
-
-	}
-
-	public String getStreetAddress() {
-		return this.streetAddress.getText();
-
-	}
-
-	public String getPostalCode() {
-		return this.postalCode.getText();
-
-	}
-
-	public String getCity() {
-		return this.city.getText();
-
 	}
 
 	public JButton getValidateButton() {
@@ -351,11 +345,5 @@ public class ProfileView extends JPanel {
 	public JButton getCancelButton() {
 		return this.cancelButton;
 	}
-
-	public String getPassword() {
-		return this.password.getText();
-	}
-
-	
 
 }

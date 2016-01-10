@@ -14,7 +14,9 @@ import frontend.utils.gui.TextView;
 @SuppressWarnings("serial")
 public class MemberListModel extends AbstractTableModel{
 
-	private final String[] HEADERS = { "", TextView.get("lastName"), TextView.get("firstName"), TextView.get("pseudo"), TextView.get("birthDate"), TextView.get("phoneNumber"), TextView.get("canBorrow"),
+	private final String[] HEADERS = { "", 
+			TextView.get("lastName"), TextView.get("firstName"), TextView.get("pseudo"), 
+			TextView.get("birthDate"), TextView.get("phoneNumber"), TextView.get("canBorrow"),
 			TextView.get("lastSubscriptionDate") };
 	
 	private MemberServices memberServices;
@@ -85,7 +87,5 @@ public class MemberListModel extends AbstractTableModel{
 			return Object.class;
 		}
 	}
-
-	
 	
 }

@@ -17,26 +17,28 @@ import frontend.utils.gui.TextView;
 @SuppressWarnings("serial")
 public class MainController extends JTabbedPane implements LoginObserver {
 
+	private int currentMemberID;
+	
 	private LoginController loginController;
 	private CatalogController catalogController;
-	private ParametersController parametersController;
+	private BorrowController borrowController;
 	private BookController bookController;
 	private ProfileController profileController;
 	private MembersController membersController;
-	private BorrowController borrowController;
-
-	private int currentMemberID;
+	private ParametersController parametersController;
 
 	public MainController() {
 		this.loginController = new LoginController();
 		this.makeLoginGUI();
 	}
 
+	// Appelé au lancement de l'application
 	private void makeLoginGUI() {
 		this.loginController.addObserver(this);
 		this.addTab(TextView.get("tabLogin"), loginController);
 	}
 
+	// Appelé lorsque la connexion a réussie
 	private void makeMainUseGUI(boolean showAdminTabs) {
 		this.catalogController = new CatalogController(currentMemberID);		
 		this.borrowController = new BorrowController(currentMemberID);
@@ -45,7 +47,8 @@ public class MainController extends JTabbedPane implements LoginObserver {
 		this.membersController = new MembersController(currentMemberID);
 		this.parametersController = new ParametersController();
 		
-		this.catalogController.refreshGameList(); // Affichage de la liste lors du chargement (car 1er onglet affiché)
+		// Affichage de la liste lors du chargement (car c'est l'onglet affiché par défaut)
+		this.catalogController.refreshGameList(); 
 		
 		this.addTab(TextView.get("tabCatalog"), this.catalogController);
 		this.addTab(TextView.get("tabBorrow"), this.borrowController);

@@ -22,10 +22,10 @@ public class ParametersController extends JPanel {
 	public ParametersController() {
 		this.parametersServices = new ParametersServices();
 		this.parametersView = new ParametersView();
+
 		this.makeGUI();
 		this.makeListeners();
 		this.loadParameters();
-
 	}
 
 	private void makeGUI() {
@@ -35,42 +35,38 @@ public class ParametersController extends JPanel {
 	}
 
 	private void makeListeners() {
-		this.parametersView.getValidateButton().addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						try {
-							String text = TextView.get("confirmation");
-							String champ = TextView.get("validation");
-							String cancel = TextView.get("annulation");
-							int result = JOptionPane.showConfirmDialog(null,
-									text, "", JOptionPane.YES_OPTION);
-							if (result == 0) {
-								parametersServices.saveAllParameters(
-										parametersView.getNbBorrowings(),
-										parametersView.getNbBookings(),
-										parametersView
-												.getDurationOfBorrowings(),
-										parametersView
-												.getDurationBetweenBookingandBorrowing(),
-										parametersView
-												.getDurationOfCotisation());
-								JOptionPane.showMessageDialog(null, champ, "validation", JOptionPane.INFORMATION_MESSAGE);	
-							} else {
-								JOptionPane.showMessageDialog(null, cancel , "annulation", JOptionPane.INFORMATION_MESSAGE);	
-								loadParameters();
-							}
-						} catch (NotValidNumberFieldException exception) {
-							showInvalidFieldsException(exception);
-						}
 
-					}
-				});
-		this.parametersView.getCancelButton().addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+		// Clic sur le bouton "Valider"
+		this.parametersView.getValidateButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String text = TextView.get("confirmation");
+					String champ = TextView.get("validation");
+					String cancel = TextView.get("annulation");
+					int result = JOptionPane.showConfirmDialog(null, text, "", JOptionPane.YES_OPTION);
+					if (result == 0) {
+						parametersServices.saveAllParameters(parametersView.getNbBorrowings(),
+								parametersView.getNbBookings(), parametersView.getDurationOfBorrowings(),
+								parametersView.getDurationBetweenBookingandBorrowing(),
+								parametersView.getDurationOfCotisation());
+						JOptionPane.showMessageDialog(null, champ, "validation", JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null, cancel, "annulation", JOptionPane.INFORMATION_MESSAGE);
 						loadParameters();
 					}
-				});
+				} catch (NotValidNumberFieldException exception) {
+					showInvalidFieldsException(exception);
+				}
+
+			}
+		});
+		
+		// Clic sur le bouton "Annuler"
+		this.parametersView.getCancelButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadParameters();
+			}
+		});
 	}
 
 	private void loadParameters() {
@@ -80,20 +76,16 @@ public class ParametersController extends JPanel {
 
 			}
 		});
-
 	}
 
-	private void showInvalidFieldsException(
-			NotValidNumberFieldException exception) {
-		String text = TextView.get("invalidField")
-				+ "\"" + exception.getFieldName() + "\"" + ".\n"
+	private void showInvalidFieldsException(NotValidNumberFieldException exception) {
+		String text = TextView.get("invalidField") + "\"" + exception.getFieldName() + "\"" + ".\n"
 				+ TextView.get("valueInInvalidField")
-				+ ((exception.getFieldValue().equals("")) ? TextView
-						.get("emptyValue") : "\"" + exception.getFieldValue()
-						+ "\" ")
+				+ ((exception.getFieldValue().equals("")) ? TextView.get("emptyValue")
+						: "\"" + exception.getFieldValue() + "\" ")
 				+ TextView.get("typeOfValidValue")
-				+ ((exception.getFieldValue().equals("")) ? TextView
-						.get("notEmptyValue") : exception.getFieldType()) + ".";
+				+ ((exception.getFieldValue().equals("")) ? TextView.get("notEmptyValue") : exception.getFieldType())
+				+ ".";
 		JOptionPane.showMessageDialog(null, text);
 	}
 }

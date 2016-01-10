@@ -29,19 +29,20 @@ public class ProfileController extends JPanel {
 		this.memberServices = new MemberServices();
 		this.memberContextServices = new MemberContextServices();
 		this.profileView = new ProfileView(memberServices.isAdmin(currentMemberID));
+		
 		this.makeGUI();
 		this.makeListeners();
 		this.loadMember();
-
 	}
 
 	private void makeGUI() {
 		this.profileView = new ProfileView(memberServices.isAdmin(currentMemberID));
 		this.add(this.profileView);
-
 	}
 
 	private void makeListeners() {
+		
+		// Clic sur le bouton "Valider"
 		this.profileView.getValidateButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -67,6 +68,7 @@ public class ProfileController extends JPanel {
 			}
 		});
 
+		// Clic sur le bouton "Cancel"
 		this.profileView.getCancelButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadMember();
@@ -84,10 +86,12 @@ public class ProfileController extends JPanel {
 						member.getPostalCode(), member.getCity(), member.getMemberContext().getNbFakeBookings(),
 						member.getMemberContext().getNbDelays(), member.getMemberContext().canBorrow(),
 						member.getMemberContext().canBook(), member.getMemberContext().getLastSubscriptionDate());
-
 			}
 		});
-
+	}
+	
+	public void refreshData() {
+		this.loadMember();
 	}
 
 	private void showInvalidFieldsException(NotValidNumberFieldException exception) {
@@ -99,10 +103,6 @@ public class ProfileController extends JPanel {
 				+ ((exception.getFieldValue().equals("")) ? TextView.get("notEmptyValue") : exception.getFieldType())
 				+ ".";
 		JOptionPane.showMessageDialog(null, text);
-	}
-
-	public void refreshData() {
-		this.loadMember();
 	}
 
 }

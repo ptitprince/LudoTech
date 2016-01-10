@@ -15,18 +15,19 @@ import frontend.utils.gui.TextView;
 @SuppressWarnings("serial")
 public class BookListView extends JPanel{
 	
+	private boolean currentMemberIsAdmin;
+
 	private JTable table;
+	
 	private JButton addBookButton;
 	private JButton cancelBookButton;
 	private JButton comeGetGameButton;
 	
-	private boolean currentMemberIsAdmin;
-	
 	public BookListView(BookListModel bookModel, boolean currentMemberIsAdmin) {
-		this.setLayout(new BorderLayout());
 		this.currentMemberIsAdmin = currentMemberIsAdmin;
-		this.makeGUI(bookModel);
 		
+		this.setLayout(new BorderLayout());
+		this.makeGUI(bookModel);
 	}
 
 	private void makeGUI(BookListModel bookModel) {

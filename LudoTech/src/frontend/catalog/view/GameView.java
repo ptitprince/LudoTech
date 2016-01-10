@@ -37,6 +37,9 @@ public class GameView extends JDialog {
 
 	private static final double WINDOW_RATIO = 1.10;
 
+	private boolean creatingGame;
+	private boolean currentMemberIsAdmin;
+	
 	private JTextField nameField;
 	private JTextField idField;
 	private JCheckBox availabilityCheckBox;
@@ -58,9 +61,6 @@ public class GameView extends JDialog {
 	private JButton validateButton;
 	private JButton cancelButton;
 
-	private boolean creatingGame;
-	private boolean currentMemberIsAdmin;
-
 	public GameView(ExtensionListModel extensionListModel, boolean currentMemberIsAdmin) {
 		this.creatingGame = false;
 		this.currentMemberIsAdmin = currentMemberIsAdmin;
@@ -73,7 +73,6 @@ public class GameView extends JDialog {
 		this.setLayout(new BorderLayout());
 
 		this.makeGUI(extensionListModel);
-
 		if (!currentMemberIsAdmin) {
 			this.disableFields();
 		}
@@ -425,7 +424,7 @@ public class GameView extends JDialog {
 	public JButton getCancelButton() {
 		return this.cancelButton;
 	}
-
+	
 	public boolean isCreatingGame() {
 		return this.creatingGame;
 	}

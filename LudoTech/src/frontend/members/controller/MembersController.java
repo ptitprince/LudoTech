@@ -30,19 +30,20 @@ import frontend.utils.gui.TextView;
 @SuppressWarnings("serial")
 public class MembersController extends JPanel {
 
-	private MemberListView memberListView;
-	private MemberSearchView memberSearchView;
-
 	private MemberServices memberServices;
 	private MemberContextServices memberContextServices;
-
+	
 	private MemberListModel memberListModel;
+	
+	private MemberListView memberListView;
+	private MemberSearchView memberSearchView;
 	private MemberView memberView;
 
 	public MembersController(int currentMemberID) {
 		this.memberServices = new MemberServices();
 		this.memberContextServices = new MemberContextServices();
 		this.memberListModel = new MemberListModel(this.memberServices);
+		
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 		this.makeListeners();
@@ -62,7 +63,7 @@ public class MembersController extends JPanel {
 
 	private void makeListeners() {
 
-		// Clic sur le bouton "chercher" sur la liste des membres
+		// Clic sur le bouton "Chercher" sur la liste des membres
 		this.memberSearchView.getSearchButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				refreshMemberList();
@@ -70,7 +71,7 @@ public class MembersController extends JPanel {
 		});
 
 		// Double clic sur une ligne -> Affichage et chargement des informations
-		// du membre sélectionné dans la pop-up
+		// de l'adhérent sélectionné dans la pop-up
 		this.memberListView.getTable().addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
@@ -88,9 +89,38 @@ public class MembersController extends JPanel {
 				}
 			}
 		});
+		
+		// Clic sur le bouton "Ajouter" de la liste des adhérents
+		this.memberListView.getAddMemberButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				memberView.getProfileView().load(-1, -1, "", "", "", "", false, Calendar.getInstance().getTime(), "",
+						"", "", "", "", 0, 0, true, true, Calendar.getInstance().getTime());
+				memberView.setVisible(true);
+			}
+		});
 
-	
+		// Clic sur le bouton "Supprimer" de la liste des adhérents
+		this.memberListView.getDeleteMemberButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (showDeleteMemberConfirmation()) {
+					JTable table = memberListView.getTable();
+					int selectedRowIndex = table.getSelectedRow();
+					if (selectedRowIndex > -1) {
+						int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
+						if (memberServices.canDeleteMember(memberID)) {
+							int contextID = memberServices.getMember(memberID).getMemberContextID();
+							memberServices.removeMember(memberID);
+							memberContextServices.removeMemberContext(contextID);
+							refreshMemberList();
+						} else {
+							JOptionPane.showMessageDialog(null, TextView.get("memberCantBeDeletedException"));
+						}
+					}
+				}
+			}
+		});
 
+		// Clic sur le bouton "Valider" de la fenêtre d'édition d'un adhérent
 		this.memberView.getProfileView().getValidateButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -130,39 +160,13 @@ public class MembersController extends JPanel {
 			}
 		});
 
+		// Clic sur le bouton "Annuler" de la fenêtre d'édition d'un adhérent
 		this.memberView.getProfileView().getCancelButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				memberView.setVisible(false);
 			}
 		});
 
-		this.memberListView.getAddMemberButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				memberView.getProfileView().load(-1, -1, "", "", "", "", false, Calendar.getInstance().getTime(), "",
-						"", "", "", "", 0, 0, true, true, Calendar.getInstance().getTime());
-				memberView.setVisible(true);
-			}
-		});
-
-		this.memberListView.getDeleteMemberButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (showDeleteMemberConfirmation()) {
-					JTable table = memberListView.getTable();
-					int selectedRowIndex = table.getSelectedRow();
-					if (selectedRowIndex > -1) {
-						int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
-						if (memberServices.canDeleteMember(memberID)) {
-							int contextID = memberServices.getMember(memberID).getMemberContextID();
-							memberServices.removeMember(memberID);
-							memberContextServices.removeMemberContext(contextID);
-							refreshMemberList();
-						} else {
-							JOptionPane.showMessageDialog(null, TextView.get("memberCantBeDeletedException"));
-						}
-					}
-				}
-			}
-		});
 	}
 
 	public void refreshMemberList() {
@@ -173,10 +177,8 @@ public class MembersController extends JPanel {
 				filter.put("last_name", memberSearchView.getLastNameValue().trim());
 				filter.put("pseudo", memberSearchView.getPseudoValue().trim());
 				memberListModel.refresh(filter);
-
 			}
 		});
-
 	}
 
 	private void showInvalidFieldsException(NotValidNumberFieldException exception) {

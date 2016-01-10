@@ -15,15 +15,16 @@ import frontend.utils.gui.TextView;
 @SuppressWarnings("serial")
 public class GameListView extends JPanel {
 
+	private boolean currentMemberIsAdmin;
+	
 	private JTable table;
 
 	private JButton addGameButton;
 	private JButton deleteGameButton;
 
-	private boolean currentMemberIsAdmin;
-
 	public GameListView(GameListModel model, boolean currentMemberIsAdmin) {
 		this.currentMemberIsAdmin = currentMemberIsAdmin;
+		
 		this.setLayout(new BorderLayout());
 		this.makeGUI(model);
 	}

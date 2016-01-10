@@ -15,27 +15,24 @@ public class MemberView extends JDialog {
 	
 	private ProfileView profileView;
 	
-	public MemberView(){
-		
+	public MemberView() {
 		this.setTitle(TextView.get("membersMemberPopupTitle"));
 		this.setSize((int) (LudoTechApplication.WINDOW_WIDTH / WINDOW_RATIO),
 				(int) (LudoTechApplication.WINDOW_HEIGHT / WINDOW_RATIO));
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		
 		this.setLayout(new BorderLayout());
-		
+
 		makeGUI();
 	}
 
-	private void makeGUI(){
-		
-		this.profileView = new ProfileView(true); // est vrai car ce panneau n'est accessible qu'aux admins
+	private void makeGUI() {
+		// Vrai car ce panneau n'est accessible qu'aux administrateurs
+		this.profileView = new ProfileView(true); 
 		this.add(profileView, BorderLayout.CENTER);
-		
 	}
 	
-	public ProfileView getProfileView(){
+	public ProfileView getProfileView() {
 		return this.profileView;
 	}
 }

@@ -51,10 +51,12 @@ public class BorrowView extends JDialog {
 	public BorrowView(int durationOfBorrowingsInWeeks, int durationBetweenBookingandBorrowingInWeeks) {
 		this.durationOfBorrowingsInWeeks = durationOfBorrowingsInWeeks;
 		this.durationBetweenBookingandBorrowingInWeeks = durationBetweenBookingandBorrowingInWeeks;
+		
 		this.setSize((int) (LudoTechApplication.WINDOW_WIDTH / WINDOW_RATIO),
 				(int) (LudoTechApplication.WINDOW_HEIGHT / WINDOW_RATIO));
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 	}
@@ -135,7 +137,6 @@ public class BorrowView extends JDialog {
 		this.cancelButton = new JButton(TextView.get("cancel"));
 		actionsPanel.add(this.cancelButton);
 		this.add(actionsPanel, BorderLayout.SOUTH);
-
 	}
 
 	public void loadGames(List<Game> games) {

@@ -51,10 +51,12 @@ public class BookView extends JDialog {
 	public BookView(int durationOfBookingsInWeeks, int durationBetweenBookingandBorrowingInWeeks) {
 		this.durationOfBorrowingsInWeeks = durationOfBookingsInWeeks;
 		this.durationBetweenBookingandBorrowingInWeeks = durationBetweenBookingandBorrowingInWeeks;
+		
 		this.setSize((int) (LudoTechApplication.WINDOW_WIDTH / WINDOW_RATIO),
 				(int) (LudoTechApplication.WINDOW_HEIGHT / WINDOW_RATIO));
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 	}
@@ -149,6 +151,13 @@ public class BookView extends JDialog {
 	public void loadExtensions(List<Extension> extensions) {
 		((PostLoadableExtensionComboBoxModel) this.extensionComboBox.getModel()).loadData(extensions);
 	}
+	
+	public void setMemberComboBoxValue(int memberID, boolean admin) {
+		if (!admin) {
+			((PostLoadableMemberComboBoxModel) this.memberComboBox.getModel()).selectItemByID(memberID);
+		}
+		this.memberComboBox.setEnabled(admin);
+	}
 
 	public JComboBox<Game> getGameComboBox() {
 		return this.gameComboBox;
@@ -201,10 +210,4 @@ public class BookView extends JDialog {
 		this.extensionComboBox.getModel().setSelectedItem(null);
 	}
 
-	public void setMemberComboBoxValue(int memberID, boolean admin) {
-		if (!admin) {
-			((PostLoadableMemberComboBoxModel) this.memberComboBox.getModel()).selectItemByID(memberID);
-		}
-		this.memberComboBox.setEnabled(admin);
-	}
 }

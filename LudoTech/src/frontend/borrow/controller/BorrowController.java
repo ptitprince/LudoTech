@@ -39,30 +39,30 @@ import frontend.utils.gui.TextView;
 @SuppressWarnings("serial")
 public class BorrowController extends JPanel {
 
+	private int currentMemberID;
+	
 	private BorrowServices borrowServices;
-	private ItemServices itemServices;
-	private MemberServices memberServices;
 	private GameServices gameServices;
+	private ItemServices itemServices;
 	private ExtensionServices extensionServices;
+	private MemberServices memberServices;
 	private ParametersServices parametersServices;
 
 	private BorrowListModel borrowListModel;
 
 	private BorrowListView borrowListView;
-
 	private BorrowView borrowView;
-
-	private int currentMemberID;
 
 	public BorrowController(int currentMemberID) {
 		this.currentMemberID = currentMemberID;
 		this.borrowServices = new BorrowServices();
-		this.itemServices = new ItemServices();
-		this.memberServices = new MemberServices();
 		this.gameServices = new GameServices();
+		this.itemServices = new ItemServices();
 		this.extensionServices = new ExtensionServices();
+		this.memberServices = new MemberServices();
 		this.parametersServices = new ParametersServices();
 		this.borrowListModel = new BorrowListModel(this.borrowServices, this.itemServices);
+		
 		this.setLayout(new BorderLayout());
 		this.makeGUI();
 		this.makeListeners();
@@ -79,6 +79,8 @@ public class BorrowController extends JPanel {
 
 	private void makeListeners() {
 		if (memberServices.isAdmin(this.currentMemberID)) {
+			
+			// Clic sur le bouton "Ajout un emprunt" de la liste des prêts
 			this.borrowListView.getAddBorrowButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					borrowView.setVisible(true);
@@ -92,13 +94,8 @@ public class BorrowController extends JPanel {
 					JTable table = borrowListView.getTable();
 					int selectedRowIndex = table.getSelectedRow();
 					if (selectedRowIndex > -1) {
-						if (showDeleteBorrowConfirmation()) { // True si
-																// la
-																// suppression
-																// a été
-																// confirmée
-																// par
-																// l'utilisateur
+						// True si comfirmé par l'utilisateur
+						if (showDeleteBorrowConfirmation()) { 
 							try {
 								int itemID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
 								int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 1);
@@ -114,12 +111,8 @@ public class BorrowController extends JPanel {
 					}
 				}
 			});
-			this.borrowView.getGameComboBox().addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					loadExtensionListAccordingToGame();
-				}
-			});
+			
+			// Clic sur le bouton "Valider" de la fenêtre de création d'un prêt
 			this.borrowView.getValidateButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					Game selectedGame = borrowView.getSelectedGame();
@@ -158,9 +151,19 @@ public class BorrowController extends JPanel {
 					}
 				}
 			});
+			
+			// Clic sur le bouton "Annuler" de la fenêtre de création d'un prêt
 			this.borrowView.getCancelButton().addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					borrowView.setVisible(false);
+				}
+			});
+			
+			// Sélection d'un jeu dans la liste des jeux de la fenêtre de création d'un prêt
+			this.borrowView.getGameComboBox().addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					loadExtensionListAccordingToGame();
 				}
 			});
 		}
@@ -174,8 +177,8 @@ public class BorrowController extends JPanel {
 				List<Member> members = memberServices.getMemberList(new HashMap<String, String>());
 				borrowView.loadGames(games);
 				borrowView.loadMembers(members);
-				borrowView.clear(); // Pour déselectionner le premier élément
-									// des deux listes déroulantes
+				// Pour déselectionner le premier élément des deux listes déroulantes
+				borrowView.clear(); 
 			}
 		});
 	}
