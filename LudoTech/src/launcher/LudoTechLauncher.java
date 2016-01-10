@@ -1,5 +1,5 @@
 package launcher;
-import gui.LudoTechApplication;
+import frontend.LudoTechApplication;
 
 public class LudoTechLauncher {
 
