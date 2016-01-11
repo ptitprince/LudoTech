@@ -70,7 +70,7 @@ public class BorrowListModel extends AbstractTableModel {
 					.getExtensionID();
 		case 3:
 			int itemID = this.borrowList.get(rowIndex).getItem().getItemID();
-			return this.itemServices.getNameOfGame(itemID);
+			return this.itemServices.getGameName(itemID);
 		case 4:
 			return this.borrowList.get(rowIndex).getMember().getFirstName()
 					+ " "

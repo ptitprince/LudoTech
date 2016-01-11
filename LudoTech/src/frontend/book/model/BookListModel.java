@@ -68,7 +68,7 @@ public class BookListModel extends AbstractTableModel {
 					.getExtensionID();
 		case 3:
 			int itemID = this.bookList.get(rowIndex).getItem().getItemID();
-			return this.itemServices.getNameOfGame(itemID);
+			return this.itemServices.getGameName(itemID);
 		case 4:
 			return this.bookList.get(rowIndex).getMember().getFirstName()
 					+ " "

@@ -28,9 +28,10 @@ public class ItemTests extends Tests {
 	}
 	
 	@Test
-	public void testSetItems() {
+	public void testItems() {
 		itemServices.setItemsNumberOfGame(this.game.getGameID(), 4);
 		Assert.assertEquals(4, itemServices.countItemsOfGame(this.game.getGameID()));
+		
 		itemServices.setItemsNumberOfGame(this.game.getGameID(), 2);
 		Assert.assertEquals(2, itemServices.countItemsOfGame(this.game.getGameID()));
 	}

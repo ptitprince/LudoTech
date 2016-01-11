@@ -13,9 +13,8 @@ import backend.services.GameServices;
 public class ExtensionTests extends Tests {
 
 	private GameServices gameServices;
-
 	private ExtensionServices extensionServices;
-
+	
 	private Game game;
 
 	@Before
@@ -30,10 +29,28 @@ public class ExtensionTests extends Tests {
 	
 	@Test
 	public void testAddExtension() {
-		Assert.assertNotNull(extensionServices.addExtension("Une extension", this.game.getGameID()));
-		Assert.assertNotNull(extensionServices.addExtension("Une 2ème extension", this.game.getGameID()));
+		Extension extension = extensionServices.addExtension("Une extension", this.game.getGameID());
+		Assert.assertNotNull(extension);
+	}
+	
+	@Test
+	public void testCountExtensions() {
+		Extension extension1 = extensionServices.addExtension("Une extension à compter 1", this.game.getGameID());
+		Assert.assertNotNull(extension1);
+		Extension extension2 = extensionServices.addExtension("Une extension à compter 2", this.game.getGameID());
+		Assert.assertNotNull(extension2);
 		
 		Assert.assertEquals(2, extensionServices.countExtensions(this.game.getGameID()));
+	}
+	
+	@Test
+	public void testGetExtensions() {
+		Extension extension1 = extensionServices.addExtension("Une extension à obtenir 1", this.game.getGameID());
+		Assert.assertNotNull(extension1);
+		Extension extension2 = extensionServices.addExtension("Une extension à obtenir 2", this.game.getGameID());
+		Assert.assertNotNull(extension2);
+		
+		Assert.assertNotNull(extensionServices.getExtensions(this.game.getGameID()));
 	}
 	
 	@Test

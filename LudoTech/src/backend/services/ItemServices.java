@@ -31,7 +31,7 @@ public class ItemServices {
 	 * @return Le nom du jeu de l'exemplaire si trouvé, sinon une chaine de
 	 *         caractères vide
 	 */
-	public String getNameOfGame(int itemID) {
+	public String getGameName(int itemID) {
 		return this.itemDAO.getGameName(itemID);
 
 	}
