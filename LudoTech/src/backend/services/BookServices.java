@@ -198,17 +198,17 @@ public class BookServices {
 	 * Convertie une réservation en prêt. Si le prêt est autorisé, supprime la
 	 * réservation, sinon la concerve.
 	 * 
-	 * @param game
-	 *            Le jeu non null à réserver
-	 * @param member
-	 *            L'adhérent non null qui réserver
+	 * @param itemID
+	 *            L'identifiant de l'exemplaire à réserver
+	 * @param memberID
+	 *            L'identifiant de l'adhérent qui réserve
 	 * @param beginningDate
 	 *            La date de début de réservation
 	 * @param endingDate
 	 *            La date de fin de réservation
-	 * @param extension
-	 *            L'extension qui peut être réservée en supplément (peut être
-	 *            null)
+	 * @param extensionID
+	 *            L'identifiant de l'extension qui peut être réservée en
+	 *            supplément (peut être null)
 	 * @return True si la conversion a réussie, sinon False
 	 * @throws MemberCantBorrowException
 	 *             Si l'adhérent n'a pas le droit d'emprunter

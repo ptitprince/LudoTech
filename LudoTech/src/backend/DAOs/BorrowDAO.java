@@ -26,7 +26,7 @@ public class BorrowDAO extends DAO {
 	 *            données
 	 * @param memberID
 	 *            L'identifiant unique d'un adhérent existant en base de données
-	 * @param startDate
+	 * @param beginningDate
 	 *            La date de début de l'emprunt
 	 * @return Un emprunt ou null si elle n'a pas été trouvée
 	 */
@@ -132,7 +132,7 @@ public class BorrowDAO extends DAO {
 	/**
 	 * Ajoute un nouvel emprunt en base de données.
 	 * 
-	 * @param book
+	 * @param borrow
 	 *            Un emprunt possédant un exemplaire, un adhérent, une date de
 	 *            début, une date de fin et potentiellement une extension (pas
 	 *            obligatoire)
@@ -174,7 +174,7 @@ public class BorrowDAO extends DAO {
 	 *            données
 	 * @param memberID
 	 *            L'identifiant unique d'un adhérent existant en base de données
-	 * @param startDate
+	 * @param beginningDate
 	 *            La date de début de l'emprunt
 	 * @return True si la suppression s'est bien passée, False sinon
 	 */

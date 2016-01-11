@@ -200,16 +200,6 @@ public class MemberServices {
 	 *            Le code postal d'un adhérent
 	 * @param city
 	 *            La ville d'un adhérent
-	 * @param nbDelays
-	 *            Nombre de retards lors de la remise d'un prêt d'un adhérent
-	 * @param nbFakeBookings
-	 *            Nombre de fausse demande de réservation
-	 * @param lastSubscriptionDate
-	 *            Date de dernier payement de cotisation d'un adhérent
-	 * @param canBorrow
-	 *            True si l'adhérent est autorisé à emprunter False sinon
-	 * @param canBook
-	 *            True si l'adhérent est autorisé à réserver un jeu, False sinon
 	 * @return Un adhérent si la modification a été modifiée, sinon null
 	 */
 	public Member editMember(int memberID, String firstName, String lastName, String pseudo, String password,

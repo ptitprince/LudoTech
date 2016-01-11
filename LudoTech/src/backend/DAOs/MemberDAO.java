@@ -127,7 +127,7 @@ public class MemberDAO extends DAO {
 	/**
 	 * Trouve l'identifiant du contexte d'un adhérent dans la base de données
 	 * 
-	 * @param id
+	 * @param memberID
 	 *            L'identifiant d'un adhérent existant en base de données
 	 * @return L'identifiant du contexte de l'adhérent dont l'identifiant est
 	 *         passé en paramètres ou -1 si l'adhérent ne possède pas de

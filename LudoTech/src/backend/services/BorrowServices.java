@@ -194,7 +194,7 @@ public class BorrowServices {
 	 *            L'identifiant unique d'un exemplaire
 	 * @param memberID
 	 *            L'identifiant unique d'un adhérent
-	 * @param startDate
+	 * @param beginningDate
 	 *            La date de début du prêt
 	 * @param endingDate
 	 *            La date de fin du prêt
