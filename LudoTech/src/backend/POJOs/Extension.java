@@ -7,17 +7,11 @@ public class Extension {
 
 	/**
 	 * L'identifiant unique de l'extension, un nombre entier strictement positif
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private int extensionID;
 
 	/**
 	 * Le nom de l'extension
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private String name;
 
@@ -60,7 +54,7 @@ public class Extension {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String toString() {
 		return this.name;
 	}

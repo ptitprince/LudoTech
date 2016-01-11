@@ -4,6 +4,9 @@ import javax.swing.JOptionPane;
 
 import frontend.utils.gui.TextView;
 
+/**
+ * Exception lorsque qu'un adhérent n'a pas le droit de réserver
+ */
 @SuppressWarnings("serial")
 public class MemberCantBookException extends Exception {
 

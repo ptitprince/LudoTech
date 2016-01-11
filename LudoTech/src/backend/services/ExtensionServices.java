@@ -11,7 +11,7 @@ import backend.POJOs.Extension;
 public class ExtensionServices {
 
 	/**
-	 * Objet d'accés aux données de type Extension (extensions de jeux)
+	 * Objet de manipulation de la base de données pour les extensions de jeux
 	 */
 	private ExtensionDAO extensionDAO;
 
@@ -20,6 +20,28 @@ public class ExtensionServices {
 	 */
 	public ExtensionServices() {
 		this.extensionDAO = new ExtensionDAO();
+	}
+
+	/**
+	 * Liste toutes les extensions possédées par un jeu
+	 * 
+	 * @param gameID
+	 *            L'identifiant d'un jeu existant
+	 * @return La liste potentiellement vide des extenstion d'un jeu
+	 */
+	public List<Extension> getExtensions(int gameID) {
+		return this.extensionDAO.getAll(gameID);
+	}
+
+	/**
+	 * Compte le nombre d'extensions que possède un jeu
+	 * 
+	 * @param gameID
+	 *            L'identifiant d'un jeu existant
+	 * @return Le nombre d'extensions du jeu
+	 */
+	public int countExtensions(int gameID) {
+		return this.extensionDAO.getAll(gameID).size();
 	}
 
 	/**
@@ -50,28 +72,5 @@ public class ExtensionServices {
 	public boolean deleteExtension(int extensionID) {
 		return this.extensionDAO.remove(extensionID);
 	}
-	
-	/**
-	 * Compte le nombre d'extensions que possède un jeu
-	 * 
-	 * @param gameID
-	 *            L'identifiant d'un jeu existant
-	 * @return Le nombre d'extensions du jeu
-	 */
-	public int countExtensions(int gameID) {
-		return this.extensionDAO.getAll(gameID).size();
-	}
-
-	/**
-	 * Liste toutes les extensions possédées par un jeu
-	 * 
-	 * @param gameID
-	 *            L'identifiant d'un jeu existant
-	 * @return La liste des extenstion d'un jeu
-	 */
-	public List<Extension> getExtensions(int gameID) {
-		return this.extensionDAO.getAll(gameID);
-	}
-
 	
 }

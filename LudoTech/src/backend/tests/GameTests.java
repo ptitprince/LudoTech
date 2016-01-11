@@ -11,14 +11,8 @@ import org.junit.Test;
 import backend.POJOs.Game;
 import backend.services.GameServices;
 
-/**
- * Tests sur la manipulation de jeux
- */
 public class GameTests extends Tests {
 
-	/**
-	 * L'objet exposant les services liés aux jeux
-	 */
 	private GameServices gameServices;
 
 	@Before

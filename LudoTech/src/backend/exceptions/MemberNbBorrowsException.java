@@ -4,6 +4,10 @@ import javax.swing.JOptionPane;
 
 import frontend.utils.gui.TextView;
 
+/**
+ * Exception lorsque l'adhérent a atteint la limite maximale de prêts
+ * définie dans les paramètres de l'application
+ */
 @SuppressWarnings("serial")
 public class MemberNbBorrowsException extends Exception {
 

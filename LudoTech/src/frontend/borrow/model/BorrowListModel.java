@@ -76,9 +76,9 @@ public class BorrowListModel extends AbstractTableModel {
 					+ " "
 					+ this.borrowList.get(rowIndex).getMember().getLastName();
 		case 5:
-			return sdf.format(this.borrowList.get(rowIndex).getBeginningDate());
+			return sdf.format(this.borrowList.get(rowIndex).getStartDate());
 		case 6:
-			return sdf.format(this.borrowList.get(rowIndex).getEndingDate());
+			return sdf.format(this.borrowList.get(rowIndex).getEndDate());
 		case 7:
 			if (this.borrowList.get(rowIndex).getExtension() != null) {
 				return this.borrowList.get(rowIndex).getExtension().getName();
@@ -88,9 +88,9 @@ public class BorrowListModel extends AbstractTableModel {
 		case 8 :
 			try {
 				Date currentDate = sdf.parse(sdf.format(new Date())); // Astuce pour récupérer que la partie jour, mois, année d'une date
-				if (this.borrowList.get(rowIndex).getEndingDate().after(currentDate)) {
+				if (this.borrowList.get(rowIndex).getEndDate().after(currentDate)) {
 					return TextView.get("borrowOngoing");
-				} else if (this.borrowList.get(rowIndex).getEndingDate().before(currentDate)) {
+				} else if (this.borrowList.get(rowIndex).getEndDate().before(currentDate)) {
 					return TextView.get("borrowInLate");
 				} else {
 					return TextView.get("borrowStanding");
@@ -100,7 +100,7 @@ public class BorrowListModel extends AbstractTableModel {
 				return "";
 			}
 		case 9 :
-			long diffValue = this.borrowList.get(rowIndex).getEndingDate().getTime() - new Date().getTime();
+			long diffValue = this.borrowList.get(rowIndex).getEndDate().getTime() - new Date().getTime();
 			long diffDays = TimeUnit.DAYS.convert(diffValue, TimeUnit.MILLISECONDS);
 			if (diffDays == 0) {
 				return TextView.get("borrowToReturnToday");

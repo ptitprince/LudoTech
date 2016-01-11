@@ -4,6 +4,9 @@ import javax.swing.JOptionPane;
 
 import frontend.utils.gui.TextView;
 
+/**
+ * Exception lorsqu'un adhérent n'a pas le droit d'emprunter
+ */
 @SuppressWarnings("serial")
 public class MemberCantBorrowException extends Exception {
 

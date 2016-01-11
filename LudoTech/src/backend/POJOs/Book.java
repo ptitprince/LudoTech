@@ -1,52 +1,51 @@
 package backend.POJOs;
+
 import java.util.Date;
 
-
-/**Representation de reservation *
+/**
+ * Représentation d'une réservation
  */
-
-
 public class Book {
+
 	/**
-	 * Identifiant de book
+	 * Exemplaire a reserver
 	 */
-	private int bookId;
-	
-	/** L'exemplaire a reserver
-	 *  */
-	private	Item item;
-	
-	/**Membre qui reserve *
+	private Item item;
+
+	/**
+	 * Membre qui reserve
 	 */
-	private	Member member;
-	
-	/**Date de debut de reservation *
+	private Member member;
+
+	/**
+	 * Date de début de la réservation
 	 */
-	private	Date startDate; 
-	/**Date de fin de reservation *
-	 */
-	private	Date endDate;
+	private Date startDate;
 	
-	/** L'extensiona a reserver
-	 * 
+	/**
+	 * Date de fin de la réservation
 	 */
-	private	Extension extension;
-	
-	public Book(Item item, Member member, Date startDate, Date endDate,
-			Extension extension) {		
+	private Date endDate;
+
+	/**
+	 * L'extension qui peut être reservée avec le jeu (peut être null)
+	 */
+	private Extension extension;
+
+	/**
+	 * Créé une nouvelle réservation en associant un exemplaire (et potentiellement une extension) à un adhérent pour une période données
+	 * @param item L'exemplaire réservé non null
+	 * @param member L'adhérent qui réserve non null
+	 * @param startDate La date de début de réservation
+	 * @param endDate La date de fin de réservation
+	 * @param extension L'extension qui peut être ajoutée à la réservation (peut-être null)
+	 */
+	public Book(Item item, Member member, Date startDate, Date endDate, Extension extension) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.member = member;
 		this.item = item;
 		this.extension = extension;
-	}
-
-	public int getBookId() {
-		return bookId;
-	}
-
-	public void setBookID(int bookId) {
-		this.bookId = bookId;
 	}
 
 	public Item getItem() {
@@ -87,6 +86,6 @@ public class Book {
 
 	public void setExtension(Extension extension) {
 		this.extension = extension;
-	}	
+	}
 
 }

@@ -6,6 +6,11 @@ import javax.swing.JOptionPane;
 
 import frontend.utils.gui.TextView;
 
+/**
+ * Exception lorsque l'intervalle entre la date de début et la date de fin
+ * d'un prêt ou d'une réservation ne respecte pas les paramètres de
+ * l'application
+ */
 @SuppressWarnings("serial")
 public class IntervalBetweenStartDateAndEndDateException extends Exception {
 

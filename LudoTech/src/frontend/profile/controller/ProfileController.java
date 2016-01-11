@@ -50,7 +50,7 @@ public class ProfileController extends JPanel {
 							|| profileView.getPseudo().equals("") || profileView.getPassword().equals("")) {
 						JOptionPane.showMessageDialog(null, TextView.get("profileMemberEmptyFieldsException"));
 					} else {
-						memberServices.saveMember(profileView.getMemberID(), profileView.getFirstName(),
+						memberServices.editMember(profileView.getMemberID(), profileView.getFirstName(),
 								profileView.getLastName(), profileView.getPseudo(), profileView.getPassword(),
 								profileView.getIsAdmin(), profileView.getBirthDate(), profileView.getPhoneNumber(),
 								profileView.getEmail(), profileView.getStreetAddress(), profileView.getPostalCode(),
@@ -81,7 +81,7 @@ public class ProfileController extends JPanel {
 			public void run() {
 				Member member = memberServices.getMember(currentMemberID);
 				profileView.load(member.getMemberID(), member.getMemberContext().getId(), member.getFirstName(),
-						member.getLastName(), member.getPseudo(), member.getPassword(), member.getIsAdmin(),
+						member.getLastName(), member.getPseudo(), member.getPassword(), member.isAdmin(),
 						member.getBirthDate(), member.getPhoneNumber(), member.getEmail(), member.getStreetAddress(),
 						member.getPostalCode(), member.getCity(), member.getMemberContext().getNbFakeBookings(),
 						member.getMemberContext().getNbDelays(), member.getMemberContext().canBorrow(),

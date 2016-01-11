@@ -4,6 +4,9 @@ import javax.swing.JOptionPane;
 
 import frontend.utils.gui.TextView;
 
+/**
+ * Exception lorsque l'extension n'est pas disponible pour un prêt ou une réservation
+ */
 @SuppressWarnings("serial")
 public class ExtensionNotAvailableException extends Exception {
 

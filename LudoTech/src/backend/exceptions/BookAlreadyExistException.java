@@ -5,6 +5,9 @@ import javax.swing.JOptionPane;
 import backend.POJOs.Book;
 import frontend.utils.gui.TextView;
 
+/**
+ * Exception lorsqu'une réservation existe déjà
+ */
 @SuppressWarnings("serial")
 public class BookAlreadyExistException extends Exception {
 

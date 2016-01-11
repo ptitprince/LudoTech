@@ -11,16 +11,64 @@ import backend.POJOs.Item;
 public class ItemServices {
 
 	/**
-	 * Objet d'accés aux données de type Item (exemplaires de jeux)
+	 * Objet de manipulation de la base de données pour les exemplaires de jeux
 	 */
 	private ItemDAO itemDAO;
-	
 
 	/**
 	 * Construit un nouveau service pour les exemplaires de jeux
 	 */
 	public ItemServices() {
 		this.itemDAO = new ItemDAO();
+	}
+
+	/**
+	 * Trouve et retourne le nom du jeu auquel est attaché l'exemplaire dont
+	 * l'identifiant est passé en paramètre
+	 * 
+	 * @param itemID
+	 *            L'identifiant d'un exemplaire de jeu existant
+	 * @return Le nom du jeu de l'exemplaire si trouvé, sinon une chaine de
+	 *         caractères vide
+	 */
+	public String getNameOfGame(int itemID) {
+		return this.itemDAO.getGameName(itemID);
+
+	}
+
+	/**
+	 * Compte le nombre d'exemplaires que possède un jeu
+	 * 
+	 * @param gameID
+	 *            L'identifiant d'un jeu existant
+	 * @return Le nombre d'exemplaires du jeu
+	 */
+	public int countItemsOfGame(int gameID) {
+		return this.itemDAO.getAllHavingGameID(gameID).size();
+	}
+
+	/**
+	 * Définit le nombre d'exemplaires que doit avoir un jeu
+	 * 
+	 * @param gameID
+	 *            L'identifiant d'un jeu existant
+	 * @param nbItems
+	 *            Le nombre d'exemplaires que le jeu doit avoir
+	 * @return True si le nombre d'exemplaires du jeu a bien été modifié, sinon
+	 *         False;
+	 */
+	public boolean setItemsNumberOfGame(int gameID, int nbItems) {
+		boolean noProblem = true;
+		int currentNbItems = this.countItemsOfGame(gameID);
+		while (currentNbItems < nbItems) {
+			noProblem &= this.addOneItem(gameID);
+			currentNbItems++;
+		}
+		while (currentNbItems > nbItems) {
+			noProblem &= this.deleteOneItem(gameID);
+			currentNbItems--;
+		}
+		return noProblem;
 	}
 
 	/**
@@ -51,47 +99,4 @@ public class ItemServices {
 		}
 	}
 
-	/**
-	 * Définit le nombre d'exemplaires que doit avoir un jeu
-	 * 
-	 * @param gameID
-	 *            L'identifiant d'un jeu existant
-	 * @param nbItems
-	 *            Le nombre d'exemplaires que le jeu doit avoir
-	 * @return True si le nombre d'exemplaires du jeu a bien été modifié, sinon
-	 *         False;
-	 */
-	public boolean setItemsNumberOfGame(int gameID, int nbItems) {
-		boolean noProblem = true;
-		int currentNbItems = this.countItemsOfGame(gameID);
-		while (currentNbItems < nbItems) {
-			noProblem &= this.addOneItem(gameID);
-			currentNbItems++;
-		}
-		while (currentNbItems > nbItems) {
-			noProblem &= this.deleteOneItem(gameID);
-			currentNbItems--;
-		}
-		return noProblem;
-	}
-
-	/**
-	 * Compte le nombre d'exemplaires que possède un jeu
-	 * 
-	 * @param gameID
-	 *            L'identifiant d'un jeu existant
-	 * @return Le nombre d'exemplaires du jeu
-	 */
-	public int countItemsOfGame(int gameID) {
-		return this.itemDAO.getAllHavingGameID(gameID).size();
-	}
-	
-	public String getNameOfGame(int itemID) {
-		return this.itemDAO.getGameName(itemID);
-		
-	}
-	
-
-	
-	
 }

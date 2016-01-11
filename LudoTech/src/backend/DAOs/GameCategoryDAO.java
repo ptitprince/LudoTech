@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe manipulant des objets de type GameCategory dans la base de données
+ * Classe manipulant des objets de type GameCategory (Catégorie de jeu) dans la
+ * base de données
  */
 public class GameCategoryDAO extends DAO {
 
@@ -52,8 +53,6 @@ public class GameCategoryDAO extends DAO {
 		}
 		return idFound;
 	}
-
-	
 
 	/**
 	 * Liste toutes les catégories de jeu existantes

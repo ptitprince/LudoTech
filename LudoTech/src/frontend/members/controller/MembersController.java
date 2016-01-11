@@ -80,7 +80,7 @@ public class MembersController extends JPanel {
 					Member member = memberServices.getMember(memberID);
 					MemberContext context = member.getMemberContext();
 					memberView.getProfileView().load(memberID, context.getId(), member.getFirstName(),
-							member.getLastName(), member.getPseudo(), member.getPassword(), member.getIsAdmin(),
+							member.getLastName(), member.getPseudo(), member.getPassword(), member.isAdmin(),
 							member.getBirthDate(), member.getPhoneNumber(), member.getEmail(),
 							member.getStreetAddress(), member.getPostalCode(), member.getCity(),
 							context.getNbFakeBookings(), context.getNbDelays(), context.canBorrow(), context.canBook(),
@@ -108,7 +108,7 @@ public class MembersController extends JPanel {
 					if (selectedRowIndex > -1) {
 						int memberID = (Integer) table.getModel().getValueAt(selectedRowIndex, 0);
 						if (memberServices.canDeleteMember(memberID)) {
-							int contextID = memberServices.getMember(memberID).getMemberContextID();
+							int contextID = memberServices.getMember(memberID).getMemberContext().getId();
 							memberServices.removeMember(memberID);
 							memberContextServices.removeMemberContext(contextID);
 							refreshMemberList();
@@ -143,7 +143,7 @@ public class MembersController extends JPanel {
 									profileView.getNbDelays(), profileView.getNbFakeBookings(),
 									profileView.getLastSubscriptionDate(), profileView.getCanBorrow(),
 									profileView.getCanBook());
-							memberServices.saveMember(profileView.getMemberID(), profileView.getFirstName(),
+							memberServices.editMember(profileView.getMemberID(), profileView.getFirstName(),
 									profileView.getLastName(), profileView.getPseudo(), profileView.getPassword(),
 									profileView.getIsAdmin(), profileView.getBirthDate(), profileView.getPhoneNumber(),
 									profileView.getEmail(), profileView.getStreetAddress(), profileView.getPostalCode(),

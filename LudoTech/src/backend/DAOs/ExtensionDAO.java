@@ -9,9 +9,71 @@ import java.util.List;
 import backend.POJOs.Extension;
 
 /**
- * Classe manipulant des objets de type Extension dans la base de données
+ * Classe manipulant des objets de type Extension (Extension) dans la base de
+ * données
  */
 public class ExtensionDAO extends DAO {
+
+	/**
+	 * Cherche en base de données une extension dont l'identifiant est passé en
+	 * paramètre
+	 * 
+	 * @param extensionID
+	 *            L'identifiant unique d'une extension existante en base de
+	 *            données
+	 * @return Une extension si trouvée, null sinon
+	 */
+	public Extension get(int extensionID) {
+		try {
+			super.connect();
+
+			String request = "SELECT name FROM EXTENSION WHERE id=?";
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.setInt(1, extensionID);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			Extension extension = null;
+			if (resultSet.next()) {
+				extension = new Extension(extensionID, resultSet.getString("name"));
+			}
+			super.disconnect();
+			return extension;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Liste les extensions possédées par un certain jeu
+	 * 
+	 * @param gameID
+	 *            L'identifiant d'un jeu existant
+	 * @return La liste des extensions possédées par le jeu
+	 */
+	public List<Extension> getAll(int gameID) {
+		List<Extension> extensions = new ArrayList<Extension>();
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM Extension WHERE game_id = ?");
+			psSelect.setInt(1, gameID);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			while (resultSet.next()) { // Positionnement sur le premier résultat
+				extensions.add(new Extension(resultSet.getInt("id"), resultSet.getString("name")));
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return extensions;
+	}
 
 	/**
 	 * Ajoute une extension (en lui donnant un identifiant) pour un certain jeu
@@ -77,73 +139,4 @@ public class ExtensionDAO extends DAO {
 		}
 	}
 
-	/**
-	 * Liste les extensions possédées par un certain jeu
-	 * 
-	 * @param gameID
-	 *            L'identifiant d'un jeu existant
-	 * @return La liste des extensions possédées par le jeu
-	 */
-	public List<Extension> getAll(int gameID) {
-		List<Extension> extensions = new ArrayList<Extension>();
-		try {
-			super.connect();
-
-			PreparedStatement psSelect = connection.prepareStatement("SELECT * FROM Extension WHERE game_id = ?");
-			psSelect.setInt(1, gameID);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			while (resultSet.next()) { // Positionnement sur le premier résultat
-				extensions.add(new Extension(resultSet.getInt("id"), resultSet.getString("name")));
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return extensions;
-	}
-
-		
-		
-		
-		
-		public Extension get(int extensionID) {
-			try {
-				super.connect();
-
-				// Utilisation des "AS" à cause des jointures.
-				// Il n'est pas possible
-				// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
-				// une seule connection peut-être active à la fois pour toute la
-				// base de données, donc qu'une seule requête à la fois (contrainte
-				// du SGBD Derby)
-
-				String request = "SELECT name FROM EXTENSION WHERE id=?";
-				PreparedStatement psSelect = connection.prepareStatement(request);
-				psSelect.setInt(1, extensionID);
-				psSelect.execute();
-				psSelect.closeOnCompletion();
-
-				ResultSet resultSet = psSelect.getResultSet();
-				Extension extension = null;
-				if (resultSet.next()) {
-					resultSet.getString("name")	;
-					
-							
-						
-					extension = new Extension(extensionID,resultSet.getString("name"));
-				}
-				super.disconnect();
-				return extension;
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-		
-		
-		
 }

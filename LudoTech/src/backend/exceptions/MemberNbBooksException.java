@@ -4,13 +4,17 @@ import javax.swing.JOptionPane;
 
 import frontend.utils.gui.TextView;
 
+/**
+ * Exception lorsque l'adhérent a atteint la limite maximale de réservations
+ * définie dans les paramètres de l'application
+ */
 @SuppressWarnings("serial")
 public class MemberNbBooksException extends Exception {
 
 	private String memberName;
 	private int memberNbBooks;
 	private int maxNbBooksPerMember;
-	
+
 	public MemberNbBooksException(String memberName, int memberNbBooks, int maxNbBooksPerMember) {
 		this.memberName = memberName;
 		this.memberNbBooks = memberNbBooks;
@@ -28,10 +32,11 @@ public class MemberNbBooksException extends Exception {
 	public int getMaxNbBooksPerMember() {
 		return maxNbBooksPerMember;
 	}
-	
+
 	public void show() {
 		String text = TextView.get(this.getClass().getSimpleName());
-		JOptionPane.showMessageDialog(null, String.format(text, this.maxNbBooksPerMember, this.memberName, this.memberNbBooks));
+		JOptionPane.showMessageDialog(null,
+				String.format(text, this.maxNbBooksPerMember, this.memberName, this.memberNbBooks));
 	}
-	
+
 }

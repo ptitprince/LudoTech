@@ -11,14 +11,122 @@ import java.util.Map.Entry;
 import backend.POJOs.Game;
 
 /**
- * Classe manipulant des objets de type Game dans la base de données
+ * Classe manipulant des objets de type Game (Jeu) dans la base de données
  */
 public class GameDAO extends DAO {
 
 	/**
-	 * Ajoute une nouvelle ligne dans la table Game de la base de données, avec
-	 * les informations d'un jeu en utilisant la génération automatique de
-	 * l'identifiant (clé primaire) par le pilote Derby
+	 * Trouve un jeu dans la base de données
+	 * 
+	 * @param id
+	 *            L'identifiant du jeu à trouver
+	 * @return Le jeu identifié par "id" ou null si aucun ne correspond en base
+	 *         de données
+	 */
+	public Game get(int id) {
+		try {
+			super.connect();
+
+			String request = "SELECT GAME.*, " + "GAME_EDITOR.name AS editor_name, "
+					+ "GAME_CATEGORY.category AS category_name " + "FROM GAME "
+					+ "JOIN GAME_EDITOR ON GAME.editor_id = GAME_EDITOR.id "
+					+ "JOIN GAME_CATEGORY ON GAME.category_id = GAME_CATEGORY.id " + "WHERE GAME.id = ?";
+
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.setInt(1, id);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			Game game = null;
+			if (resultSet.next()) { // Positionnement sur le premier résultat
+				game = new Game(id, resultSet.getString("name"), resultSet.getString("description"),
+						resultSet.getInt("publishing_year"), resultSet.getInt("minimum_age"),
+						resultSet.getInt("minimum_players"), resultSet.getInt("maximum_players"),
+						resultSet.getString("category_name"), resultSet.getString("editor_name"));
+			}
+			super.disconnect();
+			return game;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Liste tous les jeux de la base de données d'après le filtre passé en
+	 * paramètre
+	 * 
+	 * @param filter
+	 *            Ensemble de couples <clef(String), valeur(String)> où la clef
+	 *            est incluse dans la liste : name, publishing_year, nb_players,
+	 *            minimum_age, category, editor.
+	 * @return Une liste de jeux potentiellement vide respectant le filtre
+	 */
+	public List<Game> getAll(HashMap<String, String> filter) {
+		List<Game> games = new ArrayList<Game>();
+		try {
+			super.connect();
+
+			String request = "SELECT GAME.*, " + "GAME_EDITOR.name AS editor_name, "
+					+ "GAME_CATEGORY.category AS category_name " + "FROM GAME "
+					+ "JOIN GAME_EDITOR ON GAME.editor_id = GAME_EDITOR.id "
+					+ "JOIN GAME_CATEGORY ON GAME.category_id = GAME_CATEGORY.id";
+			String whereClause = "";
+			boolean atLeastOneCondition = false;
+			for (Entry<String, String> property : filter.entrySet()) {
+				if (property.getKey().equals("name") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME." + property.getKey() + ")"
+							+ " LIKE LOWER('%" + property.getValue() + "%')";
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("publishing_year") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " = "
+							+ property.getValue();
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("nb_players") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "minimum_players <= " + property.getValue()
+							+ " AND maximum_players >= " + property.getValue();
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("minimum_age") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " <= "
+							+ property.getValue();
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("category") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME_CATEGORY.category) = LOWER('"
+							+ property.getValue() + "')";
+					atLeastOneCondition = true;
+				} else if (property.getKey().equals("editor") && !property.getValue().equals("")) {
+					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME_EDITOR.name) = LOWER('"
+							+ property.getValue() + "')";
+					atLeastOneCondition = true;
+				}
+			}
+			if (atLeastOneCondition) {
+				request += " WHERE" + whereClause;
+			}
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			while (resultSet.next()) {
+				games.add(new Game(resultSet.getInt("id"), resultSet.getString("name"),
+						resultSet.getString("description"), resultSet.getInt("publishing_year"),
+						resultSet.getInt("minimum_age"), resultSet.getInt("minimum_players"),
+						resultSet.getInt("maximum_players"), resultSet.getString("category_name"),
+						resultSet.getString("editor_name")));
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return games;
+	}
+
+	/**
+	 * Ajoute un nouveau jeu dans la base de données (qui obtient
+	 * automatiquement un identifiant)
 	 * 
 	 * @param game
 	 *            Le jeu à ajouter dans la base de données
@@ -67,8 +175,7 @@ public class GameDAO extends DAO {
 	}
 
 	/**
-	 * Modifie les valeurs d'une ligne de la table Game dans la base de données
-	 * en se servant de l'identifiant d'un jeu
+	 * Modifie un jeu éxistant de la base de données
 	 * 
 	 * @param game
 	 *            Le jeu à modifier dans la base de données
@@ -109,8 +216,7 @@ public class GameDAO extends DAO {
 	}
 
 	/**
-	 * Supprime une ligne de la table Game dans la base de données en se servant
-	 * de l'identifiant d'un jeu
+	 * Supprime un jeu existant de la base de données
 	 * 
 	 * @param id
 	 *            L'identifiant du jeu à supprimer
@@ -132,109 +238,6 @@ public class GameDAO extends DAO {
 			e.printStackTrace();
 			return false;
 		}
-	}
-
-	/**
-	 * Trouve un jeu dans la base de données
-	 * 
-	 * @param id
-	 *            L'identifiant du jeu à trouver
-	 * @return Le jeu identifié par "id" ou null si aucun ne correspond en base
-	 *         de données
-	 */
-	public Game get(int id) {
-		try {
-			super.connect();
-
-			String request = "SELECT GAME.*, "
-					+ "GAME_EDITOR.name AS editor_name, "
-					+ "GAME_CATEGORY.category AS category_name " 
-					+ "FROM GAME "
-					+ "JOIN GAME_EDITOR ON GAME.editor_id = GAME_EDITOR.id "
-					+ "JOIN GAME_CATEGORY ON GAME.category_id = GAME_CATEGORY.id " 
-					+ "WHERE GAME.id = ?";
-
-			PreparedStatement psSelect = connection.prepareStatement(request);
-			psSelect.setInt(1, id);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			Game game = null;
-			if (resultSet.next()) { // Positionnement sur le premier résultat
-				game = new Game(id, resultSet.getString("name"), resultSet.getString("description"),
-						resultSet.getInt("publishing_year"), resultSet.getInt("minimum_age"),
-						resultSet.getInt("minimum_players"), resultSet.getInt("maximum_players"), 
-						resultSet.getString("category_name"), resultSet.getString("editor_name"));
-			}
-			super.disconnect();
-			return game;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public List<Game> getGames(HashMap<String, String> filter) {
-		List<Game> games = new ArrayList<Game>();
-		try {
-			super.connect();
-
-			String request = "SELECT GAME.*, "
-					+ "GAME_EDITOR.name AS editor_name, "
-					+ "GAME_CATEGORY.category AS category_name " 
-					+ "FROM GAME "
-					+ "JOIN GAME_EDITOR ON GAME.editor_id = GAME_EDITOR.id "
-					+ "JOIN GAME_CATEGORY ON GAME.category_id = GAME_CATEGORY.id";
-			String whereClause = "";
-			boolean atLeastOneCondition = false;
-			for (Entry<String, String> property : filter.entrySet()) {
-				if (property.getKey().equals("name") && !property.getValue().equals("")) {
-					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME." + property.getKey() + ")"
-							+ " LIKE LOWER('%" + property.getValue() + "%')";
-					atLeastOneCondition = true;
-				} else if (property.getKey().equals("publishing_year") && !property.getValue().equals("")) {
-					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " = "
-							+ property.getValue();
-					atLeastOneCondition = true;
-				} else if (property.getKey().equals("nb_players") && !property.getValue().equals("")) {
-					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "minimum_players <= " + property.getValue()
-							+ " AND maximum_players >= " + property.getValue();
-					atLeastOneCondition = true;
-				} else if (property.getKey().equals("minimum_age") && !property.getValue().equals("")) {
-					whereClause += ((atLeastOneCondition) ? " AND " : " ") + property.getKey() + " <= "
-							+ property.getValue();
-					atLeastOneCondition = true;
-				} else if (property.getKey().equals("category") && !property.getValue().equals("")) {
-					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME_CATEGORY.category) = LOWER('"
-							+ property.getValue() + "')";
-					atLeastOneCondition = true;
-				} else if (property.getKey().equals("editor") && !property.getValue().equals("")) {
-					whereClause += ((atLeastOneCondition) ? " AND " : " ") + "LOWER(GAME_EDITOR.name) = LOWER('"
-							+ property.getValue() + "')";
-					atLeastOneCondition = true;
-				}
-			}
-			if (atLeastOneCondition) {
-				request += " WHERE" + whereClause;
-			}
-			PreparedStatement psSelect = connection.prepareStatement(request);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			while (resultSet.next()) {
-				games.add(new Game(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("description"),
-						resultSet.getInt("publishing_year"), resultSet.getInt("minimum_age"),
-						resultSet.getInt("minimum_players"), resultSet.getInt("maximum_players"), 
-						resultSet.getString("category_name"), resultSet.getString("editor_name")));
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return games;
 	}
 
 }

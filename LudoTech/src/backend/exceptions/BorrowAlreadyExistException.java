@@ -5,6 +5,9 @@ import javax.swing.JOptionPane;
 import backend.POJOs.Borrow;
 import frontend.utils.gui.TextView;
 
+/**
+ * Exception lorsqu'un emprunt existe déjà
+ */
 @SuppressWarnings("serial")
 public class BorrowAlreadyExistException extends Exception {
 
@@ -20,7 +23,7 @@ public class BorrowAlreadyExistException extends Exception {
 	
 	public void show() {
 		String text = TextView.get(this.getClass().getSimpleName());
-		JOptionPane.showMessageDialog(null, String.format(text, this.borrow.getMember().getFirstName() + " " + this.borrow.getMember().getLastName(), this.borrow.getBeginningDate().toLocaleString()));
+		JOptionPane.showMessageDialog(null, String.format(text, this.borrow.getMember().getFirstName() + " " + this.borrow.getMember().getLastName(), this.borrow.getStartDate().toLocaleString()));
 	}
 	
 }

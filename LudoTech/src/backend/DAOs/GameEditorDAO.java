@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe manipulant des objets de type GameEditor dans la base de données
+ * Classe manipulant des objets de type GameEditor (Editeur de jeu) dans la base
+ * de données
  */
 public class GameEditorDAO extends DAO {
 
@@ -53,10 +54,11 @@ public class GameEditorDAO extends DAO {
 		return idFound;
 	}
 
-	
 	/**
 	 * Liste tous les éditeurs de jeu existants
-	 * @param sorted Vrai si la liste doit être triée par ordre alphabétique
+	 * 
+	 * @param sorted
+	 *            Vrai si la liste doit être triée par ordre alphabétique
 	 * @return La liste des éditeurs de jeu existantes
 	 */
 	public List<String> list(boolean sorted) {

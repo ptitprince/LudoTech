@@ -12,9 +12,6 @@ import backend.services.GameServices;
 
 public class ExtensionTests extends Tests {
 
-	/**
-	 * L'objet exposant les services liés aux jeux
-	 */
 	private GameServices gameServices;
 
 	private ExtensionServices extensionServices;

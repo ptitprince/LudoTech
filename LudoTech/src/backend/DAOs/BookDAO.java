@@ -12,20 +12,134 @@ import backend.POJOs.Extension;
 import backend.POJOs.Item;
 import backend.POJOs.Member;
 
+/**
+ * Classe manipulant des objets de type Book (Réservation) dans la base de
+ * données
+ */
 public class BookDAO extends DAO {
 
 	/**
-	 * Ajoute une nouvelle ligne dans la table Book, avec un identifiant créé
-	 * par Derby.
+	 * Cherche dans la base de données la réservation identifiée par le couple
+	 * {itemID, memberID, startDate}
 	 * 
-	 * @param Book
-	 *            , l'réservation à ajouter dans la base de données.
-	 * @return true L'ajout de l'réservation a été fait correctement.
-	 * @return false Exception, peut-être un problème qui est survenu.
+	 * @param itemID
+	 *            L'identifiant unique d'un exemplaire existant en base de
+	 *            données
+	 * @param memberID
+	 *            L'identifiant unique d'un adhérent existant en base de données
+	 * @param startDate
+	 *            La date de début de la réservation
+	 * @return Une réservation ou null si elle n'a pas été trouvée
 	 */
+	public Book get(int itemID, int memberID, Date startDate) {
+		try {
+			super.connect();
 
+			// Utilisation des "AS" à cause des jointures.
+			String request = "SELECT BOOK.start_date AS B_start_date, BOOK.end_date AS B_end_date, "
+					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
+					+ "ITEM.id AS I_id, " + "EXTENSION.id AS E_id, EXTENSION.name AS E_name " + "FROM BOOK "
+					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " + "JOIN ITEM ON BOOK.item_id = ITEM.id "
+					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id "
+					+ "WHERE BOOK.item_id = ? AND BOOK.member_id = ? AND BOOK.start_date = ?";
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.setInt(1, itemID);
+			psSelect.setInt(2, memberID);
+			psSelect.setDate(3, new java.sql.Date(startDate.getTime()));
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+			Book book = null;
+			if (resultSet.next()) {
+				Item item = new Item(resultSet.getInt("I_id"));
+				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
+				Extension extension = null;
+				if (resultSet.getInt("E_id") > 0) {
+					extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				}
+				book = new Book(item, member, resultSet.getDate("B_start_date"), resultSet.getDate("B_end_date"),
+						extension);
+			}
+			super.disconnect();
+			return book;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Cherche en base de données toutes les réservations sans distinction si le
+	 * paramètre userID = -1. Sinon, sélectionne uniquement celles utilisant cet
+	 * identifiant d'adhérent.
+	 * 
+	 * @param userID
+	 *            L'identifiant d'un adhérent existant en base de données ou
+	 *            "-1" si on ne souhaite pas le préciser.
+	 * @return Une liste de réservations potentiellement vide
+	 */
+	public List<Book> getAll(int userID) {
+		List<Book> books = new ArrayList<Book>();
+		try {
+			super.connect();
+
+			// Utilisation des "AS" à cause des jointures.
+			String request = "SELECT BOOK.start_date AS B_start_date, BOOK.end_date AS B_end_date, "
+					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
+					+ "ITEM.id AS I_id, " + "EXTENSION.id AS E_id, EXTENSION.name AS E_name " + "FROM BOOK "
+					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " + "JOIN ITEM ON BOOK.item_id = ITEM.id "
+					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id ";
+
+			// Filtrer sur l'utilisateur si l'identifiant n'est pas -1
+			if (userID != -1) {
+				request += "WHERE BOOK.member_id = " + userID;
+			}
+
+			PreparedStatement psSelect = connection.prepareStatement(request);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			while (resultSet.next()) {
+				Item item = new Item(resultSet.getInt("I_id"));
+				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
+						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
+						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
+						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
+						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
+						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
+				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
+				Book book = new Book(item, member, resultSet.getDate("B_start_date"), resultSet.getDate("B_end_date"),
+						extension);
+				books.add(book);
+			}
+
+			super.disconnect();
+			return books;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	/**
+	 * Ajoute une nouvelle réservation en base de données.
+	 * 
+	 * @param book
+	 *            Une réservation possédant un exemplaire, un adhérent, une date
+	 *            de début, une date de fin et potentiellement une extension
+	 *            (pas obligatoire)
+	 * @return True si l'ajout s'est bien passé, False sinon.
+	 */
 	public boolean add(Book book) {
-
 		try {
 			super.connect();
 
@@ -52,13 +166,19 @@ public class BookDAO extends DAO {
 	}
 
 	/**
-	 * Enlève un book dans la base de données.
+	 * Suprimme une réservation éxistante de la base de données identifiée par
+	 * le couple {itemID, memberID, startDate}
 	 * 
-	 * @param id
-	 *            de l'réservation concerné.
-	 * @return un booléen accusant de l'état de la suppression.
+	 * @param itemID
+	 *            L'identifiant unique d'un exemplaire existant en base de
+	 *            données
+	 * @param memberID
+	 *            L'identifiant unique d'un adhérent existant en base de données
+	 * @param startDate
+	 *            La date de début de la réservation
+	 * @return True si la suppression s'est bien passée, False sinon
 	 */
-	public boolean remove(int itemID, int memberID, Date beginningDate) {
+	public boolean remove(int itemID, int memberID, Date startDate) {
 		try {
 			super.connect();
 
@@ -66,7 +186,7 @@ public class BookDAO extends DAO {
 					.prepareStatement("DELETE FROM BOOK WHERE item_id = ? AND member_id = ? AND start_date = ?");
 			psDelete.setInt(1, itemID);
 			psDelete.setInt(2, memberID);
-			psDelete.setDate(3, new java.sql.Date(beginningDate.getTime()));
+			psDelete.setDate(3, new java.sql.Date(startDate.getTime()));
 			psDelete.execute();
 			psDelete.closeOnCompletion();
 
@@ -79,139 +199,23 @@ public class BookDAO extends DAO {
 	}
 
 	/**
-	 * retourne un réservation.
+	 * Détermine si l'exemplaire dont l'identifiant est passé en paramètre est
+	 * utilisé dans au moins une réservation
 	 * 
-	 * @param id
-	 * @return une réservation dont l'identifiant correspond, ou null.
+	 * @param itemID
+	 *            L'identifiant unique d'un exemplaire existant en base de
+	 *            données
+	 * @return True si l'exemplaire est utilisé par une réservation, False sinon
 	 */
-	public Book get(int itemID, int memberID, Date beginningDate) {
-		try {
-			super.connect();
-
-			// Utilisation des "AS" à cause des jointures.
-			// Il n'est pas possible
-			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
-			// une seule connection peut-être active à la fois pour toute la
-			// base de données, donc qu'une seule requête à la fois (contrainte
-			// du SGBD Derby)
-
-			String request = "SELECT BOOK.start_date AS B_start_date, BOOK.end_date AS B_end_date, "
-					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
-					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
-					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " 
-					+ "FROM BOOK "
-					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " 
-					+ "JOIN ITEM ON BOOK.item_id = ITEM.id "
-					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id "
-					+ "WHERE BOOK.item_id = ? AND BOOK.member_id = ? AND BOOK.start_date = ?";
-			PreparedStatement psSelect = connection.prepareStatement(request);
-			psSelect.setInt(1, itemID);
-			psSelect.setInt(2, memberID);
-			psSelect.setDate(3, new java.sql.Date(beginningDate.getTime()));
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-			Book book = null;
-			if (resultSet.next()) {
-				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
-				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
-						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
-						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
-						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
-						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
-						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
-				Extension extension = null;
-				if (resultSet.getInt("E_id") > 0) {
-					extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
-				}
-				book = new Book(item, member, resultSet.getDate("B_start_date"), resultSet.getDate("B_end_date"),
-						extension);
-			}
-			super.disconnect();
-			return book;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * Méthode d'accès à tous les réservations.
-	 * 
-	 * @return la liste des réservations.
-	 */
-	public List<Book> getBooks(int userID) {
-		List<Book> books = new ArrayList<Book>();
-		try {
-			super.connect();
-
-			// Utilisation des "AS" à cause des jointures.
-			// Il n'est pas possible
-			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
-			// une seule connection peut-être active à la fois pour toute la
-			// base de données, donc qu'une seule requête à la fois (contrainte
-			// du SGBD Derby)
-
-			String request = "SELECT BOOK.start_date AS B_start_date, BOOK.end_date AS B_end_date, "
-					+ "MEMBER.id AS M_id, MEMBER.first_name AS M_first_name, MEMBER.last_name AS M_last_name, MEMBER.pseudo AS M_pseudo, MEMBER.password AS M_password, MEMBER.is_admin AS M_is_admin, MEMBER.birth_date AS M_birth_date, MEMBER.phone_number AS M_phone_number, MEMBER.email_address AS M_email_address, MEMBER.street_address AS M_street_address, MEMBER.postal_code AS M_postal_code, MEMBER.city AS M_city, "
-					+ "ITEM.id AS I_id, ITEM.comments AS I_comments, "
-					+ "EXTENSION.id AS E_id, EXTENSION.name AS E_name " + "FROM BOOK "
-					+ "JOIN MEMBER ON BOOK.member_id = MEMBER.id " + "JOIN ITEM ON BOOK.item_id = ITEM.id "
-					+ "LEFT JOIN EXTENSION ON BOOK.extension_id = EXTENSION.id ";
-
-			if (userID != -1) { // Filtrer sur l'utilisateur si l'identifiant
-								// n'est pas -1
-				request += "WHERE BOOK.member_id = " + userID;
-			}
-
-			PreparedStatement psSelect = connection.prepareStatement(request);
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-
-			while (resultSet.next()) {
-				Item item = new Item(resultSet.getInt("I_id"), resultSet.getString("I_comments"));
-				Member member = new Member(resultSet.getInt("M_id"), resultSet.getString("M_first_name"),
-						resultSet.getString("M_last_name"), resultSet.getString("M_pseudo"),
-						resultSet.getString("M_password"), resultSet.getBoolean("M_is_admin"),
-						resultSet.getDate("M_birth_date"), resultSet.getString("M_phone_number"),
-						resultSet.getString("M_email_address"), resultSet.getString("M_street_address"),
-						resultSet.getString("M_postal_code"), resultSet.getString("M_city"));
-				Extension extension = new Extension(resultSet.getInt("E_id"), resultSet.getString("E_name"));
-				Book book = new Book(item, member, resultSet.getDate("B_start_date"), resultSet.getDate("B_end_date"),
-						extension);
-				books.add(book);
-			}
-
-			super.disconnect();
-			return books;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-
-	}
-
 	public boolean itemUsed(int itemID) {
 		boolean result = false;
 		try {
 
 			super.connect();
 
-			// Utilisation des "AS" à cause des jointures.
-			// Il n'est pas possible
-			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
-			// une seule connection peut-être active à la fois pour toute la
-			// base de données, donc qu'une seule requête à la fois (contrainte
-			// du SGBD Derby)
+			PreparedStatement psSelect = connection.prepareStatement("SELECT count(*) FROM BOOK WHERE item_id = ?");
 
-			PreparedStatement psSelect = connection.prepareStatement(
-					"SELECT count(*) FROM BOOK WHERE item_id = ?");
-			
 			psSelect.setInt(1, itemID);
-
 			psSelect.execute();
 			psSelect.closeOnCompletion();
 
@@ -224,31 +228,33 @@ public class BookDAO extends DAO {
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		}
 		return result;
 	}
-	
+
+	/**
+	 * Détermine si l'exemplaire dont l'identifiant est passé en paramètre est
+	 * utilisé dans au moins une réservation sur une certaine période
+	 * 
+	 * @param itemID
+	 *            L'identifiant unique d'un exemplaire existant en base de
+	 *            données
+	 * @param startDate
+	 *            Date de début de la période
+	 * @param endDate
+	 *            Date de fin de la période
+	 * @return True si l'exemplaire est utilisée dans une réservation durant la
+	 *         période précisée, False sinon
+	 */
 	public boolean itemUsedDuringPeriod(int itemID, Date startDate, Date endDate) {
 		boolean result = false;
 		try {
-
 			super.connect();
 
-			// Utilisation des "AS" à cause des jointures.
-			// Il n'est pas possible
-			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
-			// une seule connection peut-être active à la fois pour toute la
-			// base de données, donc qu'une seule requête à la fois (contrainte
-			// du SGBD Derby)
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT count(*) " + "FROM BOOK " + "WHERE item_id = ? "
+							+ "AND (start_date <= ? OR start_date <= ?) " + "AND (end_date >= ? OR end_date >= ?)");
 
-			PreparedStatement psSelect = connection.prepareStatement(
-					"SELECT count(*) "
-						+ "FROM BOOK "
-						+ "WHERE item_id = ? "
-						+ "AND (start_date <= ? OR start_date <= ?) "
-						+ "AND (end_date >= ? OR end_date >= ?)");
-			
 			psSelect.setInt(1, itemID);
 			psSelect.setDate(2, new java.sql.Date(startDate.getTime()));
 			psSelect.setDate(3, new java.sql.Date(endDate.getTime()));
@@ -267,28 +273,26 @@ public class BookDAO extends DAO {
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		}
 		return result;
 	}
-	
-	public boolean extensionUsed(int extensionID) {
+
+	/**
+	 * Détermine si l'adhérent dont l'identifiant est passé en paramètre est
+	 * utilisé dans au moins une réservation
+	 * 
+	 * @param memberID
+	 *            L'identifiant unique d'un adhérent existant en base de données
+	 * @return True si l'adhérent est utilisé par une réservation, False sinon
+	 */
+	public boolean memberUsed(int memberID) {
 		boolean result = false;
 		try {
-
 			super.connect();
 
-			// Utilisation des "AS" à cause des jointures.
-			// Il n'est pas possible
-			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
-			// une seule connection peut-être active à la fois pour toute la
-			// base de données, donc qu'une seule requête à la fois (contrainte
-			// du SGBD Derby)
+			PreparedStatement psSelect = connection.prepareStatement("SELECT count(*) FROM BOOK WHERE member_id = ?");
 
-			PreparedStatement psSelect = connection.prepareStatement(
-					"SELECT count(*) FROM BOOK WHERE extension_id = ?");
-			
-			psSelect.setInt(1, extensionID);
+			psSelect.setInt(1, memberID);
 
 			psSelect.execute();
 			psSelect.closeOnCompletion();
@@ -302,31 +306,67 @@ public class BookDAO extends DAO {
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		}
 		return result;
 	}
 
+	/**
+	 * Détermine si l'extension dont l'identifiant est passé en paramètre est
+	 * utilisée dans au moins une réservation
+	 * 
+	 * @param extensionID
+	 *            L'identifiant unique d'une extension existante en base de
+	 *            données
+	 * @return True si l'extension est utilisée par une réservation, False sinon
+	 */
+	public boolean extensionUsed(int extensionID) {
+		boolean result = false;
+		try {
+			super.connect();
+
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT count(*) FROM BOOK WHERE extension_id = ?");
+
+			psSelect.setInt(1, extensionID);
+			psSelect.execute();
+			psSelect.closeOnCompletion();
+
+			ResultSet resultSet = psSelect.getResultSet();
+
+			if (resultSet.next()) {
+				result = (resultSet.getInt(1) > 0);
+			}
+
+			super.disconnect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * Détermine si l'extension dont l'identifiant est passé en paramètre est
+	 * utilisée dans au moins une réservation durant une période précise
+	 * 
+	 * @param extensionID
+	 *            L'identifiant unique d'une extension existante en base de
+	 *            données
+	 * @param startDate
+	 *            Date de début de la période
+	 * @param endDate
+	 *            Date de fin de la période
+	 * @return True si l'extension est utilisée par une réservation durant la
+	 *         période précisée, False sinon
+	 */
 	public boolean extensionUsedDuringPeriod(int extensionID, Date startDate, Date endDate) {
 		boolean result = false;
 		try {
-
 			super.connect();
 
-			// Utilisation des "AS" à cause des jointures.
-			// Il n'est pas possible
-			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
-			// une seule connection peut-être active à la fois pour toute la
-			// base de données, donc qu'une seule requête à la fois (contrainte
-			// du SGBD Derby)
+			PreparedStatement psSelect = connection
+					.prepareStatement("SELECT count(*) " + "FROM BOOK " + "WHERE extension_id = ? "
+							+ "AND (start_date <= ? OR start_date <= ?) " + "AND (end_date >= ? OR end_date >= ?)");
 
-			PreparedStatement psSelect = connection.prepareStatement(
-					"SELECT count(*) "
-						+ "FROM BOOK "
-						+ "WHERE extension_id = ? "
-						+ "AND (start_date <= ? OR start_date <= ?) "
-						+ "AND (end_date >= ? OR end_date >= ?)");
-			
 			psSelect.setInt(1, extensionID);
 			psSelect.setDate(2, new java.sql.Date(startDate.getTime()));
 			psSelect.setDate(3, new java.sql.Date(endDate.getTime()));
@@ -345,78 +385,7 @@ public class BookDAO extends DAO {
 			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		}
-		return result;
-	}
-	
-	public boolean memberUsed(int memberID) {
-		boolean result = false;
-		try {
-
-			super.connect();
-
-			// Utilisation des "AS" à cause des jointures.
-			// Il n'est pas possible
-			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
-			// une seule connection peut-être active à la fois pour toute la
-			// base de données, donc qu'une seule requête à la fois (contrainte
-			// du SGBD Derby)
-
-			PreparedStatement psSelect = connection.prepareStatement(
-					"SELECT count(*) FROM BOOK WHERE member_id = ?");
-			
-			psSelect.setInt(1, memberID);
-
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-
-			if (resultSet.next()) {
-				result = (resultSet.getInt(1) > 0);
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-
-		}
-		return result;
-	}
-
-	public int getBooksNb(int memberID) {
-		int result = 0;
-		try {
-
-			super.connect();
-
-			// Utilisation des "AS" à cause des jointures.
-			// Il n'est pas possible
-			// d'utiliser les DAOs dédiés aux Items, Members et Extensions car
-			// une seule connection peut-être active à la fois pour toute la
-			// base de données, donc qu'une seule requête à la fois (contrainte
-			// du SGBD Derby)
-
-			PreparedStatement psSelect = connection
-					.prepareStatement("SELECT count(member_id) FROM BOOK WHERE member_id = ?");
-
-			psSelect.setInt(1, memberID);
-
-			psSelect.execute();
-			psSelect.closeOnCompletion();
-
-			ResultSet resultSet = psSelect.getResultSet();
-
-			if (resultSet.next()) {
-				result = resultSet.getInt(1);
-			}
-
-			super.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
 		return result;
 	}
 }

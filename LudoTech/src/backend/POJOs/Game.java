@@ -8,75 +8,48 @@ public class Game {
 
 	/**
 	 * L'identifiant unique du jeu, un nombre entier strictement positif
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private int gameID;
 
 	/**
 	 * Le nom du jeu
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private String name;
 
 	/**
 	 * La description du jeu
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private String description;
 
 	/**
 	 * L'année d'édition du jeu, un nombre entier positif ou nul
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private int publishingYear;
 
 	/**
 	 * L'âge minimum recommandé pour y jouer, un nombre entier positif ou nul
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private int minimumAge;
 
 	/**
 	 * Le nombre minimum de joueurs pour y jouer, un nombre entier positif ou
 	 * nul
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private int minimumPlayers;
 
 	/**
 	 * Le nombre maximum de joueurs pour y jouer, un nombre entier positif ou
 	 * nul
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private int maximumPlayers;
 
 	/**
 	 * La catégorie du jeu
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private String category;
 
 	/**
 	 * La société éditrice du jeu
-	 * 
-	 * @HasGetter
-	 * @HasSetter
 	 */
 	private String editor;
 
