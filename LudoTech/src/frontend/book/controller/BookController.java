@@ -162,6 +162,13 @@ public class BookController extends JPanel {
 				bookView.setVisible(false);
 			}
 		});
+		
+		// Sélection d'un élément dans la liste des jeux de la fenêtre de création de réservartion
+		this.bookView.getGameComboBox().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadExtensionListAccordingToGame();
+			}
+		});
 
 		if (memberServices.isAdmin(this.currentMemberID)) {
 
@@ -203,13 +210,6 @@ public class BookController extends JPanel {
 							}
 						}
 					}
-				}
-			});
-
-			// Sélection d'un élément dans la liste des jeux de la fenêtre de création de réservartion
-			this.bookView.getGameComboBox().addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					loadExtensionListAccordingToGame();
 				}
 			});
 
