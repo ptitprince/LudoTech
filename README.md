@@ -1,6 +1,14 @@
 # LudoTech
 Application de gestion de ludothèque (projet de 5ème semestre à Polytech Montpellier)
 
+## Equipe
+- Théo Gauchoux
+- Tom Somerville Roberts
+- Julia Favrel
+- Yves Longchamp
+- Yassine Naitssi
+- Soufiane Benchraa
+
 ## Architecture de l'application
 - **db** Répertoire contenant la base de données
 - **lib** Répertoire contenant les librairies utilisées
